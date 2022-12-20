@@ -1,0 +1,24 @@
+Package: ashapesampler
+Title: Statistical Package for Generating Alpha Shapes
+Version: 0.0.0.9000
+Authors@R: 
+    person("Emily", "Winn-Nunez", , "emily_winn@brown.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-6759-5406"))
+Description: This package allows users to generate alpha shapes from a distribution
+              in two and three dimensions. It also allows users to take a data
+              set of shapes and generate new alpha shapes from the distribution
+              using non-black box methods.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Imports:
+        TDA,
+        pracma,
+        dplyr,
+        alphahull,
+        alphashape3d
+Suggests:
+        ggplot2,
+        truncnorm
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
