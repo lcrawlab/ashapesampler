@@ -4,22 +4,21 @@
 \alias{tau_bound}
 \title{tau_bound}
 \usage{
-tau_bound(v_list, e_list, extremes = NULL, f_list = NULL, t_list = NULL)
+tau_bound(v_list, complex, extremes = NULL)
 }
 \arguments{
 \item{v_list}{matrix or data frame of cartesian coordinates of vertices in
 in point cloud}
 
-\item{e_list}{data frame or matrix of edges, listed as pairs of vertices}
+\item{complex}{list of each vertex, edge, face, and (in 3D) tetrahedron in
+a simplicial complex; same form as complex object in TDA package}
 
 \item{extremes}{matrix or data frame of cartesian coordinates of vertices on
 the boundary of the data frame. If no list given, function will
 assume all points are extreme and check them all. Inclusion of
-this parameter speeds up the process.}
-
-\item{f_list}{data frame or matrix of faces, listed as sets of 3 vertices}
-
-\item{t_list}{data frame or matrix of faces, listed as sets of 4 vertices}
+this parameter speeds up the process both within this function
+and when calculating alpha because you will get a bigger (but
+still valid) tau bound.}
 }
 \value{
 tau, real nonnegative number.
