@@ -36,10 +36,10 @@ circle_overlap_ia <- function(alpha, R, r){
     stop("Impossible triangle, check alpha, R, and r.")
   }
   theta_1 = 2*acos((alpha^2+R^2-r^2)/(2*alpha*R))
-  theta_2 = 2*acos((R^2+r^2-alpha^2)/(2*r*R))
+  theta_2 = 2*acos(((R^2+r^2-alpha^2))/(2*r*R))
   a_1 = alpha^2*0.5*(theta_1 - sin(theta_1))
   a_2 = 0
-  if (theta_2< pi){
+  if (alpha^2 < R^2 + r^2){ 
     a_2 = r^2*0.5*(theta_2 - sin(theta_2))
   } else {
     a_2 = r^2*0.5*(theta_2 + sin((2*pi-theta_2)))
@@ -87,9 +87,6 @@ calc_overlap_2D <- function(alpha, r=1, rmin=0.01, bound="square"){
       return(1)
     }
   } else if (bound=="annulus"){
-    if(rmin>=r){
-      stop("rmin must be less than r")
-    }
     #Four scenarios: alpha less than r-rmin, alpha bigger but not r, bigger than r, bigger than R
     if (alpha <= r - rmin){
       area = circle_overlap_cc(alpha, r)

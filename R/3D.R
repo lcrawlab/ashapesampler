@@ -75,8 +75,8 @@ sphere_overlap_is <- function(alpha, rmax, rmin){
     stop("Impossible values, try again.")
   }
   theta_1 = acos((alpha^2+rmax^2-rmin^2)/(2*alpha*rmax))
-  h2 = alpha*cos(theta_1)
-  h1 = alpha-h2
+  h2 = alpha*cos(theta_1)-(rmax-rmin)
+  h1 = alpha-h2-(rmax-rmin)
   V1 = (1/3)*pi*h1^2*(3*alpha-h1)
   V2 = 0
   if (h2 <= rmin){
@@ -138,9 +138,6 @@ calc_overlap_3D <- function(alpha, r=1, rmin = 0.01, bound = "cube"){
       return(vol/((4/3)*pi*r^3))
     }
   } else if (bound == "shell") {
-    if(rmin>=r){
-      stop("rmin must be less than r")
-    }
     total_vol = (4/3)*pi*(r^3-rmin^3)
     if(alpha<r-rmin){
       vol = sphere_overlap_cs(alpha, r)

@@ -67,7 +67,8 @@ test_that(
   total = pi*3
   #First overlap
   alpha1 = 0.25 # 0 < 0.5 < 1
-  alpha2 = 0.75 # 1 < 1.5 < 3
+  alpha2 = 0.75 # 1 < 1.5 < 2
+  alpha5 = 1.2  # 2 < 2.4 < 3
   alpha3 = 1.7  # 3 < 3.4 < 4
   alpha4 = 3    # 4 < 6
   theta1 = 2*acos(0.125)
@@ -82,14 +83,14 @@ test_that(
   theta4 = 2*acos((R_big^2+r_lit^2-(2*alpha2)^2)/(2*r_lit*R_big))
   a1 = 0.5*(theta1-sin(theta1))*1.5^2
   a2=0
-  if (theta2 < pi){
+  if (2*alpha2 < 2*sqrt(2)){
     a2 = R_big^2*0.5*(theta2 - sin(theta2))
   } else {
     a2 = R_big^2*0.5*(theta2 + sin((2*pi-theta2)))
   }
   a3 = 1.5^2*0.5*(theta3 - sin(theta3))
   a4 = 0
-  if (theta4< pi){
+  if ((2*alpha2)^2 < r_lit^2+R_big^2){
     a4 = r_lit^2*0.5*(theta4 - sin(theta4))
   } else {
     a4 = r_lit^2*0.5*(theta4 + sin((2*pi-theta4)))
@@ -106,15 +107,37 @@ test_that(
     a2 = R_big^2 * 0.5 * (theta2 + sin((2 * pi - theta2)))
   }
   o3 = a1+a2
+  #Fifth overlap
+  theta1 = 2*acos(0.6)
+  theta2 = 2*acos(0.28)
+  theta3 = 2*acos(((2*alpha5)^2+R_big^2-r_lit^2)/(2*(2*alpha5)*R_big))
+  theta4 = 2*acos((R_big^2+r_lit^2-(2*alpha5)^2)/(2*r_lit*R_big))
+  a1 = 0.5*(theta1-sin(theta1))*2.4^2
+  a2=0
+  if (2*alpha5<2*sqrt(2)){
+    a2 = R_big^2*0.5*(theta2 - sin(theta2))
+  } else {
+    a2 = R_big^2*0.5*(theta2 + sin((2*pi-theta2)))
+  }
+  a3 = 2.4^2*0.5*(theta3 - sin(theta3))
+  a4 = 0
+  if ((2*alpha5)^2 < r_lit^2+R_big^2){
+    a4 = r_lit^2*0.5*(theta4 - sin(theta4))
+  } else {
+    a4 = r_lit^2*0.5*(theta4 + sin((2*pi-theta4)))
+  }
+  o5 = a1+a2-a3-a4
   #when
   overlap1 = calc_overlap_2D(alpha=alpha1, r=R_big, rmin=r_lit, bound="annulus")
   overlap2 = calc_overlap_2D(alpha=alpha2, r=R_big, rmin=r_lit, bound="annulus")
   overlap3 = calc_overlap_2D(alpha=alpha3, r=R_big, rmin=r_lit, bound="annulus")
   overlap4 = calc_overlap_2D(alpha=alpha4, r=R_big, rmin=r_lit, bound="annulus")
+  overlap5 = calc_overlap_2D(alpha=alpha5, r=R_big, rmin=r_lit, bound="annulus")
   #then
   expect_equal(overlap1, o1/total)
   expect_equal(overlap2, o2/total)
   expect_equal(overlap3, (o3 - pi*r_lit^2)/total)
   expect_equal(overlap4, 1)
+  expect_equal(overlap5, o5/total)
   }
 )

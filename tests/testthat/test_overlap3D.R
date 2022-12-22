@@ -78,6 +78,7 @@ test_that(
     #First overlap
     alpha1 = 0.25 # 0 < 0.5 < 1
     alpha2 = 0.75 # 1 < 1.5 < 3
+    alpha5 = 1.2  # 2 < 2.4 < 3
     alpha3 = 1.7  # 3 < 3.4 < 4
     alpha4 = 3    # 4 < 6
     theta1 = acos(0.125)
@@ -93,8 +94,8 @@ test_that(
     h1 = 2*alpha2-h2
     v1 = (1/3)*pi*h1^2*(3*2*alpha2 - h1)
     v2 = (1/3)*pi*h2^2*(3*R_big-h2)
-    h4 = (2*alpha2)*cos(theta3)
-    h3 = 2*alpha2-h4
+    h4 = (2*alpha2)*cos(theta3)-(R_big-r_lit)
+    h3 = 2*alpha2-h4-(R_big-r_lit)
     v3 = (1/3)*pi*h3^2*(3*2*alpha2-h3)
     v4 = (1/3)*pi*h4^2*(3*r_lit-h4)
     o2 = v1+v2-v3-v4
@@ -112,15 +113,30 @@ test_that(
       v2 = (4/3)*pi*R_big^3 - (1/3)*pi*h2^2*(3*R_big-h2)
     }
     o3 = v1+v2
+    #Fifth overlap
+    theta1 = acos(0.6)
+    theta3 = acos(((2*alpha5)^2+R_big^2-r_lit^2)/(2*(2*alpha5)*R_big))
+    h2 = (2*alpha5)*cos(theta1)
+    h1 = 2*alpha5-h2
+    v1 = (1/3)*pi*h1^2*(3*2*alpha5 - h1)
+    v2 = (1/3)*pi*h2^2*(3*R_big-h2)
+    h4 = (2*alpha5)*cos(theta3)-(R_big-r_lit)
+    h3 = 2*alpha5-h4-(R_big-r_lit)
+    v3 = (1/3)*pi*h3^2*(3*2*alpha5-h3)
+    h4 = 2*r_lit-h4
+    v4 = (4/3)*pi*r_lit^3 - (1/3)*pi*h4^2*(3*r_lit-h4)
+    o5 = v1+v2-v3-v4
     #when
     overlap1 = calc_overlap_3D(alpha=alpha1, r=R_big, rmin=r_lit, bound="shell")
     overlap2 = calc_overlap_3D(alpha=alpha2, r=R_big, rmin=r_lit, bound="shell")
     overlap3 = calc_overlap_3D(alpha=alpha3, r=R_big, rmin=r_lit, bound="shell")
     overlap4 = calc_overlap_3D(alpha=alpha4, r=R_big, rmin=r_lit, bound="shell")
+    overlap5 = calc_overlap_3D(alpha=alpha5, r=R_big, rmin=r_lit, bound="shell")
     #then
     expect_equal(overlap1, o1/total)
     expect_equal(overlap2, o2/total)
     expect_equal(overlap3, (o3 - (4/3)*pi*r_lit^3)/total)
     expect_equal(overlap4, 1)
+    expect_equal(overlap5, o5/total)
   }
 )

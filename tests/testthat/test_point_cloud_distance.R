@@ -15,7 +15,7 @@ test_that(
     expect_error(euclid_dists_point_cloud_3D(point3, NA_mat))
     expect_error(euclid_dists_point_cloud_3D(NA_point, points3))
     expect_error(euclid_dists_point_cloud_2D(point2, empty_mat2))
-    expect_error(eulcid_dists_point_cloud_3D(point3, empty_mat3))
+    expect_error(euclid_dists_point_cloud_3D(point3, empty_mat3))
     expect_error(euclid_dists_point_cloud_3D(point2, points3))
     expect_error(euclid_dists_point_cloud_2D(point3, points2))
   }
