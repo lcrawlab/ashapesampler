@@ -8,20 +8,22 @@ Description: This package allows users to generate alpha shapes from a distribut
               in two and three dimensions. It also allows users to take a data
               set of shapes and generate new alpha shapes from the distribution
               using non-black box methods.
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: GPL (>=3)
 Imports:
         TDA,
         pracma,
         dplyr,
         alphahull,
-        alphashape3d
+        alphashape3d,
+		truncnorm
 Suggests:
         ggplot2,
-        truncnorm
+		knitr
 LinkingTo:
 		testthat,
 		covr
+VignetteBuilder:
+		knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
