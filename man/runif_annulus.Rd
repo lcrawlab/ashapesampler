@@ -11,7 +11,7 @@ runif_annulus(n, rmax = 1, rmin = 0.5)
 
 \item{rmax}{radius of outer circle of annulus}
 
-\item{rmin}{raidus of inner circle of annulus}
+\item{rmin}{radius of inner circle of annulus}
 }
 \value{
 n by 2 matrix of points sampled

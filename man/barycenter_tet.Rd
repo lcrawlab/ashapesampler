@@ -7,9 +7,9 @@
 barycenter_tet(v_list, t_list)
 }
 \arguments{
-\item{v_list}{}
+\item{v_list}{matrix of vertex coordinates}
 
-\item{t_list}{}
+\item{t_list}{matrix of 4 columns with tetrahedra}
 }
 \value{
 bary_mat, matrix of coordinates of barycenters of teterahedra

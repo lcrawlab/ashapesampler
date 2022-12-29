@@ -7,9 +7,9 @@
 barycenter_face(v_list, f_list)
 }
 \arguments{
-\item{v_list}{}
+\item{v_list}{matrix of vertex coordinates}
 
-\item{f_list}{}
+\item{f_list}{matrix with 3 columns with face information.}
 }
 \value{
 bary_mat, matrix of coordinates of barycenters of faces.

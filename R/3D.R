@@ -169,7 +169,6 @@ calc_overlap_3D <- function(alpha, r=1, rmin = 0.01, bound = "cube"){
 #' @param bound manifold from which points sampled. Options are sphere, shell, cube
 #'
 #' @return integer of minimum number of points needed
-#' @export
 #'
 #' @examples 
 #' # For a cube with probability 0.05 of isolated points
@@ -178,6 +177,7 @@ calc_overlap_3D <- function(alpha, r=1, rmin = 0.01, bound = "cube"){
 #' n_bound_connect_3D(0.2, 0.01, 1, bound="sphere")
 #' # For a shell with probability 0.1 isolated points.
 #' n_bound_connect_3D(0.2, 0,1, 1, 0.25, bound="shell")
+#' @export
 n_bound_connect_3D <- function(alpha, delta=0.05, r=1, rmin=0.01, bound="cube"){
   if (alpha <=0 || r<= 0 || rmin < 0){
     stop("Cannot have a negative or 0 value for alpha, r, or rmin.")
@@ -264,13 +264,13 @@ euclid_dists_point_cloud_3D <- function(point, point_cloud){
 #' @param zmax maximum z coordinate
 #'
 #' @return n by 3 matrix of points
-#' @export
 #'
 #' @examples
 #' # Sample 100 points from unit cube
 #' runif_cube(100)
 #' # Sample 100 points from unit cube centered on origin
 #' runif_cube(100, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5)
+#' @export
 runif_cube <- function(n, xmin=0, xmax=1, ymin=0, ymax=1, zmin=0, zmax = 1){
   if(xmax<xmin || ymax<ymin || zmax < zmin){
     stop("Invalid bounds")
@@ -279,9 +279,9 @@ runif_cube <- function(n, xmin=0, xmax=1, ymin=0, ymax=1, zmin=0, zmax = 1){
     stop("n must be positive integer.")
   }
   points = matrix(data=NA, nrow=n, ncol=3)
-  points[,1] = runif(n, min=xmin, max=xmax)
-  points[,2] = runif(n, min=ymin, max=ymax)
-  points[,3] = runif(n, min=zmin, max=zmax)
+  points[,1] = stats::runif(n, min=xmin, max=xmax)
+  points[,2] = stats::runif(n, min=ymin, max=ymax)
+  points[,3] = stats::runif(n, min=zmin, max=zmax)
   return(points)
 }
 
@@ -293,20 +293,20 @@ runif_cube <- function(n, xmin=0, xmax=1, ymin=0, ymax=1, zmin=0, zmax = 1){
 #' @param r radius of ball, default r=1
 #'
 #' @return n by 3 matrix of points
-#' @export
 #'
 #' @examples
 #' # Sample 100 points from unit ball
-#' runif(100)
+#' runif_ball_3D(100)
 #' # Sample 100 points from ball of radius 0.5
-#' runif(100, r=0.5)
+#' runif_ball_3D(100, r=0.5)
+#' @export
 runif_ball_3D <- function(n, r=1){
   if(n<=0 || floor(n) !=n || r<=0){
     stop("n must be positive integer, and r must be a positive real number.")
   }
   points = matrix(data=NA, nrow =n, ncol=3)
-  radius = runif(n, min=0, max=2*r^3)
-  theta = runif(n, min=0, max=2*pi) #horizontal angle from x axis
+  radius = stats::runif(n, min=0, max=2*r^3)
+  theta = stats::runif(n, min=0, max=2*pi) #horizontal angle from x axis
   phi = acos(1 - 2*runif(n,0,1))   #vertical angle from z axis
   points[,1] = pracma::nthroot(radius/2,3)*cos(theta)*sin(phi)
   points[,2] = pracma::nthroot(radius/2,3)*sin(theta)*sin(phi)
@@ -323,13 +323,13 @@ runif_ball_3D <- function(n, r=1){
 #' @param rmin radius of inner sphere
 #'
 #' @return n by 3 matrix of points
-#' @export
 #'
 #' @examples
 #' # Sample 100 points with defaults rmax=1, rmin=0.5
 #' runif_shell_3D(100)
 #' # Sample 100 points with rmax=0.75, rmin=0.25
 #' runif_shell_3D(100, 0.75, 0.25)
+#' @export
 runif_shell_3D <- function(n, rmax=1, rmin=0.5){
   if(n<=0 || floor(n) !=n || rmax<=0 || rmin<=0){
     stop("n must be positive integer, and rmax, rmin must be a positive real numbers.")
@@ -338,8 +338,8 @@ runif_shell_3D <- function(n, rmax=1, rmin=0.5){
     stop("Invalid values for rmin and rmax.")
   }
   points = matrix(data=NA, nrow =n, ncol=3)
-  radius = runif(n, min=2*rmin^3, max=2*rmax^3)
-  theta = runif(n, min=0, max=2*pi) #horizontal angle from x axis
+  radius = stats::runif(n, min=2*rmin^3, max=2*rmax^3)
+  theta = stats::runif(n, min=0, max=2*pi) #horizontal angle from x axis
   phi = acos(1 - 2*runif(n,0,1))  #vertical angle from z axis
   points[,1] = pracma::nthroot(radius/2,3)*cos(theta)*sin(phi)
   points[,2] = pracma::nthroot(radius/2,3)*sin(theta)*sin(phi)

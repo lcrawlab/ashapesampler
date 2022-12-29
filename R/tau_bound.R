@@ -120,8 +120,8 @@ tau_bound <- function(v_list, complex, extremes=NULL){
 #' This function finds the barycenters of the faces of a simplicial complex given the 
 #' list of vertex coordinates and the set of faces.
 #'
-#' @param v_list 
-#' @param f_list 
+#' @param v_list matrix of vertex coordinates
+#' @param f_list matrix with 3 columns with face information.
 #'
 #' @return bary_mat, matrix of coordinates of barycenters of faces.
 barycenter_face <- function(v_list, f_list){
@@ -138,8 +138,8 @@ barycenter_face <- function(v_list, f_list){
 #' This function finds the barycenters of the tetrahedra/3-simplices of a simplicial
 #' complex given the list of vertex coordinates and the set of tetrahedra.
 #'
-#' @param v_list 
-#' @param t_list 
+#' @param v_list matrix of vertex coordinates
+#' @param t_list matrix of 4 columns with tetrahedra
 #'
 #' @return bary_mat, matrix of coordinates of barycenters of teterahedra
 barycenter_tet <- function(v_list, t_list){

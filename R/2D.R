@@ -201,13 +201,13 @@ euclid_dists_point_cloud_2D <- function(point, point_cloud){
 #' @param ymax maximum y coordinate
 #'
 #' @return n by 2 matrix of points
-#' @export
 #'
 #' @examples
 #' # Sample 100 points from unit square
 #' runif_square(100)
 #' # Sample 100 points from unit square centered at origin
 #' runif_square(100, 0.5, 0.5, 0.5, 0.5)
+#' @export
 runif_square <- function(n, xmin=0, xmax=1, ymin=0, ymax=1){
   if(xmax<xmin || ymax<ymin){
     stop("Invalid bounds")
@@ -229,20 +229,20 @@ runif_square <- function(n, xmin=0, xmax=1, ymin=0, ymax=1){
 #' @param r radius of disk
 #'
 #' @return n by 2 matrix of points sampled
-#' @export
 #'
-#' @examples
+#' @examples 
 #' # Sample 100 points from unit disk
 #' runif_disk(100)
 #' # Sample 100 points from disk of radius 0.7
 #' runif_disk(100, 0.7)
+#' @export 
 runif_disk <- function(n, r=1){
   if(n<=0 || floor(n) !=n || r<=0){
     stop("n must be positive integer, and r must be a positive real number.")
   }
   points = matrix(data=NA, nrow=n, ncol=2)
-  radius = runif(n, min=0, max=r^2)
-  theta = runif(n, min=0, max=2*pi)
+  radius = stats::runif(n, min=0, max=r^2)
+  theta = stats::runif(n, min=0, max=2*pi)
   points[,1] = sqrt(radius)*cos(theta)
   points[,2] = sqrt(radius)*sin(theta)
   return(points)
@@ -254,16 +254,16 @@ runif_disk <- function(n, r=1){
 #'
 #' @param n number of points to sample
 #' @param rmax radius of outer circle of annulus
-#' @param rmin raidus of inner circle of annulus
+#' @param rmin radius of inner circle of annulus
 #'
 #' @return n by 2 matrix of points sampled
-#' @export
 #'
 #' @examples
 #' # Sample 100 points from annulus with rmax=1 and rmin=0.5
 #' runif_annulus(100)
 #' # Sample 100 points from annulus with rmax=0.75 and rmin=0.25
 #' runif_annulus(100, 0.75, 0.25)
+#' @export
 runif_annulus <- function(n, rmax=1, rmin=0.5){
   if(n<=0 || floor(n) !=n || rmax<=0 || rmin<=0){
     stop("n must be positive integer, and rmax, rmin must be a positive real numbers.")
@@ -272,8 +272,8 @@ runif_annulus <- function(n, rmax=1, rmin=0.5){
     stop("Invalid values for rmin and rmax.")
   }
   points = matrix(data=NA, nrow =n, ncol=2)
-  radius = runif(n, min=rmin^2, max=rmax^2)
-  theta = runif(n, min=0, max=2*pi)
+  radius = stats::runif(n, min=rmin^2, max=rmax^2)
+  theta = stats::runif(n, min=0, max=2*pi)
   points[,1] = sqrt(radius)*cos(theta)
   points[,2] = sqrt(radius)*sin(theta)
   return(points)

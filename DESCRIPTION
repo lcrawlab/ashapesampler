@@ -15,7 +15,8 @@ Imports:
         dplyr,
         alphahull,
         alphashape3d,
-		truncnorm
+		truncnorm,
+		stats
 Suggests:
         ggplot2,
 		knitr

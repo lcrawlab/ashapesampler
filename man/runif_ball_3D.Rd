@@ -19,7 +19,7 @@ Returns points uniformly centered from closed ball of radius r in 3D space
 }
 \examples{
 # Sample 100 points from unit ball
-runif(100)
+runif_ball_3D(100)
 # Sample 100 points from ball of radius 0.5
-runif(100, r=0.5)
+runif_ball_3D(100, r=0.5)
 }
