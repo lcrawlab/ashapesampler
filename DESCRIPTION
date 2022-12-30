@@ -19,7 +19,8 @@ Imports:
 		    stats
 Suggests:
         ggplot2,
-		    knitr
+		    knitr,
+		    testthat
 VignetteBuilder:
 		  knitr
 Encoding: UTF-8
