@@ -19,6 +19,7 @@
 #'                 still valid) tau bound.
 #' @return tau, real nonnegative number. 
 #' @export
+#' @importFrom stats na.omit
 tau_bound <- function(v_list, complex, extremes=NULL){
   dimension = dim(v_list)[2]
   n = dim(v_list)[1]
@@ -50,7 +51,7 @@ tau_bound <- function(v_list, complex, extremes=NULL){
     extremes = 1:n
     m=n
   }
-  dist_matrix = as.matrix(dist(v_list))
+  dist_matrix = as.matrix(stats::dist(v_list))
   e_list = extract_complex_edges(complex,m)
   if(is.null(e_list)){
     return(min(dist_matrix[dist_matrix>0]))
@@ -66,8 +67,9 @@ tau_bound <- function(v_list, complex, extremes=NULL){
   tau_keep = 100 #intentionally make too big
   for (k in 1:m){
     i = extremes[k]
-    edge_list_zoom = c(dplyr::filter(e_list, ed2==i)[,1], 
-                       dplyr::filter(e_list, ed1==i)[,2])
+    edge_list_zoom = c(which(e_list$ed1==i), which(e_list$ed2==i))
+    edge_list_zoom = c(e_list[edge_list_zoom,1], e_list[edge_list_zoom,2])
+    edge_list_zoom = edge_list_zoom[which(edge_list_zoom != i)]
     face_list_zoom = NULL
     tet_list_zoom = NULL
     if(!is.null(f_list)){
