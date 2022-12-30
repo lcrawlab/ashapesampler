@@ -1,4 +1,5 @@
 ^ashapesampler\.Rproj$
 ^\.Rproj\.user$
 ^\.github$
+^LICENCES\.md$
 coverage_check\.R
