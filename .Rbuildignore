@@ -1,3 +1,4 @@
 ^ashapesampler\.Rproj$
 ^\.Rproj\.user$
-coverage_check.R
+^\.github$
+coverage_check\.R
