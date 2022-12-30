@@ -30,5 +30,5 @@ n_bound_connect_3D(0.2, 0.05,0.9)
 # For a sphere with probability 0.01 of isolated points
 n_bound_connect_3D(0.2, 0.01, 1, bound="sphere")
 # For a shell with probability 0.1 isolated points.
-n_bound_connect_3D(0.2, 0,1, 1, 0.25, bound="shell")
+n_bound_connect_3D(0.2, 0.1, 1, 0.25, bound="shell")
 }

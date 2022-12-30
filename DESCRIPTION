@@ -15,16 +15,16 @@ Imports:
         dplyr,
         alphahull,
         alphashape3d,
-		truncnorm,
-		stats
+		    truncnorm,
+		    stats
 Suggests:
         ggplot2,
-		knitr
+		    knitr
 LinkingTo:
-		testthat,
-		covr
+  		testthat,
+  		covr
 VignetteBuilder:
-		knitr
+		  knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

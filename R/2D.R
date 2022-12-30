@@ -216,8 +216,8 @@ runif_square <- function(n, xmin=0, xmax=1, ymin=0, ymax=1){
     stop("n must be positive integer.")
   }
   points = matrix(data=NA, nrow=n, ncol=2)
-  points[,1] = runif(n, min=xmin, max=xmax)
-  points[,2] = runif(n, min=ymin, max=ymax)
+  points[,1] = stats::runif(n, min=xmin, max=xmax)
+  points[,2] = stats::runif(n, min=ymin, max=ymax)
   return(points)
 }
 
@@ -228,7 +228,7 @@ runif_square <- function(n, xmin=0, xmax=1, ymin=0, ymax=1){
 #' @param n number of points to sample
 #' @param r radius of disk
 #'
-#' @return n by 2 matrix of points sampled
+#' @return points n by 2 matrix of points sampled
 #'
 #' @examples 
 #' # Sample 100 points from unit disk

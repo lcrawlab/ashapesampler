@@ -176,7 +176,7 @@ calc_overlap_3D <- function(alpha, r=1, rmin = 0.01, bound = "cube"){
 #' # For a sphere with probability 0.01 of isolated points
 #' n_bound_connect_3D(0.2, 0.01, 1, bound="sphere")
 #' # For a shell with probability 0.1 isolated points.
-#' n_bound_connect_3D(0.2, 0,1, 1, 0.25, bound="shell")
+#' n_bound_connect_3D(0.2, 0.1, 1, 0.25, bound="shell")
 #' @export
 n_bound_connect_3D <- function(alpha, delta=0.05, r=1, rmin=0.01, bound="cube"){
   if (alpha <=0 || r<= 0 || rmin < 0){
@@ -230,7 +230,6 @@ n_bound_homology_3D <- function(volume, epsilon, tau=1, delta=0.05){
 #'
 #' @return vector of distances from the point to each point in the point cloud
 #' @export
-#'
 euclid_dists_point_cloud_3D <- function(point, point_cloud){
   if(sum(is.na(point))>0 || sum(is.na(point_cloud))>0){
     stop("NA values in input.")
@@ -307,7 +306,7 @@ runif_ball_3D <- function(n, r=1){
   points = matrix(data=NA, nrow =n, ncol=3)
   radius = stats::runif(n, min=0, max=2*r^3)
   theta = stats::runif(n, min=0, max=2*pi) #horizontal angle from x axis
-  phi = acos(1 - 2*runif(n,0,1))   #vertical angle from z axis
+  phi = acos(1 - 2*stats::runif(n,0,1))   #vertical angle from z axis
   points[,1] = pracma::nthroot(radius/2,3)*cos(theta)*sin(phi)
   points[,2] = pracma::nthroot(radius/2,3)*sin(theta)*sin(phi)
   points[,3] = pracma::nthroot(radius/2,3)*cos(phi)
@@ -340,7 +339,7 @@ runif_shell_3D <- function(n, rmax=1, rmin=0.5){
   points = matrix(data=NA, nrow =n, ncol=3)
   radius = stats::runif(n, min=2*rmin^3, max=2*rmax^3)
   theta = stats::runif(n, min=0, max=2*pi) #horizontal angle from x axis
-  phi = acos(1 - 2*runif(n,0,1))  #vertical angle from z axis
+  phi = acos(1 - 2*stats::runif(n,0,1))  #vertical angle from z axis
   points[,1] = pracma::nthroot(radius/2,3)*cos(theta)*sin(phi)
   points[,2] = pracma::nthroot(radius/2,3)*sin(theta)*sin(phi)
   points[,3] = pracma::nthroot(radius/2,3)*cos(phi)

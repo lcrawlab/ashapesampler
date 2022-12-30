@@ -19,7 +19,6 @@
 #'                 still valid) tau bound.
 #' @return tau, real nonnegative number. 
 #' @export
-#'
 tau_bound <- function(v_list, complex, extremes=NULL){
   dimension = dim(v_list)[2]
   n = dim(v_list)[1]

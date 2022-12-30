@@ -12,7 +12,7 @@ runif_disk(n, r = 1)
 \item{r}{radius of disk}
 }
 \value{
-n by 2 matrix of points sampled
+points n by 2 matrix of points sampled
 }
 \description{
 Returns points uniformly sampled from disk of radius r in plane
