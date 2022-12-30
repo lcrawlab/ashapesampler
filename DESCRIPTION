@@ -20,9 +20,6 @@ Imports:
 Suggests:
         ggplot2,
 		    knitr
-LinkingTo:
-  		testthat,
-  		covr
 VignetteBuilder:
 		  knitr
 Encoding: UTF-8
