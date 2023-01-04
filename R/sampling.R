@@ -135,7 +135,9 @@ sampling3Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
                              n = 20, alpha=0.3, lambda=3, r=1, rmin=0.25, 
                              bound="cube"){
   shape_list = list()
-  bound = tolower(bound) 
+  bound = tolower(bound)
+  #For OS
+  options(rgl.useNULL=TRUE)
   
   #Check for errors, warnings
   if(nconnect == TRUE & nhomology == TRUE){
