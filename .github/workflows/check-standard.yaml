@@ -57,7 +57,11 @@ jobs:
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
       - name: Install automake
         if: runner.os == 'macOS'
-        run: brew install automake
+        run:  |
+            brew install automake
+            brew install glfw3
+            brew install glew
+            brew install xquartz
 
       - name: Install dependencies
         run: |
