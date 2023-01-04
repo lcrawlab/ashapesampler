@@ -61,7 +61,7 @@ jobs:
             brew install automake
             brew install glfw3
             brew install glew
-            install.packages('XQuartz')
+            brew install xquartz
 
       - name: Install dependencies
         run: |
