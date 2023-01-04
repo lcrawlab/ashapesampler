@@ -20,7 +20,8 @@ Imports:
 Suggests:
         ggplot2,
 		    knitr,
-		    testthat
+		    testthat,
+		    rgl
 VignetteBuilder:
 		  knitr
 Encoding: UTF-8
