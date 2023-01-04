@@ -59,6 +59,8 @@ jobs:
         if: runner.os == 'macOS'
         run:  |
             brew install automake
+            brew install glfw3
+            brew install glew
             install.packages('XQuartz')
 
       - name: Install dependencies
