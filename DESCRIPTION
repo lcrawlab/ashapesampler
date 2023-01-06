@@ -16,7 +16,8 @@ Imports:
         alphahull,
         alphashape3d,
 		    truncnorm,
-		    stats
+		    stats,
+		    Rvcg
 Suggests:
         ggplot2,
 		    knitr,
