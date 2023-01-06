@@ -35,5 +35,5 @@ generate_ashape3d <- function(point_cloud, N, tau, delta, bound="sphere"){
     }
   }
   
-  return(my_points)
+  #return(my_points)
 }
