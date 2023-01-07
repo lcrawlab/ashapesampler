@@ -59,6 +59,7 @@ jobs:
         if: runner.os == 'macOS'
         run:  |
             brew install automake
+            brew install curl
             brew install glfw3
             brew install glew
             brew install xquartz
