@@ -6,7 +6,7 @@
 #'                    data set
 #' @param N number of shapes in initial data set
 #' @param tau tau bound
-#' @param delta probability of not preserving homology; default is 0.01
+#' @param delta probability of not preserving homology; default is 0.05
 #' @param bound manifold bound being used to sample points
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
 #' @param sig standard deviation of truncated distribution from which alpha 
@@ -15,7 +15,7 @@
 #' @return new_ashape three dimensional alpha shape object from alphashape3d library
 #' @export
 #'
-generate_ashape3d <- function(point_cloud, N, tau, delta=0.01, bound="sphere", 
+generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere", 
                               mu=NULL, sig = NULL){
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=3){
@@ -106,7 +106,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.01, bound="sphere",
 #'                    data set
 #' @param N number of shapes in initial data set
 #' @param tau tau bound
-#' @param delta probability of not preserving homology; default is 0.01
+#' @param delta probability of not preserving homology; default is 0.05
 #' @param bound manifold bound being used to sample points
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
 #' @param sig standard deviation of truncated distribution from which alpha 
@@ -115,7 +115,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.01, bound="sphere",
 #' @return new_ashape two dimensional alpha shape object from alphahull library
 #' @export
 #'
-generate_ashape2d <- function(point_cloud, N, tau, delta=0.01, bound="circle", 
+generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle", 
                               mu=NULL, sig = NULL){
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=2){

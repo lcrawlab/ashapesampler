@@ -8,7 +8,7 @@ generate_ashape3d(
   point_cloud,
   N,
   tau,
-  delta = 0.01,
+  delta = 0.05,
   bound = "sphere",
   mu = NULL,
   sig = NULL
@@ -22,7 +22,7 @@ data set}
 
 \item{tau}{tau bound}
 
-\item{delta}{probability of not preserving homology; default is 0.01}
+\item{delta}{probability of not preserving homology; default is 0.05}
 
 \item{bound}{manifold bound being used to sample points}
 

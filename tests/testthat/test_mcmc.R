@@ -34,7 +34,8 @@ test_that("3D mcmc smooth runs", {
   #given
   tau=1
   N=2
-  points3 = cbind(stats::runif(20), stats::runif(20), stats::runif(20))
+  points3 = cbind(stats::runif(10,0.01,0.1), stats::runif(10,0.01,0.1),
+                  stats::runif(10,0.01,0.1))
   #then
   expect_no_error(generate_ashape3d(points3, N, tau))
   expect_no_error(generate_ashape3d(points3, N, tau, bound="cube"))
