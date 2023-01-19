@@ -44,7 +44,11 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
   my_alpha <- truncnorm::rtruncnorm(1,a=0,b=tau/2, mean=mu,sd=sig)
   
   #Get volume, number of points needed, bounds for sampling
-  vol=0; xmin=0; xmax=0; ymin=0; ymax=0; zmin=0; zmax=0; rmax=0; rmin=0
+  temp_ashape <- alphashape3d::ashape3d(point_cloud, alpha=tau)
+  vol <- alphashape3d::volume_ashape3d(temp_ashape)
+  rm(temp_ashape)
+  
+  xmin=0; xmax=0; ymin=0; ymax=0; zmin=0; zmax=0; rmax=0; rmin=0
   bounds=list()
   if(bound=="cube"){
     xmin = min(point_cloud[,1]-tau)
@@ -54,18 +58,15 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
     zmin = min(point_cloud[,3]-tau)
     zmax = max(point_cloud[,3]+tau)
     bounds <- list("bound"=bound, "limits"=c(xmin, xmax, ymin, ymax, zmin, zmax))
-    vol <- (xmax-xmin)*(ymax-ymin)*(zmax-zmin)
   } else if (bound=="sphere"){
     radii = sqrt(point_cloud[,1]^2 + point_cloud[,2]^2 + point_cloud[,3]^2)
     rmax = max(radii)+tau
     bounds <- list("bound"=bound, "limits" = rmax)
-    vol <- (4/3)*pi*rmax^3
   } else if (bound == "shell"){
     radii = sqrt(point_cloud[,1]^2 + point_cloud[,2]^2 + point_cloud[,3]^2)
     rmax = max(radii)+tau
     rmin = max(min(radii-tau),0)
     bounds <- list("bound"=bound, "limits" = c(rmax, rmin))
-    vol <- (4/3)*pi*(rmax^3 - rmin^3)
   } else {
     stop("Not a valid bound. Please enter bound = sphere, shell, or cube. Default is sphere.")
   }
@@ -144,7 +145,11 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
   my_alpha <- truncnorm::rtruncnorm(1,a=0,b=tau/2, mean=mu,sd=sig)
   
   #Get volume, number of points needed, bounds for sampling
-  area=0; xmin=0; xmax=0; ymin=0; ymax=0; rmax=0; rmin=0
+  temp_ahull <- alphahull::ahull(point_cloud, alpha=tau)
+  area <- alphahull::areaahull(temp_ahull)
+  rm(temp_ahull)
+  
+  xmin=0; xmax=0; ymin=0; ymax=0; rmax=0; rmin=0
   bounds=list()
   if(bound=="square"){
     xmin = min(point_cloud[,1]-tau)
@@ -152,18 +157,15 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
     ymin = min(point_cloud[,2]-tau)
     ymax = max(point_cloud[,2]+tau)
     bounds <- list("bound"=bound, "limits"=c(xmin, xmax, ymin, ymax))
-    area <- (xmax-xmin)*(ymax-ymin)
   } else if (bound=="circle"){
     radii = sqrt(point_cloud[,1]^2 + point_cloud[,2]^2)
     rmax = max(radii)+tau
     bounds <- list("bound"=bound, "limits" = rmax)
-    area <- pi*rmax^2
   } else if (bound == "annulus"){
     radii = sqrt(point_cloud[,1]^2 + point_cloud[,2]^2)
     rmax = max(radii)+tau
     rmin = max(min(radii-tau),0)
     bounds <- list("bound"=bound, "limits" = c(rmax, rmin))
-    area <- pi*(rmax^2 - rmin^2)
   } else {
     stop("Not a valid bound. Please enter bound = circle, square, or annulus. Default is circle.")
   }
