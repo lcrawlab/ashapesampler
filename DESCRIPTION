@@ -18,12 +18,12 @@ Imports:
 		    truncnorm,
 		    stats,
 		    Rvcg,
-		    purrr
+		    purrr,
+		    rgl
 Suggests:
         ggplot2,
 		    knitr,
-		    testthat,
-		    rgl
+		    testthat
 VignetteBuilder:
 		  knitr
 Encoding: UTF-8
