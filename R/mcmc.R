@@ -41,7 +41,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
   if(mu>tau/2 || mu<0){
     warning("Mean of alpha outside of truncated distribution range for alpha")
   }
-  my_alpha <- truncnorm::rtruncnorm(1,a=0,b=tau/2, mean=mu,sd=sig)
+  my_alpha <- truncnorm::rtruncnorm(1,a=tau/4,b=tau/2, mean=mu,sd=sig)
   
   #Get volume, number of points needed, bounds for sampling
   temp_ashape <- alphashape3d::ashape3d(point_cloud, alpha=tau)
@@ -142,7 +142,7 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
   if(mu>tau/2 || mu<0){
     warning("Mean of alpha outside of truncated distribution range for alpha")
   }
-  my_alpha <- truncnorm::rtruncnorm(1,a=0,b=tau/2, mean=mu,sd=sig)
+  my_alpha <- truncnorm::rtruncnorm(1,a=tau/4,b=tau/2, mean=mu,sd=sig)
   
   #Get volume, number of points needed, bounds for sampling
   temp_ahull <- alphahull::ahull(point_cloud, alpha=tau)

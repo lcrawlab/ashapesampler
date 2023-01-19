@@ -106,7 +106,7 @@ tau_bound <- function(v_list, complex, extremes=NULL){
         }
       }
       dist_all = c(dist_vec_point[dist_vec_point>=max(dist_vec)], max(c(dist_vec_b,0)))
-      test_tau = max(dist_all)
+      test_tau = min(dist_all[dist_all>0])
     }
     if (test_tau < tau_keep){
       tau_keep = test_tau
