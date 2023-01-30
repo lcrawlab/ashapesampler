@@ -11,13 +11,14 @@
 #'        holds the vertex coordinates and "cmplx" which holds the complex list
 #'        object.
 #' @export
-#'
+#' @importFrom Rvcg vcgImport
+#' @importFrom Rvcg vcgGetEdge
 readOFF <- function(file_name){
   off=Rvcg::vcgImport(file_name,silent = TRUE)
   vertices=as.matrix(t(off$vb)[,1:3])
   n = dim(vertices)[1]
   faces=as.data.frame(t(off$it))
-  edges=vcgGetEdge(off)
+  edges=Rvcg::vcgGetEdge(off)
   complex = append(as.list(data.frame(t(edges[,1:2]))), as.list(data.frame(t(faces))))
   complex = append(as.list(1:n), complex)
   complex_info = list("Vertices"=vertices, "cmplx"= complex)

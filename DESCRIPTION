@@ -12,18 +12,18 @@ License: GPL (>=3)
 Imports:
         TDA,
         pracma,
-        dplyr,
         alphahull,
         alphashape3d,
 		    truncnorm,
 		    stats,
 		    Rvcg,
-		    purrr,
-		    rgl
+		    purrr
 Suggests:
         ggplot2,
 		    knitr,
-		    testthat
+		    testthat,
+		    dplyr,
+		    rgl
 VignetteBuilder:
 		  knitr
 Encoding: UTF-8
