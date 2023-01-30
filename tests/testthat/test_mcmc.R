@@ -32,6 +32,7 @@ test_that("2D mcmc smooth runs", {
 
 test_that("3D mcmc smooth runs", {
   #given
+  set.seed(201727)
   tau=1
   N=2
   points3 = cbind(stats::runif(500,0.5,1), stats::runif(500,0.5,1),
