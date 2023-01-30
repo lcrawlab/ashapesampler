@@ -16,7 +16,7 @@
 #' @export
 #'
 generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere", 
-                              mu=NULL, sig = NULL){
+                              afixed = TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4){
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=3){
     stop("Point cloud does not have correct number of columns.")
@@ -30,18 +30,23 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
   }
   bound = tolower(bound)
   #Sample alpha
-  if(is.null(mu)){
-    mu=tau/3
+  my_alpha <- 0
+  if(afixed==FALSE){
+    if(is.null(mu)){
+      mu=tau/3
+    }
+    if(is.null(sig)){
+      sig=tau/12
+    } else if (sig <0){
+      stop("sig must be nonnegative value.")
+    }
+    if(mu>tau/2 || mu<0){
+      warning("Mean of alpha outside of truncated distribution range for alpha")
+    }
+    my_alpha <- truncnorm::rtruncnorm(1, a=0, b=tau/2, mean=mu, sd=sig)
+  } else {
+    my_alpha <- tau/2-eps
   }
-  if(is.null(sig)){
-    sig=tau/12
-  } else if (sig <0){
-    stop("sig must be nonnegative value.")
-  }
-  if(mu>tau/2 || mu<0){
-    warning("Mean of alpha outside of truncated distribution range for alpha")
-  }
-  my_alpha <- truncnorm::rtruncnorm(1,a=tau/4,b=tau/2, mean=mu,sd=sig)
   
   #Get volume, number of points needed, bounds for sampling
   temp_ashape <- alphashape3d::ashape3d(point_cloud, alpha=tau)
@@ -72,6 +77,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
   }
   
   n <- n_bound_homology_3D(volume=vol, tau=tau, epsilon=my_alpha, delta=delta)
+  n <- floor(n/2)
   
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=3)
@@ -83,13 +89,13 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
     new_point = runif_ball_3D(1,tau)+curr_point
     if (check_bound3d(new_point, bounds)){
       dist_list = euclid_dists_point_cloud_3D(new_point, point_cloud)
-      dist_near = dist_list[dist_list < 2*my_alpha ] 
+      dist_near = dist_list[dist_list < my_alpha/2 ] 
       knn = length(dist_near) 
       if (knn >= N){
         my_points = rbind(my_points, new_point)
         curr_point=new_point
-      } else if (knn > 3) {   
-        a_prob = 1-exp(-knn*2/N)
+      } else if (knn > k_min) {   
+        a_prob = 1-exp(-(knn-k_min)*2/N)
         if (runif(1)<a_prob){
           my_points = rbind(my_points, new_point)
           curr_point=new_point
@@ -117,7 +123,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
 #' @export
 #'
 generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle", 
-                              mu=NULL, sig = NULL){
+                              afixed=TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4){
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=2){
     stop("Point cloud does not have correct number of columns.")
@@ -131,18 +137,23 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
   }
   bound = tolower(bound)
   #Sample alpha
-  if(is.null(mu)){
-    mu=tau/3
+  my_alpha=0
+  if(afixed==FALSE){
+    if(is.null(mu)){
+      mu=tau/3
+    }
+    if(is.null(sig)){
+      sig=tau/12
+    } else if (sig <0){
+      stop("sig must be nonnegative value.")
+    }
+    if(mu>tau/2 || mu<0){
+      warning("Mean of alpha outside of truncated distribution range for alpha")
+    }
+    my_alpha <- truncnorm::rtruncnorm(1, a=0, b=tau/2, mean=mu, sd=sig)
+  } else {
+    my_alpha <- tau/2-eps
   }
-  if(is.null(sig)){
-    sig=tau/12
-  } else if (sig <0){
-    stop("sig must be nonnegative value.")
-  }
-  if(mu>tau/2 || mu<0){
-    warning("Mean of alpha outside of truncated distribution range for alpha")
-  }
-  my_alpha <- truncnorm::rtruncnorm(1,a=tau/4,b=tau/2, mean=mu,sd=sig)
   
   #Get volume, number of points needed, bounds for sampling
   temp_ahull <- alphahull::ahull(point_cloud, alpha=tau)
@@ -171,6 +182,7 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
   }
   
   n <- n_bound_homology_2D(area=area, tau=tau, epsilon=my_alpha, delta=delta)
+  n <- floor(n/2)
   
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=2)
@@ -182,13 +194,13 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
     new_point = runif_disk(1,tau)+curr_point
     if (check_bound2d(new_point, bounds)){
       dist_list = euclid_dists_point_cloud_2D(new_point, point_cloud)
-      dist_near = dist_list[dist_list < 2*my_alpha ] 
+      dist_near = dist_list[dist_list < 2*my_alpha] 
       knn = length(dist_near) 
       if (knn >= N){
         my_points = rbind(my_points, new_point)
         curr_point=new_point
-      } else if (knn > 3) {   
-        a_prob = 1-exp(-knn*2/N)
+      } else if (knn > k_min) {   
+        a_prob = 1-exp(-(knn-k_min)*2/N)
         if (runif(1)<a_prob){
           my_points = rbind(my_points, new_point)
           curr_point=new_point

@@ -10,8 +10,11 @@ generate_ashape2d(
   tau,
   delta = 0.05,
   bound = "circle",
+  afixed = TRUE,
   mu = NULL,
-  sig = NULL
+  sig = NULL,
+  k_min = 3,
+  eps = 1e-04
 )
 }
 \arguments{
