@@ -8,13 +8,16 @@
 #' @param tau tau bound
 #' @param delta probability of not preserving homology; default is 0.05
 #' @param bound manifold bound being used to sample points
+#' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
 #' @param sig standard deviation of truncated distribution from which alpha 
 #'              sampled; default tau/12
+#' @param k_min number of points needed in radius 2 alpha of point cloud to accept a sample
+#' @param eps amount to subtract from tau/2 to give alpha. Defaul 1e-4.
 #'
 #' @return new_ashape three dimensional alpha shape object from alphashape3d library
 #' @export
-#'
+#' @importFrom stats runif
 generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere", 
                               afixed = TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4){
   #Check: 3 columns on vertex list
@@ -115,13 +118,16 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
 #' @param tau tau bound
 #' @param delta probability of not preserving homology; default is 0.05
 #' @param bound manifold bound being used to sample points
+#' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
 #' @param sig standard deviation of truncated distribution from which alpha 
 #'              sampled; default tau/12
+#' @param k_min number of points needed in radius 2 alpha of point cloud to accept a sample
+#' @param eps amount to subtract from tau/2 to give alpha. Defaul 1e-4.
 #'
 #' @return new_ashape two dimensional alpha shape object from alphahull library
 #' @export
-#'
+#' @importFrom stats runif
 generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle", 
                               afixed=TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4){
   #Check: 3 columns on vertex list
