@@ -10,14 +10,14 @@ Description: This package allows users to generate alpha shapes from a distribut
               using non-black box methods.
 License: GPL (>=3)
 Imports:
-        TDA,
         pracma,
         alphahull,
         alphashape3d,
 		    truncnorm,
 		    stats,
 		    Rvcg,
-		    purrr
+		    purrr,
+		    TDA
 Suggests:
         ggplot2,
 		    knitr,
