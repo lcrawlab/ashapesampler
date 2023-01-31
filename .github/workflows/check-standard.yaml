@@ -58,6 +58,7 @@ jobs:
       - name: Install automake
         if: runner.os == 'macOS'
         run:  |
+            brew update-reset
             brew install automake
             brew install curl
             brew install glfw3
