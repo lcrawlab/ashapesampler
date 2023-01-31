@@ -51,21 +51,20 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libgmp-dev 
+          sudo apt-get install -y libmpfr-dev
           while read -r cmd
           do
             eval sudo "$cmd"
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
           
-      - name: Install TDA Linux
+      - name: Install TDA dependencies Linux
         if: runner.os == 'Linux'
         run: |
-           sudo apt-get update -y
-           sudo apt-get install -y libgmp-dev 
-           sudo apt-get install -y libmpfr-dev
-           Rscript -e "remotes::install_github('r-hub/sysreqs')"
-           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
-           sudo -s eval "$sysreqs"
-           install.packages(c('FNN', 'igraph', 'scales', 'parallel'))
+           install.packages('librarian')
+           librarian::shelf(parallel, FNN, igraph, scales)
+        shell: Rscript {0}
             
       - name: Install automake
         if: runner.os == 'macOS'
