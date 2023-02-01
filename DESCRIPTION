@@ -17,7 +17,7 @@ Imports:
 		    stats,
 		    Rvcg,
 		    purrr,
-		    "TDA" 
+		    TDA
 Suggests:
     ggplot2,
     knitr,
