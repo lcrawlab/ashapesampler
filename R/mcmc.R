@@ -19,7 +19,7 @@
 #' @export
 #' @importFrom stats runif
 generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere", 
-                              afixed = TRUE, mu=NULL, sig = NULL, k_min=5, eps=1e-4){
+                              afixed = TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4){
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=3){
     stop("Point cloud does not have correct number of columns.")
@@ -129,7 +129,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
 #' @export
 #' @importFrom stats runif
 generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle", 
-                              afixed=TRUE, mu=NULL, sig = NULL, k_min=5, eps=1e-4){
+                              afixed=TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4){
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=2){
     stop("Point cloud does not have correct number of columns.")
