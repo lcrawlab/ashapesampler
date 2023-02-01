@@ -64,7 +64,7 @@ jobs:
         run: |
            install.packages('librarian')
            librarian::shelf(parallel, FNN, igraph, scales)
-           install.packages('TDA')
+           remotes::install_github("cran/TDA")
         shell: Rscript {0}
             
       - name: Install automake
