@@ -51,7 +51,6 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: |
-          deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/
           sudo apt-get update
           sudo apt-get install r-base
           sudo apt-get install r-base-dev
