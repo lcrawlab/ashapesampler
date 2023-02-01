@@ -64,8 +64,7 @@ jobs:
         run: |
            install.packages('librarian')
            librarian::shelf(parallel, FNN, igraph, scales)
-           librarian::shelf(TDA)
-           library(package = "TDA")
+           install.packages('TDA')
         shell: Rscript {0}
             
       - name: Install automake
