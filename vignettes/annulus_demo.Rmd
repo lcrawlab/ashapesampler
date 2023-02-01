@@ -48,7 +48,7 @@ tau_vec <- vector("numeric", N)
 for (k in 1:N){
   ann_pts <- runif_annulus(n, r_maj, r_min)
   ann_list[[k]] <- ashape(ann_pts, alpha = alpha_vec[k])
-  complex_list[[k]] <- get_alpha_complex(ann_pts, alpha_vec[k])
+  complex_list[[k]] <- get_alpha_complex(ann_pts, my_alpha)
   edge_list <- extract_complex_edges(complex_list[[k]], n)
   tau_vec[k] <- tau_bound(ann_list[[k]]$x, complex_list[[k]])
 }
