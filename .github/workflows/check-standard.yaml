@@ -52,22 +52,11 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install r-base
-          sudo apt-get install r-base-dev
-          sudo apt-get install libgmp-dev 
-          sudo apt-get install libmpfr-dev
           while read -r cmd
           do
             eval sudo "$cmd"
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
           
-      - name: Install TDA dependencies Linux
-        if: runner.os == 'Linux'
-        run: |
-           install.packages('librarian')
-           librarian::shelf(parallel, FNN, igraph, scales)
-           remotes::install_github("cran/TDA")
-        shell: Rscript {0}
             
       - name: Install automake
         if: runner.os == 'macOS'
