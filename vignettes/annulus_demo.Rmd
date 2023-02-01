@@ -1,0 +1,103 @@
+---
+title: "annulus_demo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{annulus_demo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ashapesampler)
+library(alphahull)
+library(truncnorm)
+library(ggplot2)
+```
+
+In this document, we demonstrate the $\alpha$-shape sampler pipeline by simulating
+the process of learning a set of two-dimensional shapes (in this case, annuli) and
+simulating a new shape from that. This vignette requires the packages \emph{alphahull},
+\emph{truncnorm}, and \emph{ggplot2} in addition to \emph{ashapesampler}.
+
+We begin by setting the parameters for our simulation. We will fix $\alpha=0.25$ 
+and $n=100$, and draw 20 shapes for our data set. Our true underlying manifold
+will be the annulus with outer radius 0.75 and inner radius 0.25.
+
+```{r}
+set.seed(201723)
+my_alpha = 0.25
+n = 100
+N=20
+r_maj <- 0.75
+r_min <- 0.25
+```
+
+Next we will draw the shapes themselves.
+
+```{r}
+ann_list <- list()
+complex_list <- list()
+tau_vec <- vector("numeric", N)
+for (k in 1:N){
+  ann_pts <- runif_annulus(n, r_maj, r_min)
+  ann_list[[k]] <- ashape(ann_pts, alpha = alpha_vec[k])
+  complex_list[[k]] <- get_alpha_complex(ann_pts, alpha_vec[k])
+  edge_list <- extract_complex_edges(complex_list[[k]], n)
+  tau_vec[k] <- tau_bound(ann_list[[k]]$x, complex_list[[k]])
+}
+```
+
+Now that we have the shapes generated and imported, we can learn the underlying
+manifold. First we will put together the entire point cloud into one two column 
+matrix.
+
+```{r}
+point_cloud = matrix(NA, ncol = 2)
+for (k in 1:N) {
+  if (k == 1) {
+    point_cloud = ann_list[[k]]$x
+  } else{
+    point_cloud = rbind(point_cloud, ann_list[[k]]$x)
+  }
+}
+```
+
+Then we will have our $\tau$ bound be a summary statistic of the $\tau$ found for 
+each input shape. Here, we will use mean, but one can tweak this to see different
+results. Note that if $\tau$ is too small, then the random walk won't be able to 
+execute around the point cloud, but if $\tau$ is too big, then we risk losing 
+geometric and topological information in the reconstruction.
+
+```{r}
+tau = mean(tau_vec)
+```
+
+Now we can take the parameters and generate a new shape and plot it. We assume
+our bound to be a square, though the function allows for "circle" (disk) and "annulus" 
+as well.
+```{r}
+new_annulus <- generate_ashape2d(point_cloud, N=N, tau=tau, bound="square")
+
+tri_keep = new_annulus$delvor.obj$tri.obj$trlist[which(new_annulus$delvor.obj$tri.obj$cclist[,3]<my_alpha), 1:3]
+dim_tri = dim(tri_keep)[1]
+tri_keep = as.vector(t(tri_keep))
+triangles = data.frame("id"=sort(rep(1:dim_tri, 3)), "x"=points[tri_keep, 1], "y"=points[tri_keep,2])
+extremes = as.data.frame(points[new_annulus$alpha.extremes,])
+
+edges = as.data.frame(new_annulus$edges[,3:6])
+
+ggplot(data.frame(points), aes(x=X1, y=X2)) +
+  geom_polygon(data=triangles, aes(x=x, y=y, group=id), fill="gray") +
+  geom_segment(data=edges, aes(x=x1, y=y1, xend=x2, yend=y2), color="blue")+
+  geom_point(data=extremes, aes(x=V1, y=V2), size=1.5)+
+  theme_classic()
+```
+
+

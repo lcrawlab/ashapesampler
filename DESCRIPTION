@@ -19,11 +19,12 @@ Imports:
 		    purrr,
 		    TDA 
 Suggests:
-        ggplot2,
-		    knitr,
-		    testthat,
-		    dplyr,
-		    rgl
+    ggplot2,
+    knitr,
+    testthat,
+    dplyr,
+    rgl,
+    rmarkdown
 VignetteBuilder:
 		  knitr
 Encoding: UTF-8
