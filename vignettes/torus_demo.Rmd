@@ -29,10 +29,9 @@ and $n=500$, and draw 20 shapes for our data set. Our true underlying manifold
 will be the torus with major radius 0.75 and minor radius 0.25.
 
 ```{r}
-set.seed(201723)
 N=10
 tau_vec <- vector("numeric", N)
-my_alpha <- 0.3
+my_alpha <- 0.25
 n <- 500
 r_maj <- 0.75
 r_min <- 0.25
@@ -42,11 +41,14 @@ Next we will draw the shapes themselves.
 
 ```{r}
 torus_list <- list()
+complex_torus_list <- list()
+
 for (k in 1:N){
   torus_pts <- rtorus(n, r_min, r_maj)
-  temp_torus <- ashape3d(torus_pts, my_alpha)
+  temp_torus <- ashape3d(torus_pts, alpha_vec[k])
   torus_list[[k]] <- temp_torus
-  tau_vec[k] <- tau_bound(temp_torus$x, temp_torus$edge[,1:2])
+  complex_torus_list[[k]] <- get_alpha_complex(torus_pts, alpha_vec[k])
+  tau_vec[k] <- tau_bound(torus_list[[k]]$x, complex_torus_list[[k]])
 }
 ```
 

@@ -23,6 +23,7 @@
 tau_bound <- function(v_list, complex, extremes=NULL){
   dimension = dim(v_list)[2]
   n = dim(v_list)[1]
+  tau_vec = vector("numeric", n)
   if(sum(is.na(v_list))>0){
     stop("NA values in input vertex matrix.")
   }
@@ -64,7 +65,7 @@ tau_bound <- function(v_list, complex, extremes=NULL){
     t_list = extract_complex_tet(complex,m)
     t_bary = barycenter_tet(v_list, t_list)
   }
-  tau_keep = 100 #intentionally make too big
+  tau_keep = 0 
   for (k in 1:m){
     i = extremes[k]
     edge_list_zoom = c(which(e_list$ed1==i), which(e_list$ed2==i))
@@ -111,11 +112,13 @@ tau_bound <- function(v_list, complex, extremes=NULL){
       } else {
         test_tau = min(dist_vec_point[dist_vec_point>max(dist_vec)])
       }
-      if (test_tau < tau_keep){
-      tau_keep = test_tau
-      }
+      #if (test_tau > tau_keep){
+      #tau_keep = test_tau
+      #}
+      tau_vec[k]=test_tau
     }
   }
+  tau_keep = min(tau_vec[tau_vec>0])
   return(tau_keep)
 }
 
