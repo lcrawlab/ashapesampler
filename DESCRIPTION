@@ -17,9 +17,9 @@ Imports:
 		    stats,
 		    Rvcg,
 		    purrr,
-		    TDA
+		    TDA,
+		    ggplot2
 Suggests:
-    ggplot2,
     knitr,
     testthat,
     dplyr,
