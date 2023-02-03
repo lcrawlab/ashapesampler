@@ -80,7 +80,14 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
   }
   
   n <- n_bound_homology_3D(volume=vol, tau=tau, epsilon=my_alpha, delta=delta)
-  n <- floor(n/2)
+  if( n > 1000){
+    n <- floor(n/2)
+  } else if (n < 5){
+    print("Tau = ", tau)
+    print("Volume is ", vol)
+    stop("Not enough points to generate an alpha shape in 3D. Check your tau relative to volume.")
+  }
+  
   
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=3)
@@ -105,6 +112,9 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
         }
       }
     }
+  }
+  if(dim(my_points)[1]<5){
+    stop("Not enough points accepted in MCMC walk to make a shape. Need at least 5.")
   }
   new_ashape <- alphashape3d::ashape3d(my_points, alpha=my_alpha)
   return(new_ashape)
@@ -188,7 +198,13 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
   }
   
   n <- n_bound_homology_2D(area=area, tau=tau, epsilon=my_alpha, delta=delta)
-  n <- floor(n/2)
+  if( n > 1000){
+    n <- floor(n/2)
+  } else if (n < 5){
+    print("Tau = ", tau)
+    print("Area is ", area)
+    stop("Not enough points to generate an alpha shape in 3D. Check your tau relative to area.")
+  }
   
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=2)
@@ -213,6 +229,9 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
         }
       }
     }
+  }
+  if(dim(my_points)[1]<3){
+    stop("Not enough points accepted in MCMC walk to make a shape. Need at least 3.")
   }
   new_ashape <- alphahull::ashape(my_points, alpha=my_alpha)
   return(new_ashape)

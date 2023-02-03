@@ -15,6 +15,8 @@ test_that("mcmc errors", {
   expect_error(generate_ashape3d(points3, N=-1, tau))
   expect_error(generate_ashape2d(points2, N, tau=-0.7))
   expect_error(generate_ashape3d(points3, N, tau=-0.7))
+  expect_error(generate_ashape3d(points3, N, tau=0.0001))
+  expect_error(generate_ashape2d(points2, N, tau=0.0001))
   expect_warning(generate_ashape2d(points2, N, tau, afixed=FALSE, mu=6))
   expect_warning(generate_ashape3d(points3, N, tau, afixed=FALSE, mu=6))
 })
