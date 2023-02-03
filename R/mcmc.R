@@ -8,15 +8,18 @@
 #' @param tau tau bound
 #' @param delta probability of not preserving homology; default is 0.05
 #' @param bound manifold bound being used to sample points
+#' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
 #' @param sig standard deviation of truncated distribution from which alpha 
 #'              sampled; default tau/12
+#' @param k_min number of points needed in radius 2 alpha of point cloud to accept a sample
+#' @param eps amount to subtract from tau/2 to give alpha. Defaul 1e-4.
 #'
 #' @return new_ashape three dimensional alpha shape object from alphashape3d library
 #' @export
-#'
+#' @importFrom stats runif
 generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere", 
-                              mu=NULL, sig = NULL){
+                              afixed = TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4){
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=3){
     stop("Point cloud does not have correct number of columns.")
@@ -30,21 +33,30 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
   }
   bound = tolower(bound)
   #Sample alpha
-  if(is.null(mu)){
-    mu=tau/3
+  my_alpha <- 0
+  if(afixed==FALSE){
+    if(is.null(mu)){
+      mu=tau/3
+    }
+    if(is.null(sig)){
+      sig=tau/12
+    } else if (sig <0){
+      stop("sig must be nonnegative value.")
+    }
+    if(mu>tau/2 || mu<0){
+      warning("Mean of alpha outside of truncated distribution range for alpha")
+    }
+    my_alpha <- truncnorm::rtruncnorm(1, a=0, b=tau/2, mean=mu, sd=sig)
+  } else {
+    my_alpha <- tau/2-eps
   }
-  if(is.null(sig)){
-    sig=tau/12
-  } else if (sig <0){
-    stop("sig must be nonnegative value.")
-  }
-  if(mu>tau/2 || mu<0){
-    warning("Mean of alpha outside of truncated distribution range for alpha")
-  }
-  my_alpha <- truncnorm::rtruncnorm(1,a=0,b=tau/2, mean=mu,sd=sig)
   
   #Get volume, number of points needed, bounds for sampling
-  vol=0; xmin=0; xmax=0; ymin=0; ymax=0; zmin=0; zmax=0; rmax=0; rmin=0
+  temp_ashape <- alphashape3d::ashape3d(point_cloud, alpha=tau)
+  vol <- alphashape3d::volume_ashape3d(temp_ashape)
+  rm(temp_ashape)
+  
+  xmin=0; xmax=0; ymin=0; ymax=0; zmin=0; zmax=0; rmax=0; rmin=0
   bounds=list()
   if(bound=="cube"){
     xmin = min(point_cloud[,1]-tau)
@@ -54,23 +66,28 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
     zmin = min(point_cloud[,3]-tau)
     zmax = max(point_cloud[,3]+tau)
     bounds <- list("bound"=bound, "limits"=c(xmin, xmax, ymin, ymax, zmin, zmax))
-    vol <- (xmax-xmin)*(ymax-ymin)*(zmax-zmin)
   } else if (bound=="sphere"){
     radii = sqrt(point_cloud[,1]^2 + point_cloud[,2]^2 + point_cloud[,3]^2)
     rmax = max(radii)+tau
     bounds <- list("bound"=bound, "limits" = rmax)
-    vol <- (4/3)*pi*rmax^3
   } else if (bound == "shell"){
     radii = sqrt(point_cloud[,1]^2 + point_cloud[,2]^2 + point_cloud[,3]^2)
     rmax = max(radii)+tau
     rmin = max(min(radii-tau),0)
     bounds <- list("bound"=bound, "limits" = c(rmax, rmin))
-    vol <- (4/3)*pi*(rmax^3 - rmin^3)
   } else {
     stop("Not a valid bound. Please enter bound = sphere, shell, or cube. Default is sphere.")
   }
   
   n <- n_bound_homology_3D(volume=vol, tau=tau, epsilon=my_alpha, delta=delta)
+  if( n > 1000){
+    n <- floor(n/2)
+  } else if (n < 5){
+    print("Tau = ", tau)
+    print("Volume is ", vol)
+    stop("Not enough points to generate an alpha shape in 3D. Check your tau relative to volume.")
+  }
+  
   
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=3)
@@ -82,19 +99,22 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
     new_point = runif_ball_3D(1,tau)+curr_point
     if (check_bound3d(new_point, bounds)){
       dist_list = euclid_dists_point_cloud_3D(new_point, point_cloud)
-      dist_near = dist_list[dist_list < 2*my_alpha ] 
+      dist_near = dist_list[dist_list < my_alpha/2 ] 
       knn = length(dist_near) 
       if (knn >= N){
         my_points = rbind(my_points, new_point)
         curr_point=new_point
-      } else if (knn > 3) {   
-        a_prob = 1-exp(-knn*2/N)
+      } else if (knn > k_min) {   
+        a_prob = 1-exp(-(knn-k_min)*2/N)
         if (runif(1)<a_prob){
           my_points = rbind(my_points, new_point)
           curr_point=new_point
         }
       }
     }
+  }
+  if(dim(my_points)[1]<5){
+    stop("Not enough points accepted in MCMC walk to make a shape. Need at least 5.")
   }
   new_ashape <- alphashape3d::ashape3d(my_points, alpha=my_alpha)
   return(new_ashape)
@@ -108,15 +128,18 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
 #' @param tau tau bound
 #' @param delta probability of not preserving homology; default is 0.05
 #' @param bound manifold bound being used to sample points
+#' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
 #' @param sig standard deviation of truncated distribution from which alpha 
 #'              sampled; default tau/12
+#' @param k_min number of points needed in radius 2 alpha of point cloud to accept a sample
+#' @param eps amount to subtract from tau/2 to give alpha. Defaul 1e-4.
 #'
 #' @return new_ashape two dimensional alpha shape object from alphahull library
 #' @export
-#'
+#' @importFrom stats runif
 generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle", 
-                              mu=NULL, sig = NULL){
+                              afixed=TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4){
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=2){
     stop("Point cloud does not have correct number of columns.")
@@ -130,21 +153,30 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
   }
   bound = tolower(bound)
   #Sample alpha
-  if(is.null(mu)){
-    mu=tau/3
+  my_alpha=0
+  if(afixed==FALSE){
+    if(is.null(mu)){
+      mu=tau/3
+    }
+    if(is.null(sig)){
+      sig=tau/12
+    } else if (sig <0){
+      stop("sig must be nonnegative value.")
+    }
+    if(mu>tau/2 || mu<0){
+      warning("Mean of alpha outside of truncated distribution range for alpha")
+    }
+    my_alpha <- truncnorm::rtruncnorm(1, a=0, b=tau/2, mean=mu, sd=sig)
+  } else {
+    my_alpha <- tau/2-eps
   }
-  if(is.null(sig)){
-    sig=tau/12
-  } else if (sig <0){
-    stop("sig must be nonnegative value.")
-  }
-  if(mu>tau/2 || mu<0){
-    warning("Mean of alpha outside of truncated distribution range for alpha")
-  }
-  my_alpha <- truncnorm::rtruncnorm(1,a=0,b=tau/2, mean=mu,sd=sig)
   
   #Get volume, number of points needed, bounds for sampling
-  area=0; xmin=0; xmax=0; ymin=0; ymax=0; rmax=0; rmin=0
+  temp_ahull <- alphahull::ahull(point_cloud, alpha=tau)
+  area <- alphahull::areaahull(temp_ahull)
+  rm(temp_ahull)
+  
+  xmin=0; xmax=0; ymin=0; ymax=0; rmax=0; rmin=0
   bounds=list()
   if(bound=="square"){
     xmin = min(point_cloud[,1]-tau)
@@ -152,23 +184,27 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
     ymin = min(point_cloud[,2]-tau)
     ymax = max(point_cloud[,2]+tau)
     bounds <- list("bound"=bound, "limits"=c(xmin, xmax, ymin, ymax))
-    area <- (xmax-xmin)*(ymax-ymin)
   } else if (bound=="circle"){
     radii = sqrt(point_cloud[,1]^2 + point_cloud[,2]^2)
     rmax = max(radii)+tau
     bounds <- list("bound"=bound, "limits" = rmax)
-    area <- pi*rmax^2
   } else if (bound == "annulus"){
     radii = sqrt(point_cloud[,1]^2 + point_cloud[,2]^2)
     rmax = max(radii)+tau
     rmin = max(min(radii-tau),0)
     bounds <- list("bound"=bound, "limits" = c(rmax, rmin))
-    area <- pi*(rmax^2 - rmin^2)
   } else {
     stop("Not a valid bound. Please enter bound = circle, square, or annulus. Default is circle.")
   }
   
   n <- n_bound_homology_2D(area=area, tau=tau, epsilon=my_alpha, delta=delta)
+  if( n > 1000){
+    n <- floor(n/2)
+  } else if (n < 5){
+    print("Tau = ", tau)
+    print("Area is ", area)
+    stop("Not enough points to generate an alpha shape in 3D. Check your tau relative to area.")
+  }
   
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=2)
@@ -180,19 +216,22 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
     new_point = runif_disk(1,tau)+curr_point
     if (check_bound2d(new_point, bounds)){
       dist_list = euclid_dists_point_cloud_2D(new_point, point_cloud)
-      dist_near = dist_list[dist_list < 2*my_alpha ] 
+      dist_near = dist_list[dist_list < 2*my_alpha] 
       knn = length(dist_near) 
       if (knn >= N){
         my_points = rbind(my_points, new_point)
         curr_point=new_point
-      } else if (knn > 3) {   
-        a_prob = 1-exp(-knn*2/N)
+      } else if (knn > k_min) {   
+        a_prob = 1-exp(-(knn-k_min)*2/N)
         if (runif(1)<a_prob){
           my_points = rbind(my_points, new_point)
           curr_point=new_point
         }
       }
     }
+  }
+  if(dim(my_points)[1]<3){
+    stop("Not enough points accepted in MCMC walk to make a shape. Need at least 3.")
   }
   new_ashape <- alphahull::ashape(my_points, alpha=my_alpha)
   return(new_ashape)

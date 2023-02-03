@@ -10,8 +10,11 @@ generate_ashape3d(
   tau,
   delta = 0.05,
   bound = "sphere",
+  afixed = TRUE,
   mu = NULL,
-  sig = NULL
+  sig = NULL,
+  k_min = 3,
+  eps = 1e-04
 )
 }
 \arguments{
@@ -26,10 +29,16 @@ data set}
 
 \item{bound}{manifold bound being used to sample points}
 
+\item{afixed}{boolean, whether to sample alpha or leave fixed based on tau. Default FALSE}
+
 \item{mu}{mean of truncated distribution from which alpha sampled; default tau/3}
 
 \item{sig}{standard deviation of truncated distribution from which alpha
 sampled; default tau/12}
+
+\item{k_min}{number of points needed in radius 2 alpha of point cloud to accept a sample}
+
+\item{eps}{amount to subtract from tau/2 to give alpha. Defaul 1e-4.}
 }
 \value{
 new_ashape three dimensional alpha shape object from alphashape3d library

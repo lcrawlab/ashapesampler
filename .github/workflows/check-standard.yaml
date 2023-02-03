@@ -21,7 +21,7 @@ jobs:
       matrix:
         config:
           - { os: macOS-latest, r: 'release' }
-          - { os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
+          - { os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
           - { os: windows-latest, r: 'release' }
 
     env:
@@ -51,17 +51,23 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: |
+          sudo apt-get update
           while read -r cmd
           do
             eval sudo "$cmd"
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+          
+            
       - name: Install automake
         if: runner.os == 'macOS'
         run:  |
+            brew update-reset
             brew install automake
+            brew install curl
             brew install glfw3
             brew install glew
             brew install xquartz
+            brew install qpdf
 
       - name: Install dependencies
         run: |
