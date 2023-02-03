@@ -45,9 +45,9 @@ complex_torus_list <- list()
 
 for (k in 1:N){
   torus_pts <- rtorus(n, r_min, r_maj)
-  temp_torus <- ashape3d(torus_pts, alpha_vec[k])
+  temp_torus <- ashape3d(torus_pts, my_alpha)
   torus_list[[k]] <- temp_torus
-  complex_torus_list[[k]] <- get_alpha_complex(torus_pts, alpha_vec[k])
+  complex_torus_list[[k]] <- get_alpha_complex(torus_pts, my_alpha)
   tau_vec[k] <- tau_bound(torus_list[[k]]$x, complex_torus_list[[k]])
 }
 ```
