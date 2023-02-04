@@ -10,6 +10,7 @@
 #' @import ggplot2
 #' @export
 plot_2D_ashape <- function(my_ashape, color1="gray", color2="blue"){
+  X1 <- X2 <- x <- y <- id <- x1 <- y1 <- y2 <- x2 <- V1 <- V2 <- NULL #to pass checks.
   points = my_ashape$x
   my_alpha = my_ashape$alpha
   tri_keep = my_ashape$delvor.obj$tri.obj$trlist[which(my_ashape$delvor.obj$tri.obj$cclist[,3]<my_alpha), 1:3]
