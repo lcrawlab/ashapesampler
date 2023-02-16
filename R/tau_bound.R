@@ -1,11 +1,13 @@
 
 #' tau_bound
 #' 
-#' This function finds the bound of tau, which is the maximum length of the 
+#' This function finds the bound of tau for one shape, which is the maximum length of the 
 #' fiber bundle off of a shape for determining the density of points necessary
 #' to recover the homology from the open cover. See Niyogi et al 2008. Function
-#' checks length of edges and distances to barycenters from each vertex before
+#' checks length of edges and distances to circumcenters from each vertex before
 #' checking against the rest of the point cloud and finds the minimum length.
+#' We then keep the largest tau to account for the possibility of nonuniformity 
+#' among points. 
 #'
 #' @param v_list matrix or data frame of cartesian coordinates of vertices in 
 #'               in point cloud
@@ -23,7 +25,6 @@
 tau_bound <- function(v_list, complex, extremes=NULL){
   dimension = dim(v_list)[2]
   n = dim(v_list)[1]
-  tau_vec = vector("numeric", n)
   if(sum(is.na(v_list))>0){
     stop("NA values in input vertex matrix.")
   }
@@ -58,14 +59,14 @@ tau_bound <- function(v_list, complex, extremes=NULL){
     return(min(dist_matrix[dist_matrix>0]))
   }
   f_list = extract_complex_faces(complex,m)
-  f_bary = barycenter_face(v_list, f_list)
+  f_circ = circumcenter_face(v_list, f_list)
   t_list = NULL
-  t_bary = NULL
+  t_circ = NULL
   if(dimension>2){
     t_list = extract_complex_tet(complex,m)
-    t_bary = barycenter_tet(v_list, t_list)
+    t_circ = circumcenter_tet(v_list, t_list)
   }
-  tau_keep = 100 
+  tau_vec=vector("numeric", m)
   for (k in 1:m){
     i = extremes[k]
     edge_list_zoom = c(which(e_list$ed1==i), which(e_list$ed2==i))
@@ -84,79 +85,157 @@ tau_bound <- function(v_list, complex, extremes=NULL){
     #Get distance vector
     dist_vec_point = as.matrix(dist_matrix[,i])
     #Find smallest distance from point that is longer than edges, face bc, or tet bc
-    test_tau=0
     if (length(edge_list_zoom)==0){
-      test_tau = min(dist_vec_point[dist_vec_point>0])  #case where isolated point
+      tau_vec[k] = min(dist_vec_point[dist_vec_point>0])  #case where isolated point
     } else {
       dist_vec = dist_vec_point[edge_list_zoom]
       dist_vec_b = c()
       if (dimension == 2){
         if(!is.null(face_list_zoom)){
-          points = matrix(f_bary[face_list_zoom,], ncol=2)
+          points = matrix(f_circ[face_list_zoom,], ncol=2)
           dist_vec_b = c(dist_vec_b, 2*euclid_dists_point_cloud_2D(v_list[i,],
                                                               points ))
         }
       } else {
         if(!is.null(face_list_zoom)){
-          points = matrix(f_bary[face_list_zoom,], ncol=3)
+          points = matrix(f_circ[face_list_zoom,], ncol=3)
           dist_vec_b = 2*euclid_dists_point_cloud_3D(v_list[i,],points)
           if(!is.null(tet_list_zoom)){
-          points = matrix(t_bary[tet_list_zoom,], ncol=3)
+          points = matrix(t_circ[tet_list_zoom,], ncol=3)
           dist_vec_b = c(dist_vec_b, 2*euclid_dists_point_cloud_3D(v_list[i,], points))
           }
         }
       }
       dist_vec = max(c(dist_vec, dist_vec_b))
       if(length(dist_vec_point[dist_vec_point>dist_vec])==0){
-        test_tau = dist_vec
+        tau_vec[k] = dist_vec
       } else {
-        test_tau = min(dist_vec_point[dist_vec_point>dist_vec])
+        tau_vec[k] = min(dist_vec_point[dist_vec_point>dist_vec])
       }
-      if (test_tau < tau_keep){
-        tau_keep = test_tau
-      }
+
     }
   }
-  #tau_keep = min(tau_vec[tau_vec>0])
+  if(dimension==2){
+    tau_keep = min(tau_vec[tau_vec>0])
+  } else {
+    tau_keep = mean(tau_vec[tau_vec>0])
+  }
   return(tau_keep)
 }
 
-
-#' Barycenter Face
+#' circumcenter Face
 #'
-#' This function finds the barycenters of the faces of a simplicial complex given the 
+#' This function finds the circumcenters of the faces of a simplicial complex given the 
 #' list of vertex coordinates and the set of faces.
 #'
 #' @param v_list matrix of vertex coordinates
 #' @param f_list matrix with 3 columns with face information.
 #'
-#' @return bary_mat, matrix of coordinates of barycenters of faces.
-barycenter_face <- function(v_list, f_list){
+#' @return circ_mat, matrix of coordinates of circumcenters of faces.
+circumcenter_face <- function(v_list, f_list){
   if(is.null(f_list)){
     return(NULL)
   }
-  bary_mat = (1/3)*(v_list[f_list$f1,]+v_list[f_list$f2,]+v_list[f_list$f3,])
-  bary_mat = matrix(bary_mat, nrow=dim(f_list)[1], ncol = dim(v_list)[2])
-  return(bary_mat)
+  dimension = dim(v_list)[2]
+  nface = dim(f_list)[1]
+  circ_mat = matrix(NA, nrow=nface, ncol = dimension)
+  if(dimension==2){
+    for (i in 1:nface){
+      points = rbind(v_list[f_list$f1[i],], v_list[f_list$f2[i],], v_list[f_list$f3[i],])
+      circ_mat[i,] <- circ_face_2D(points)
+    }
+  } else {
+    for (i in 1:nface){
+    points = rbind(v_list[f_list$f1[i],], v_list[f_list$f2[i],], v_list[f_list$f3[i],])
+    circ_mat[i,] <- circ_face_3D(points)
+    } 
+  }
+  return(circ_mat)
 }
 
-#' Barycenter Tetrahedra
+#' Circumcenter face - three points in 2D
+#' Given 3 sets of coordinates, calculates the circumcenter
+#' @param points, 3x2 matrix
+#'
+#' @return 1x2 vector, coordinates of circumcenter
+circ_face_2D <- function(points){
+  if(dim(points)[2]!=2 || dim(points)[1]!=3){
+    stop("Input must be 3 by 2 matrix")
+  }
+  a = points[1,1]
+  b = points[1,2]
+  c = points[2,1]
+  d = points[2,2]
+  f = points[3,1]
+  g = points[3,2]
+  R = a*(d-g)+c*(g-b)+f*(b-d)
+  J = -a^2*(d-g)-b^2*(d-g)-c^2*(g-b)-d^2*(g-b)-f^2*(b-d)-g^2*(b-d)
+  K = a^2*(c-f)+b^2*(c-f)+c^2*(f-a)+d^2*(f-a)+f^2*(a-c)+g^2*(a-c)
+  return(-c(J,K)/(2*R))
+}
+
+#' Circumcenter face - three points in 3D
+#' Given 3 sets of coordinates, calculates the circumcenter
+#' @param points, 3x3 matrix
+#'
+#' @return 1x3 vector, coordinates of circumcenter
+circ_face_3D <- function(points){
+  if(dim(points)[2]!=3 || dim(points)[1]!=3){
+    stop("Input must be 3 by 3 matrix")
+  }
+  a = points[1,1]
+  b = points[1,2]
+  c = points[1,3]
+  d = points[2,1]
+  f = points[2,2]
+  g = points[2,3]
+  i = points[3,1]
+  j = points[3,2]
+  k = points[3,3]
+  A <- rbind(c(d-a, f-b, g-c), c(i-d, j-f, k-g), c((b*g-b*k-c*f+c*j+f*k-g*j),
+                                                   (a*k-a*g+c*d-c*i-d*k+g*i),
+                                                   (a*f-a*j-b*d+b*i+d*j-i*f)))
+  B <- c(1/2*(d^2-a^2+f^2-b^2+g^2-c^2), 1/2*(i^2-d^2+j^2-f^2+k^2-g^2), 
+         (a*(f*k-g*i)-b*(d*k-g*i)+c*(d*j-f*i)))
+  my_vec <- solve(A,B)
+  return(my_vec)
+}
+
+#' circumcenter Tetrahedra
 #' 
-#' This function finds the barycenters of the tetrahedra/3-simplices of a simplicial
+#' This function finds the circumcenters of the tetrahedra/3-simplices of a simplicial
 #' complex given the list of vertex coordinates and the set of tetrahedra.
 #'
 #' @param v_list matrix of vertex coordinates
 #' @param t_list matrix of 4 columns with tetrahedra
 #'
-#' @return bary_mat, matrix of coordinates of barycenters of teterahedra
-barycenter_tet <- function(v_list, t_list){
+#' @return circ_mat, matrix of coordinates of circumcenters of teterahedra
+circumcenter_tet <- function(v_list, t_list){
   if(is.null(t_list)){
     return(NULL)
   }
-  bary_mat = (1/4)*(v_list[t_list$t1,]+v_list[t_list$t2,]+v_list[t_list$t3,]
-                    +v_list[t_list$t4,])
-  bary_mat = matrix(bary_mat, nrow=dim(t_list)[1], ncol = dim(v_list)[2])
-  return(bary_mat)
+  ntet = dim(t_list)[1]
+  circ_mat = matrix(NA, nrow=ntet, ncol = 3)
+  for(i in 1:ntet){
+    points = rbind(v_list[t_list$t1[i],], v_list[t_list$t2[i],], v_list[t_list$t3[i],], v_list[t_list$t4[i],])
+    circ_mat[i,] <- circ_tet_3D(points)
+  }
+  return(circ_mat)
 }
 
-
+#' Circumcenter tetrahedron - 4 points in 3D
+#' Given 3D coordinates of 4 points, calculates circumcenter
+#' @param points, 4x3 matrix
+#'
+#' @return 1x3 vector, coordinates of circumcenter
+circ_tet_3D <- function(points){
+  if(dim(points)[2]!=3 || dim(points)[1]!=4){
+    stop("Input must be 4 by 3 matrix")
+  }
+  points = cbind(points[,1]^2+points[,2]^2 + points[,3]^2, points, c(1,1,1,1))
+  Q = det(points[, 2:5])
+  X = -1*det(cbind(points[,1], points[,3:5]))
+  Y = det(cbind(points[,1:2], points[,4:5]))
+  Z = -1*det(cbind(points[,1:3], points[,5]))
+  return(-c(X,Y,Z)/(2*Q))
+}
