@@ -24,9 +24,11 @@ still valid) tau bound.}
 tau, real nonnegative number.
 }
 \description{
-This function finds the bound of tau, which is the maximum length of the
+This function finds the bound of tau for one shape, which is the maximum length of the
 fiber bundle off of a shape for determining the density of points necessary
 to recover the homology from the open cover. See Niyogi et al 2008. Function
-checks length of edges and distances to barycenters from each vertex before
+checks length of edges and distances to circumcenters from each vertex before
 checking against the rest of the point cloud and finds the minimum length.
+We then keep the largest tau to account for the possibility of nonuniformity
+among points.
 }

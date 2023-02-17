@@ -74,7 +74,7 @@ execute around the point cloud, but if $\tau$ is too big, then we risk losing
 geometric and topological information in the reconstruction.
 
 ```{r}
-tau = mean(tau_vec)
+tau = min(tau_vec)
 ```
 
 Now we can take the parameters and generate a new shape and plot it. We assume

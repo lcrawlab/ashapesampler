@@ -44,8 +44,8 @@ test_that( 'tau bound', {
   expect_equal(tau_bound(points2, complex_1_iso), 1)
   expect_equal(tau_bound(points2, complex_edges_2), 1)
   expect_equal(tau_bound(points3, complex_edges_3), sqrt(2))
-  expect_equal(tau_bound(points2, complex_face_2), 1)
-  expect_equal(tau_bound(points3, complex_face_3), 2*sqrt(6)/3)
-  expect_equal(tau_bound(points3, complex_tet_3), 2*sqrt(6)/3)
+  expect_equal(tau_bound(points2, complex_face_2), sqrt(2))
+  expect_equal(tau_bound(points3, complex_face_3), sqrt(3))
+  expect_equal(tau_bound(points3, complex_tet_3), sqrt(3))
 }
 )
