@@ -115,11 +115,7 @@ tau_bound <- function(v_list, complex, extremes=NULL){
 
     }
   }
-  if(dimension==2){
-    tau_keep = min(tau_vec[tau_vec>0])
-  } else {
-    tau_keep = mean(tau_vec[tau_vec>0])
-  }
+  tau_keep = min(tau_vec[tau_vec>0])
   return(tau_keep)
 }
 

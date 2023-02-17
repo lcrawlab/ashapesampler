@@ -10,15 +10,15 @@ Description: This package allows users to generate alpha shapes from a distribut
               using non-black box methods.
 License: GPL (>=3)
 Imports:
-        pracma,
-        alphahull,
-        alphashape3d,
-		    truncnorm,
-		    stats,
-		    Rvcg,
-		    purrr,
-		    TDA,
-		    ggplot2
+    pracma,
+    alphahull,
+    alphashape3d,
+    truncnorm,
+    stats,
+    Rvcg,
+    purrr,
+    TDA,
+    ggplot2
 Suggests:
     knitr,
     testthat,
@@ -30,3 +30,5 @@ VignetteBuilder:
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+LinkingTo: 
+    Rcpp

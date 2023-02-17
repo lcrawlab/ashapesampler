@@ -2,4 +2,6 @@
 ^\.Rproj\.user$
 ^\.github$
 ^LICENSE\.md$
-coverage_check\.R
+^coverage_check\.R$
+^vignettes/annulus_demo\.Rmd$
+^vignettes/torus_demo\.Rmd$
