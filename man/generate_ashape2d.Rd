@@ -14,7 +14,8 @@ generate_ashape2d(
   mu = NULL,
   sig = NULL,
   k_min = 3,
-  eps = 1e-04
+  eps = 1e-04,
+  cores = 1
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ sampled; default tau/12}
 \item{k_min}{number of points needed in radius 2 alpha of point cloud to accept a sample}
 
 \item{eps}{amount to subtract from tau/2 to give alpha. Defaul 1e-4.}
+
+\item{cores}{number of computer cores for parallelizing. Default 1.}
 }
 \value{
 new_ashape two dimensional alpha shape object from alphahull library

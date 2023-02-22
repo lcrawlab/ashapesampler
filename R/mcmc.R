@@ -14,12 +14,23 @@
 #'              sampled; default tau/12
 #' @param k_min number of points needed in radius 2 alpha of point cloud to accept a sample
 #' @param eps amount to subtract from tau/2 to give alpha. Defaul 1e-4.
+#' @param cores number of cores for parallelizing. Default 1.
 #'
 #' @return new_ashape three dimensional alpha shape object from alphashape3d library
 #' @export
 #' @importFrom stats runif
+#' @import doParallel
+#' @import foreach
 generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere", 
-                              afixed = TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4){
+                              afixed = TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4,
+                              cores=1){
+  ### Determine the number of Cores for Parallelization ###
+  if(cores > 1){
+    if(cores>detectCores()){
+      warning("The number of cores you're setting is larger than available cores!")
+      cores <- max(1L, detectCores(), na.rm = TRUE)}
+  }
+  registerDoParallel(cores=cores)
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=3){
     stop("Point cloud does not have correct number of columns.")
@@ -94,25 +105,48 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
   #Initialize by taking point from point cloud.
   temp = purrr::rdunif(1, n_vert)
   curr_point = point_cloud[temp, ]
-
-  for (i in 1:n){
-    new_point = runif_ball_3D(1,tau)+curr_point
-    if (check_bound3d(new_point, bounds)){
-      dist_list = euclid_dists_point_cloud_3D(new_point, point_cloud)
-      dist_near = dist_list[dist_list < my_alpha/2 ] 
-      knn = length(dist_near) 
-      if (knn >= N){
-        my_points = rbind(my_points, new_point)
-        curr_point=new_point
-      } else if (knn > k_min) {   
-        a_prob = 1-exp(-(knn-k_min)*2/N)
-        if (runif(1)<a_prob){
-          my_points = rbind(my_points, new_point)
-          curr_point=new_point
+  m = ceiling(n_bound_homology_3D((4/3)*pi*tau^3, epsilon = my_alpha, tau=tau)/256)
+  
+  my_points = foreach(
+    i = 1:dim(point_cloud)[1],
+    .combine = rbind,
+    .export = c("runif_ball_3D", "euclid_dists_point_cloud_3D")
+  ) %dopar% {
+    new_points = runif_ball_3D(m, r = my_alpha/8) + rep(point_cloud[i, ], each=m)
+    pts_keep = matrix(NA, nrow = 0, ncol = 3)
+    for (j in 1:m) {
+      dist_list = euclid_dists_point_cloud_3D(new_points[j, ], point_cloud)
+      dist_near = dist_list[dist_list < 2 * my_alpha]
+      knn = length(dist_near)
+      if (knn >= N) {
+        pts_keep = rbind(pts_keep, new_points[j, ])
+      } else if (knn > k_min) {
+        a_prob = 1 - exp(-(knn - k_min) * 2 / N)
+        if (runif(1) < a_prob) {
+          pts_keep = rbind(pts_keep, new_points[j, ])
         }
       }
     }
+    pts_keep
   }
+  # for (i in 1:n){
+  #   new_point = runif_ball_3D(1,tau)+curr_point
+  #   if (check_bound3d(new_point, bounds)){
+  #     dist_list = euclid_dists_point_cloud_3D(new_point, point_cloud)
+  #     dist_near = dist_list[dist_list < my_alpha/2 ] 
+  #     knn = length(dist_near) 
+  #     if (knn >= N){
+  #       my_points = rbind(my_points, new_point)
+  #       curr_point=new_point
+  #     } else if (knn > k_min) {   
+  #       a_prob = 1-exp(-(knn-k_min)*2/N)
+  #       if (runif(1)<a_prob){
+  #         my_points = rbind(my_points, new_point)
+  #         curr_point=new_point
+  #       }
+  #     }
+  #   }
+  # }
   if(dim(my_points)[1]<5){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 5.")
   }
@@ -134,12 +168,28 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
 #'              sampled; default tau/12
 #' @param k_min number of points needed in radius 2 alpha of point cloud to accept a sample
 #' @param eps amount to subtract from tau/2 to give alpha. Defaul 1e-4.
+#' @param cores number of computer cores for parallelizing. Default 1.
 #'
 #' @return new_ashape two dimensional alpha shape object from alphahull library
 #' @export
 #' @importFrom stats runif
+#' @import doParallel
+#' @import foreach
 generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle", 
-                              afixed=TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4){
+                              afixed=TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4,
+                              cores=1){
+  #if(cores > 1){
+   
+  # if(cores>detectCores()){warning("The number of cores you're setting is larger than detected cores!");cores = detectCores()}
+  #}
+  ### Register those Cores ###
+  ### Determine the number of Cores for Parallelization ###
+  if(cores > 1){
+    if(cores>detectCores()){
+      warning("The number of cores you're setting is larger than available cores!")
+      cores <- max(1L, detectCores(), na.rm = TRUE)}
+  }
+  registerDoParallel(cores=cores)
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=2){
     stop("Point cloud does not have correct number of columns.")
@@ -211,25 +261,45 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
   #Initialize by taking point from point cloud.
   temp = purrr::rdunif(1, n_vert)
   curr_point = point_cloud[temp, ]
+  m = ceiling(n_bound_homology_2D(pi*tau^2, epsilon = my_alpha, tau=tau)/64)
   
-  for (i in 1:n){
-    new_point = runif_disk(1,tau)+curr_point
-    if (check_bound2d(new_point, bounds)){
-      dist_list = euclid_dists_point_cloud_2D(new_point, point_cloud)
-      dist_near = dist_list[dist_list < 2*my_alpha] 
-      knn = length(dist_near) 
-      if (knn >= N){
-        my_points = rbind(my_points, new_point)
-        curr_point=new_point
+ my_points = foreach(i=1:dim(point_cloud)[1], .combine=rbind, 
+          .export = c("runif_disk", "euclid_dists_point_cloud_2D"))%dopar%{
+     new_points = runif_disk(m, my_alpha/4)+rep(point_cloud[i,], each=m)
+     pts_keep = matrix(NA, nrow=0, ncol=2)
+     for (j in 1:m){
+       dist_list = euclid_dists_point_cloud_2D(new_points[j,], point_cloud)
+       dist_near = dist_list[dist_list < 2*my_alpha] 
+       knn = length(dist_near) 
+       if (knn >= N){
+        pts_keep = rbind(pts_keep, new_points[j,])
       } else if (knn > k_min) {   
         a_prob = 1-exp(-(knn-k_min)*2/N)
         if (runif(1)<a_prob){
-          my_points = rbind(my_points, new_point)
-          curr_point=new_point
+          pts_keep = rbind(pts_keep, new_points[j,])
         }
-      }
-    }
+     }
+     }
+     pts_keep
   }
+  # for (i in 1:n){
+  #   new_point = runif_disk(1,tau)+curr_point
+  #   if (check_bound2d(new_point, bounds)){
+  #     dist_list = euclid_dists_point_cloud_2D(new_point, point_cloud)
+  #     dist_near = dist_list[dist_list < 2*my_alpha] 
+  #     knn = length(dist_near) 
+  #     if (knn >= N){
+  #       my_points = rbind(my_points, new_point)
+  #       curr_point=new_point
+  #     } else if (knn > k_min) {   
+  #       a_prob = 1-exp(-(knn-k_min)*2/N)
+  #       if (runif(1)<a_prob){
+  #         my_points = rbind(my_points, new_point)
+  #         curr_point=new_point
+  #       }
+  #     }
+  #   }
+  # }
   if(dim(my_points)[1]<3){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 3.")
   }

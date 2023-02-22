@@ -18,7 +18,9 @@ Imports:
     Rvcg,
     purrr,
     TDA,
-    ggplot2
+    ggplot2,
+    doParallel,
+    foreach
 Suggests:
     knitr,
     testthat,
