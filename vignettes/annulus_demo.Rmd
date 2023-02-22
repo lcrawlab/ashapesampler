@@ -81,7 +81,7 @@ Now we can take the parameters and generate a new shape and plot it. We assume
 our bound to be a square, though the function allows for "circle" (disk) and "annulus" 
 as well.
 ```{r}
-new_annulus <- generate_ashape2d(point_cloud, N=N, tau=tau, bound="square")
+new_annulus <- generate_ashape2d(point_cloud, N=N, tau=tau, bound="square", cores=4)
 
 
 tri_keep = new_annulus$delvor.obj$tri.obj$trlist[which(new_annulus$delvor.obj$tri.obj$cclist[,3]<new_annulus$alpha), 1:3]
@@ -92,7 +92,7 @@ extremes = as.data.frame(new_annulus$x[new_annulus$alpha.extremes,])
 
 edges = as.data.frame(new_annulus$edges[,3:6])
 
-ggplot(data.frame(point_cloud), aes(x=X1, y=X2)) +
+ggplot(data.frame(new_annulus$x), aes(x=X1, y=X2)) +
   geom_polygon(data=triangles, aes(x=x, y=y, group=id), fill="gray") +
   geom_segment(data=edges, aes(x=x1, y=y1, xend=x2, yend=y2), color="blue")+
   geom_point(data=extremes, aes(x=V1, y=V2), size=1.5)+

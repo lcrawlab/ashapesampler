@@ -4,7 +4,7 @@
 \alias{tau_bound}
 \title{tau_bound}
 \usage{
-tau_bound(v_list, complex, extremes = NULL)
+tau_bound(v_list, complex, extremes = NULL, cores = 1)
 }
 \arguments{
 \item{v_list}{matrix or data frame of cartesian coordinates of vertices in
@@ -19,6 +19,8 @@ assume all points are extreme and check them all. Inclusion of
 this parameter speeds up the process both within this function
 and when calculating alpha because you will get a bigger (but
 still valid) tau bound.}
+
+\item{cores}{number of cores for parallelizing. Default 1.}
 }
 \value{
 tau, real nonnegative number.
