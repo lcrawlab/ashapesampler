@@ -25,12 +25,12 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
                               afixed = TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4,
                               cores=1){
   ### Determine the number of Cores for Parallelization ###
-  if(cores > 1){
-    if(cores>detectCores()){
-      warning("The number of cores you're setting is larger than available cores!")
-      cores <- max(1L, detectCores(), na.rm = TRUE)}
-  }
-  registerDoParallel(cores=cores)
+  # if(cores > 1){
+  #   if(cores>detectCores()){
+  #     warning("The number of cores you're setting is larger than available cores!")
+  #     cores <- max(1L, detectCores(), na.rm = TRUE)}
+  # }
+  # registerDoParallel(cores=cores)
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=3){
     stop("Point cloud does not have correct number of columns.")
@@ -107,27 +107,26 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05, bound="sphere",
   curr_point = point_cloud[temp, ]
   m = ceiling(n_bound_homology_3D((4/3)*pi*tau^3, epsilon = my_alpha, tau=tau)/256)
   
-  my_points = foreach(
-    i = 1:dim(point_cloud)[1],
-    .combine = rbind,
-    .export = c("runif_ball_3D", "euclid_dists_point_cloud_3D")
-  ) %dopar% {
-    new_points = runif_ball_3D(m, r = my_alpha/8) + rep(point_cloud[i, ], each=m)
-    pts_keep = matrix(NA, nrow = 0, ncol = 3)
+  #my_points = foreach(
+  #  i = 1:dim(point_cloud)[1],
+  #  .combine = rbind,
+  #  .export = c("runif_ball_3D", "euclid_dists_point_cloud_3D")
+  #) %dopar% {
+  for (i in 1:n_vert){
+    new_points = runif_ball_3D(m, r = my_alpha/4) + rep(point_cloud[i, ], each=m)
     for (j in 1:m) {
       dist_list = euclid_dists_point_cloud_3D(new_points[j, ], point_cloud)
       dist_near = dist_list[dist_list < 2 * my_alpha]
       knn = length(dist_near)
       if (knn >= N) {
-        pts_keep = rbind(pts_keep, new_points[j, ])
+        my_points = rbind(my_points, new_points[j, ])
       } else if (knn > k_min) {
         a_prob = 1 - exp(-(knn - k_min) * 2 / N)
         if (runif(1) < a_prob) {
-          pts_keep = rbind(pts_keep, new_points[j, ])
+          my_points = rbind(my_points, new_points[j, ])
         }
       }
     }
-    pts_keep
   }
   # for (i in 1:n){
   #   new_point = runif_ball_3D(1,tau)+curr_point
@@ -184,12 +183,12 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
   #}
   ### Register those Cores ###
   ### Determine the number of Cores for Parallelization ###
-  if(cores > 1){
-    if(cores>detectCores()){
-      warning("The number of cores you're setting is larger than available cores!")
-      cores <- max(1L, detectCores(), na.rm = TRUE)}
-  }
-  registerDoParallel(cores=cores)
+  # if(cores > 1){
+  #   if(cores>detectCores()){
+  #     warning("The number of cores you're setting is larger than available cores!")
+  #     cores <- max(1L, detectCores(), na.rm = TRUE)}
+  # }
+  # registerDoParallel(cores=cores)
   #Check: 3 columns on vertex list
   if(dim(point_cloud)[2]!=2){
     stop("Point cloud does not have correct number of columns.")
@@ -263,24 +262,24 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05, bound="circle",
   curr_point = point_cloud[temp, ]
   m = ceiling(n_bound_homology_2D(pi*tau^2, epsilon = my_alpha, tau=tau)/64)
   
- my_points = foreach(i=1:dim(point_cloud)[1], .combine=rbind, 
-          .export = c("runif_disk", "euclid_dists_point_cloud_2D"))%dopar%{
-     new_points = runif_disk(m, my_alpha/4)+rep(point_cloud[i,], each=m)
-     pts_keep = matrix(NA, nrow=0, ncol=2)
+ #my_points = foreach(i=1:dim(point_cloud)[1], .combine=rbind, 
+#          .export = c("runif_disk", "euclid_dists_point_cloud_2D"))%dopar%{
+#     
+  for(i in 1:n_vert){
+    new_points = runif_disk(m, my_alpha/4)+rep(point_cloud[i,], each=m)
      for (j in 1:m){
        dist_list = euclid_dists_point_cloud_2D(new_points[j,], point_cloud)
        dist_near = dist_list[dist_list < 2*my_alpha] 
        knn = length(dist_near) 
        if (knn >= N){
-        pts_keep = rbind(pts_keep, new_points[j,])
+        my_points = rbind(my_points, new_points[j,])
       } else if (knn > k_min) {   
         a_prob = 1-exp(-(knn-k_min)*2/N)
         if (runif(1)<a_prob){
-          pts_keep = rbind(pts_keep, new_points[j,])
+          my_points = rbind(my_points, new_points[j,])
         }
      }
      }
-     pts_keep
   }
   # for (i in 1:n){
   #   new_point = runif_disk(1,tau)+curr_point
