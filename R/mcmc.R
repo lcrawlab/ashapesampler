@@ -7,7 +7,6 @@
 #' @param N number of shapes in initial data set
 #' @param tau tau bound
 #' @param delta probability of not preserving homology; default is 0.05
-#' @param bound manifold bound being used to sample points
 #' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
 #' @param sig standard deviation of truncated distribution from which alpha 
@@ -187,71 +186,4 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05,
   }
   new_ashape <- alphahull::ashape(my_points, alpha=my_alpha)
   return(new_ashape)
-}
-
-#' Check Bounds 2D
-#' 
-#' Checks the bound parameters for a sampled point during the MCMC algorithm
-#'
-#' @param point 1 x 2 vector or matrix holding point being checked
-#' @param bounds bounds list from mcmc function above
-#'
-#' @return boolean TRUE/FALSE
-check_bound2d <- function(point, bounds){
-  if (bounds$bound == "square"){
-    if(point[1]<bounds$limits[2] & point[1]>bounds$limits[1] & 
-       point[2]<bounds$limits[4] & point[2]> bounds$limits[3]){
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
-  } else if (bounds$bound == "circle"){
-    r_temp = sqrt(point[1]^2 + point[2]^2)
-    if(r_temp < bounds$limits[1]){
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
-  } else {
-    r_temp = sqrt(point[1]^2 + point[2]^2)
-    if(r_temp < bounds$limits[1] & r_temp > bounds$limits[2]){
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
-  }
-}
-
-#' Check Bounds 3D
-#' 
-#' Checks the bound parameters for a sampled point during the MCMC algorithm
-#'
-#' @param point 1 x 3 vector or matrix of the point being checked
-#' @param bounds bounds list from above mcmc sampler
-#'
-#' @return boolean TRUE/FALSE
-check_bound3d <- function(point, bounds){
-  if (bounds$bound == "cube"){
-    if(point[1]<bounds$limits[2] & point[1]>bounds$limits[1] & 
-       point[2]<bounds$limits[4] & point[2]> bounds$limits[3] & 
-       point[3]>bounds$limits[5] & point[3]<bounds$limits[6]){
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
-  } else if (bounds$bound == "sphere"){
-    r_temp = sqrt(point[1]^2 + point[2]^2 + point[3]^2)
-    if(r_temp < bounds$limits[1]){
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
-  } else {
-    r_temp = sqrt(point[1]^2 + point[2]^2 + point[3]^2)
-    if(r_temp < bounds$limits[1] & r_temp > bounds$limits[2]){
-      return(TRUE)
-    } else {
-      return(FALSE)
-    }
-  }
 }

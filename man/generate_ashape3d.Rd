@@ -39,8 +39,6 @@ sampled; default tau/12}
 \item{eps}{amount to subtract from tau/2 to give alpha. Defaul 1e-4.}
 
 \item{cores}{number of cores for parallelizing. Default 1.}
-
-\item{bound}{manifold bound being used to sample points}
 }
 \value{
 new_ashape three dimensional alpha shape object from alphashape3d library
