@@ -9,7 +9,6 @@ generate_ashape2d(
   N,
   tau,
   delta = 0.05,
-  bound = "circle",
   afixed = TRUE,
   mu = NULL,
   sig = NULL,
@@ -27,8 +26,6 @@ data set}
 \item{tau}{tau bound}
 
 \item{delta}{probability of not preserving homology; default is 0.05}
-
-\item{bound}{manifold bound being used to sample points}
 
 \item{afixed}{boolean, whether to sample alpha or leave fixed based on tau. Default FALSE}
 

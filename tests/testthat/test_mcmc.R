@@ -9,8 +9,6 @@ test_that("mcmc errors", {
   expect_error(generate_ashape3d(points2, N, tau))
   expect_error(generate_ashape2d(points2, N, tau, afixed=FALSE, sig=-1))
   expect_error(generate_ashape3d(points3, N, tau, afixed=FALSE, sig=-1))
-  expect_error(generate_ashape2d(points2, N, tau, bound="triangle"))
-  expect_error(generate_ashape3d(points3, N, tau, bound="triangle"))
   expect_error(generate_ashape2d(points2, N=-1, tau))
   expect_error(generate_ashape3d(points3, N=-1, tau))
   expect_error(generate_ashape2d(points2, N, tau=-0.7))
@@ -28,8 +26,6 @@ test_that("2D mcmc smooth runs", {
   points2 = cbind(stats::runif(20), stats::runif(20))
   #then
   expect_no_error(generate_ashape2d(points2, N, tau))
-  expect_no_error(generate_ashape2d(points2, N, tau, bound="square"))
-  expect_no_error(generate_ashape2d(points2, N, tau, bound = "annulus"))
 })
 
 test_that("3D mcmc smooth runs", {
@@ -41,7 +37,5 @@ test_that("3D mcmc smooth runs", {
                   stats::runif(500,0.5,1))
   #then
   expect_no_error(generate_ashape3d(points3, N, tau))
-  expect_no_error(generate_ashape3d(points3, N, tau, bound="cube"))
-  expect_no_error(generate_ashape3d(points3, N, tau, bound = "shell"))
 })
 

@@ -16,11 +16,11 @@ Imports:
     truncnorm,
     stats,
     Rvcg,
-    purrr,
     TDA,
     ggplot2,
     doParallel,
-    foreach
+    foreach,
+    parallel
 Suggests:
     knitr,
     testthat,
