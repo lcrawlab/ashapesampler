@@ -9,7 +9,6 @@ generate_ashape3d(
   N,
   tau,
   delta = 0.05,
-  bound = "sphere",
   afixed = TRUE,
   mu = NULL,
   sig = NULL,
@@ -28,8 +27,6 @@ data set}
 
 \item{delta}{probability of not preserving homology; default is 0.05}
 
-\item{bound}{manifold bound being used to sample points}
-
 \item{afixed}{boolean, whether to sample alpha or leave fixed based on tau. Default FALSE}
 
 \item{mu}{mean of truncated distribution from which alpha sampled; default tau/3}
@@ -42,6 +39,8 @@ sampled; default tau/12}
 \item{eps}{amount to subtract from tau/2 to give alpha. Defaul 1e-4.}
 
 \item{cores}{number of cores for parallelizing. Default 1.}
+
+\item{bound}{manifold bound being used to sample points}
 }
 \value{
 new_ashape three dimensional alpha shape object from alphashape3d library

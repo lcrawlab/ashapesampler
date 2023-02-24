@@ -81,6 +81,6 @@ Now we can take the parameters and generate a new shape and plot it. We assume
 our bound to be a cube, though the function allows for "sphere" (three-dimensional ball) and "shell" as well.
 
 ```{r}
-new_torus <- generate_ashape3d(point_cloud, N=N, tau=tau, bound="cube", cores=8)
+new_torus <- generate_ashape3d(point_cloud, N=N, tau=tau, cores=8)
 plot(new_torus, indexAlpha="all")
 ```

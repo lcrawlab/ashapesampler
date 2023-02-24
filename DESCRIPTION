@@ -20,7 +20,8 @@ Imports:
     TDA,
     ggplot2,
     doParallel,
-    foreach
+    foreach,
+    parallel
 Suggests:
     knitr,
     testthat,
