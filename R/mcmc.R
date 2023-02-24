@@ -64,9 +64,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=3)
   #Initialize by taking point from point cloud.
-  temp = purrr::rdunif(1, n_vert)
-  curr_point = point_cloud[temp, ]
-  m = n_bound_homology_3D((4/3)*pi*(alpha/4)^3, epsilon = my_alpha, tau=tau)
+  m = n_bound_homology_3D((4/3)*pi*(my_alpha/4)^3, epsilon = my_alpha, tau=tau)
   
   my_points = foreach(
     i = 1:dim(point_cloud)[1],
