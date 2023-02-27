@@ -138,7 +138,7 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
 #' Neighbors function - finds number of neighbors for each point in point cloud.
 #'
 #' @param v_list 2 or 3 column matrix
-#' @param e_list 2 column matrix of edges
+#' @param complex simplicial complex object
 #' @return n_list vector where each entry is number of neighbors for a point
 #' @export
 
