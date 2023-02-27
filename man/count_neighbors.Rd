@@ -9,7 +9,7 @@ count_neighbors(v_list, complex)
 \arguments{
 \item{v_list}{2 or 3 column matrix}
 
-\item{e_list}{2 column matrix of edges}
+\item{complex}{simplicial complex object}
 }
 \value{
 n_list vector where each entry is number of neighbors for a point
