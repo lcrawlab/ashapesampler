@@ -47,5 +47,6 @@ test_that( 'tau bound', {
   expect_equal(tau_bound(points2, complex_face_2), sqrt(2))
   expect_equal(tau_bound(points3, complex_face_3), sqrt(3))
   expect_equal(tau_bound(points3, complex_tet_3), sqrt(3))
+  expect_equal(count_neighbors(points2, complex_edges_2), c(2,2,2))
 }
 )

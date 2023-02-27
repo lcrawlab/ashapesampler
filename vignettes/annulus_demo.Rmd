@@ -47,7 +47,6 @@ for (k in 1:N){
   ann_pts <- runif_annulus(n, r_maj, r_min)
   ann_list[[k]] <- ashape(ann_pts, alpha = my_alpha)
   complex_list[[k]] <- get_alpha_complex(ann_pts, my_alpha)
-  edge_list <- extract_complex_edges(complex_list[[k]], n)
   tau_vec[k] <- tau_bound(ann_list[[k]]$x, complex_list[[k]])
 }
 ```
@@ -57,13 +56,11 @@ manifold. First we will put together the entire point cloud into one two column
 matrix.
 
 ```{r}
-point_cloud = matrix(NA, ncol = 2)
+point_cloud = matrix(NA,nrow=0, ncol = 2)
+nbr_list = c()
 for (k in 1:N) {
-  if (k == 1) {
-    point_cloud = ann_list[[k]]$x
-  } else{
-    point_cloud = rbind(point_cloud, ann_list[[k]]$x)
-  }
+  point_cloud = rbind(point_cloud, ann_list[[k]]$x)
+  nbr_list = c(nbr_list, count_neighbors(ann_list[[k]]$x, complex_list[[k]]))
 }
 ```
 
@@ -81,7 +78,7 @@ Now we can take the parameters and generate a new shape and plot it. We assume
 our bound to be a square, though the function allows for "circle" (disk) and "annulus" 
 as well.
 ```{r}
-new_annulus <- generate_ashape2d(point_cloud, N=N, tau=tau, cores=4)
+new_annulus <- generate_ashape2d(point_cloud, N=N, tau=tau, nbr_list=nbr_list, cores=4)
 
 
 tri_keep = new_annulus$delvor.obj$tri.obj$trlist[which(new_annulus$delvor.obj$tri.obj$cclist[,3]<new_annulus$alpha), 1:3]
