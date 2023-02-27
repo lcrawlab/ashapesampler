@@ -6,6 +6,7 @@
 #'                    data set
 #' @param N number of shapes in initial data set
 #' @param tau tau bound
+#' @param nbr_list neighbor list for all points in point cloud
 #' @param delta probability of not preserving homology; default is 0.05
 #' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
@@ -20,7 +21,7 @@
 #' @importFrom stats runif
 #' @import doParallel
 #' @import foreach
-generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
+generate_ashape3d <- function(point_cloud, N, tau, nbr_list, delta=0.05,
                               afixed = TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4,
                               cores=1){
   ### Determine the number of Cores for Parallelization ###
@@ -40,6 +41,9 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
   }
   if(tau<=0){
     stop("Tau must be positive real number.")
+  }
+  if(length(nbr_list)!=dim(point_cloud)[1]){
+    stop("nbr_list and point_cloud do not match in length")
   }
   #Sample alpha
   my_alpha <- 0
@@ -71,20 +75,21 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
     .export = c("runif_ball_3D", "euclid_dists_point_cloud_3D")
   ) %dopar% {
   #for (i in 1:n_vert){
-    new_points = runif_ball_3D(m, r = my_alpha/4) + rep(point_cloud[i, ], each=m)
+    new_points = runif_ball_3D(m, my_alpha/4)+rep(point_cloud[i,], each=m)
     keep_pts = matrix(NA, nrow=0, ncol=3)
-    for (j in 1:m) {
-      dist_list = euclid_dists_point_cloud_3D(new_points[j, ], point_cloud)
-      dist_near = dist_list[dist_list < 2 * my_alpha]
-      knn = length(dist_near)
-      if (knn >= N) {
-        keep_pts = rbind(keep_pts, new_points[j, ])
-      } else if (knn > k_min) {
-        a_prob = 1 - exp(-(knn - k_min) * 2 / N)
-        if (runif(1) < a_prob) {
-          keep_pts = rbind(keep_pts, new_points[j, ])
-        }
+    nbr_min = nbr_list[i]
+    for (j in 1:m){
+      dist_list = euclid_dists_point_cloud_3D(new_points[j,], point_cloud)
+      dist_near = dist_list[dist_list < 2*my_alpha] 
+      knn = length(dist_near) 
+      if (knn >= nbr_min+N-1){
+        keep_pts = rbind(keep_pts, new_points[j,])
+      } else if (knn > k_min+nbr_min) {   
+        a_prob = 1-exp(-(knn-k_min)*2/N)
+        if (runif(1)<a_prob){
+          keep_pts = rbind(keep_pts, new_points[j,])
       }
+    }
     }
     keep_pts
   }
@@ -102,6 +107,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
 #'                    data set
 #' @param N number of shapes in initial data set
 #' @param tau tau bound
+#' @param nbr_list list of number of neighbors for points in point cloud
 #' @param delta probability of not preserving homology; default is 0.05
 #' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
@@ -116,7 +122,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
 #' @importFrom stats runif
 #' @import doParallel
 #' @import foreach
-generate_ashape2d <- function(point_cloud, N, tau, delta=0.05,
+generate_ashape2d <- function(point_cloud, N, tau, nbr_list, delta=0.05,
                               afixed=TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4,
                               cores=1){
   ### Determine the number of Cores for Parallelization ###
@@ -136,6 +142,9 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05,
   }
   if(tau<=0){
     stop("Tau must be positive real number.")
+  }
+  if(length(nbr_list)!=dim(point_cloud)[1]){
+    stop("nbr_list and point_cloud do not match in length")
   }
   #Sample alpha
   my_alpha=0
@@ -166,13 +175,14 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05,
   #for(i in 1:n_vert){
     new_points = runif_disk(m, my_alpha/4)+rep(point_cloud[i,], each=m)
     keep_pts = matrix(NA, nrow=0, ncol=2)
+    nbr_min = nbr_list[i]
      for (j in 1:m){
        dist_list = euclid_dists_point_cloud_2D(new_points[j,], point_cloud)
        dist_near = dist_list[dist_list < 2*my_alpha] 
        knn = length(dist_near) 
-       if (knn >= N){
+       if (knn >= nbr_min+N-1){
         keep_pts = rbind(keep_pts, new_points[j,])
-      } else if (knn > k_min) {   
+      } else if (knn > k_min+nbr_min) {   
         a_prob = 1-exp(-(knn-k_min)*2/N)
         if (runif(1)<a_prob){
           keep_pts = rbind(keep_pts, new_points[j,])

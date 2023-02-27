@@ -8,6 +8,7 @@ generate_ashape3d(
   point_cloud,
   N,
   tau,
+  nbr_list,
   delta = 0.05,
   afixed = TRUE,
   mu = NULL,
@@ -24,6 +25,8 @@ data set}
 \item{N}{number of shapes in initial data set}
 
 \item{tau}{tau bound}
+
+\item{nbr_list}{neighbor list for all points in point cloud}
 
 \item{delta}{probability of not preserving homology; default is 0.05}
 

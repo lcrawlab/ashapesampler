@@ -2,6 +2,7 @@
 
 export(calc_overlap_2D)
 export(calc_overlap_3D)
+export(count_neighbors)
 export(euclid_dists_point_cloud_2D)
 export(euclid_dists_point_cloud_3D)
 export(extract_complex_edges)
