@@ -61,7 +61,6 @@ point_cloud = matrix(NA, nrow=0, ncol = 3)
 nbr_list=c()
 for (k in 1:N) {
   point_cloud = rbind(point_cloud, torus_list[[k]]$x)
-  nbr_list = c(nbr_list, count_neighbors(torus_list[[k]]$x, complex_torus_list[[k]]))
 }
 ```
 
@@ -79,6 +78,6 @@ Now we can take the parameters and generate a new shape and plot it. We assume
 our bound to be a cube, though the function allows for "sphere" (three-dimensional ball) and "shell" as well.
 
 ```{r}
-new_torus <- generate_ashape3d(point_cloud, N=N, tau=tau, nbr_list=nbr_list, cores=8)
+new_torus <- generate_ashape3d(point_cloud, N=N, tau=tau, cores=8)
 plot(new_torus, indexAlpha="all")
 ```
