@@ -60,7 +60,6 @@ point_cloud = matrix(NA,nrow=0, ncol = 2)
 nbr_list = c()
 for (k in 1:N) {
   point_cloud = rbind(point_cloud, ann_list[[k]]$x)
-  nbr_list = c(nbr_list, count_neighbors(ann_list[[k]]$x, complex_list[[k]]))
 }
 ```
 
@@ -78,7 +77,7 @@ Now we can take the parameters and generate a new shape and plot it. We assume
 our bound to be a square, though the function allows for "circle" (disk) and "annulus" 
 as well.
 ```{r}
-new_annulus <- generate_ashape2d(point_cloud, N=N, tau=tau, nbr_list=nbr_list, cores=4)
+new_annulus <- generate_ashape2d(point_cloud, N=N, tau=tau, cores=4)
 
 
 tri_keep = new_annulus$delvor.obj$tri.obj$trlist[which(new_annulus$delvor.obj$tri.obj$cclist[,3]<new_annulus$alpha), 1:3]
