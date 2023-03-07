@@ -18,6 +18,9 @@ knitr::opts_chunk$set(
 library(ashapesampler)
 library(alphahull)
 library(ggplot2)
+library(doparallel)
+cores = detectCores()
+registerDoParallel(cores=cores)
 ```
 
 In this document, we demonstrate the $\alpha$-shape sampler pipeline by simulating
@@ -77,7 +80,7 @@ Now we can take the parameters and generate a new shape and plot it. We assume
 our bound to be a square, though the function allows for "circle" (disk) and "annulus" 
 as well.
 ```{r}
-new_annulus <- generate_ashape2d(point_cloud, N=N, tau=tau, cores=4)
+new_annulus <- generate_ashape2d(point_cloud, N=N, tau=tau, cores=cores)
 
 
 tri_keep = new_annulus$delvor.obj$tri.obj$trlist[which(new_annulus$delvor.obj$tri.obj$cclist[,3]<new_annulus$alpha), 1:3]
