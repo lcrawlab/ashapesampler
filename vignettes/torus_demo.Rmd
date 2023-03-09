@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(ashapesampler)
 library(alphashape3d)
 library(alphahull)
-library(doparallel)
+library(doParallel)
 cores = detectCores()
 registerDoParallel(cores=cores)
 ```
