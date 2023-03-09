@@ -62,9 +62,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
 
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=3)
-  #Initialize by taking point from point cloud.
-  m = n_bound_homology_3D((4/3)*pi*(my_alpha/2)^3, epsilon = my_alpha, tau=tau)
-
+  m = n_bound_homology_3D((4/3)*pi*(my_alpha/4)^3, epsilon = my_alpha, tau=tau)
   my_points = foreach(
     i = 1:dim(point_cloud)[1],
     .combine = rbind,
@@ -92,7 +90,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
   if(dim(my_points)[1]<5){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 5.")
   }
-  new_ashape <- alphashape3d::ashape3d(my_points, alpha=my_alpha)
+  new_ashape <- alphashape3d::ashape3d(my_points, alpha=tau)
   return(new_ashape)
 }
 
@@ -184,6 +182,6 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05,
   if(dim(my_points)[1]<3){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 3.")
   }
-  new_ashape <- alphahull::ashape(my_points, alpha=my_alpha)
+  new_ashape <- alphahull::ashape(my_points, alpha=tau)
   return(new_ashape)
 }
