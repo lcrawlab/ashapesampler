@@ -2,23 +2,24 @@
 #' Get alpha complex
 #'
 #' Generates alpha complex for a set of points and parameter alpha
-#' 
+#'
 #' @param points point cloud for alpha complex, in form of 2 column of 3 column
-#'                           matrix with nonzero number of rows 
+#'                           matrix with nonzero number of rows
 #' @param alpha  alpha parameter for building the alpha complex
-#' 
+#'
 #' @return complex list of vertices, edges, faces, and tetrahedra.
-#' 
+#'
 #' @export
 get_alpha_complex <- function(points, alpha){
   if (alpha < 0){
     stop("alpha must be nonnegative.")
   }
+  alpha = alpha^2
   if(dim(points)[1]==0 || dim(points)[2]==0){
     stop("Dimensions of points matrix incorrect, must be larger than 0.")
   }
   filtration <- TDA::alphaComplexFiltration(points)
-  bound <- length(which(filtration$values <= sqrt(alpha)))
+  bound <- length(which(filtration$values <= alpha))
   complex <- filtration$cmplx[1:bound]
   return(complex)
 }
@@ -26,7 +27,7 @@ get_alpha_complex <- function(points, alpha){
 #' Returns the edges of complex.
 #' @param complex complex object from TDA packages
 #'
-#' @param n_vert number of vertices in complex; default is 0, specifying 
+#' @param n_vert number of vertices in complex; default is 0, specifying
 #'               this parameter speeds up the function
 #'
 #' @return edge_list data frame or if empty NULL
@@ -98,7 +99,7 @@ extract_complex_faces <- function(complex, n_vert=0){
 #' @param n_vert number of vertices in the complex; default is 0, specifying this
 #'               parameter speeds up function
 #' @return tet_list data frame of points forming tetrahedra in complex
-#' @export 
+#' @export
 extract_complex_tet <- function(complex, n_vert=0){
   if (n_vert < 0){
     n_vert=0
@@ -122,6 +123,6 @@ extract_complex_tet <- function(complex, n_vert=0){
     return(NULL)
   } else {
     colnames(tet_list)=c("t1", "t2", "t3", "t4")
-    return(tet_list) 
+    return(tet_list)
   }
 }

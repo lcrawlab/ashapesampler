@@ -22,7 +22,7 @@ test_that(
   "Alpha Complex Results", {
     #given
     alpha0 <- 0
-    alpha1 <- 0.26
+    alpha1 <- 0.72
     alpha2 <- 1
     points <- rbind(c(0,1,0), c(1,0,1), c(1,1,0), c(0,1,1))
     #when
