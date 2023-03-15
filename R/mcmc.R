@@ -90,7 +90,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
   if(dim(my_points)[1]<5){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 5.")
   }
-  new_ashape <- alphashape3d::ashape3d(my_points, alpha=tau)
+  new_ashape <- alphashape3d::ashape3d(my_points, alpha=my_alpha)
   return(new_ashape)
 }
 
@@ -182,6 +182,6 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05,
   if(dim(my_points)[1]<3){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 3.")
   }
-  new_ashape <- alphahull::ashape(my_points, alpha=tau)
+  new_ashape <- alphahull::ashape(my_points, alpha=my_alpha)
   return(new_ashape)
 }
