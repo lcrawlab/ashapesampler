@@ -54,16 +54,12 @@ for (k in 1:N){
 }
 ```
 
-Now that we have the shapes generated and imported, we can learn the underlying
-manifold. First we will put together the entire point cloud into one two column 
-matrix.
+Now that we have the shapes generated and imported, we want to sample point clouds
+to combine. We'll choose 2.
 
 ```{r}
-point_cloud = matrix(NA,nrow=0, ncol = 2)
-nbr_list = c()
-for (k in 1:N) {
-  point_cloud = rbind(point_cloud, ann_list[[k]]$x)
-}
+choose_2 <- sample(N,2)
+point_cloud = rbind(ann_list[[choose_2[1]]]$x, ann_list[[choose_2[[2]]]]$x)
 ```
 
 Then we will have our $\tau$ bound be a summary statistic of the $\tau$ found for 
@@ -73,14 +69,14 @@ execute around the point cloud, but if $\tau$ is too big, then we risk losing
 geometric and topological information in the reconstruction.
 
 ```{r}
-tau = min(tau_vec)
+tau = min(tau_vec[choose_2[1]], tau_vec[choose_2[2]])
 ```
 
 Now we can take the parameters and generate a new shape and plot it. We assume
 our bound to be a square, though the function allows for "circle" (disk) and "annulus" 
 as well.
 ```{r}
-new_annulus <- generate_ashape2d(point_cloud, N=N, tau=tau, cores=cores)
+new_annulus <- generate_ashape2d(point_cloud, J=2, tau=tau, cores=cores)
 
 
 tri_keep = new_annulus$delvor.obj$tri.obj$trlist[which(new_annulus$delvor.obj$tri.obj$cclist[,3]<new_annulus$alpha), 1:3]

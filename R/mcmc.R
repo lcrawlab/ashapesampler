@@ -4,7 +4,7 @@
 #'
 #' @param point_cloud 3 column matrix of all points from all shapes in initial
 #'                    data set
-#' @param N number of shapes in initial data set
+#' @param J number of shapes in initial data set
 #' @param tau tau bound
 #' @param delta probability of not preserving homology; default is 0.05
 #' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
@@ -20,7 +20,7 @@
 #' @importFrom stats runif
 #' @import doParallel
 #' @import foreach
-generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
+generate_ashape3d <- function(point_cloud, J, tau, delta=0.05,
                               afixed = TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4,
                               cores=1){
   ### Determine the number of Cores for Parallelization ###
@@ -35,8 +35,8 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
     stop("Point cloud does not have correct number of columns.")
   }
   n_vert = dim(point_cloud)[1]
-  if(N<=0 || floor(N) !=N){
-    stop("N must be positive integer.")
+  if(J<=0 || floor(J) !=J){
+    stop("J must be positive integer.")
   }
   if(tau<=0){
     stop("Tau must be positive real number.")
@@ -62,23 +62,23 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
 
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=3)
-  m = n_bound_homology_3D((4/3)*pi*(my_alpha/4)^3, epsilon = my_alpha, tau=tau)
+  m = n_bound_homology_3D((4/3)*pi*(tau/8)^3, epsilon = my_alpha, tau=tau)
   my_points = foreach(
     i = 1:dim(point_cloud)[1],
     .combine = rbind,
     .export = c("runif_ball_3D", "euclid_dists_point_cloud_3D")
   ) %dopar% {
   #for (i in 1:n_vert){
-    new_points = runif_ball_3D(m, my_alpha/4)+rep(point_cloud[i,], each=m)
+    new_points = runif_ball_3D(m, tau/8)+rep(point_cloud[i,], each=m)
     keep_pts = matrix(NA, nrow=0, ncol=3)
     for (j in 1:m){
       dist_list = euclid_dists_point_cloud_3D(new_points[j,], point_cloud)
-      dist_near = dist_list[dist_list < 2*my_alpha]
+      dist_near = dist_list[dist_list < tau]
       knn = length(dist_near)
-      if (knn >= N){
+      if (knn >= k_min*J){
         keep_pts = rbind(keep_pts, new_points[j,])
-      } else if (knn > k_min) {
-        a_prob = 1-exp(-(knn-k_min)*2/N)
+      } else if (knn >= k_min) {
+        a_prob = 1-exp(-(knn-k_min)*2/(J*k_min))
         if (runif(1)<a_prob){
           keep_pts = rbind(keep_pts, new_points[j,])
       }
@@ -90,7 +90,7 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
   if(dim(my_points)[1]<5){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 5.")
   }
-  new_ashape <- alphashape3d::ashape3d(my_points, alpha=my_alpha)
+  new_ashape <- alphashape3d::ashape3d(my_points, alpha=tau-eps)
   return(new_ashape)
 }
 
@@ -98,14 +98,14 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
 #'
 #' @param point_cloud 2 column matrix of all points from all shapes in initial
 #'                    data set
-#' @param N number of shapes in initial data set
+#' @param J number of shapes in initial (sub) data set
 #' @param tau tau bound
 #' @param delta probability of not preserving homology; default is 0.05
 #' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
 #' @param sig standard deviation of truncated distribution from which alpha
 #'              sampled; default tau/12
-#' @param k_min number of points needed in radius 2 alpha of point cloud to accept a sample
+#' @param k_min number of points needed in radius tau of point cloud to accept a sample
 #' @param eps amount to subtract from tau/2 to give alpha. Defaul 1e-4.
 #' @param cores number of computer cores for parallelizing. Default 1.
 #'
@@ -114,8 +114,8 @@ generate_ashape3d <- function(point_cloud, N, tau, delta=0.05,
 #' @importFrom stats runif
 #' @import doParallel
 #' @import foreach
-generate_ashape2d <- function(point_cloud, N, tau, delta=0.05,
-                              afixed=TRUE, mu=NULL, sig = NULL, k_min=3, eps=1e-4,
+generate_ashape2d <- function(point_cloud, J, tau, delta=0.05,
+                              afixed=TRUE, mu=NULL, sig = NULL, k_min=2, eps=1e-4,
                               cores=1){
   ### Determine the number of Cores for Parallelization ###
   if(cores > 1){
@@ -129,8 +129,8 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05,
     stop("Point cloud does not have correct number of columns.")
   }
   n_vert = dim(point_cloud)[1]
-  if(N<=0 || floor(N) !=N){
-    stop("N must be positive integer.")
+  if(J<=0 || floor(J) !=J){
+    stop("J must be positive integer.")
   }
   if(tau<=0){
     stop("Tau must be positive real number.")
@@ -156,22 +156,22 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05,
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=2)
   #Initialize by taking point from point cloud.
-  m = n_bound_homology_2D(pi*(my_alpha/4)^2, epsilon = my_alpha, tau=tau)
+  m = n_bound_homology_2D(pi*(tau/8)^2, epsilon = my_alpha, tau=tau)
 
  my_points = foreach(i=1:n_vert, .combine=rbind,
           .export = c("runif_disk", "euclid_dists_point_cloud_2D"))%dopar%{
 
   #for(i in 1:n_vert){
-    new_points = runif_disk(m, my_alpha/4)+rep(point_cloud[i,], each=m)
+    new_points = runif_disk(m, tau/8)+rep(point_cloud[i,], each=m)
     keep_pts = matrix(NA, nrow=0, ncol=2)
      for (j in 1:m){
        dist_list = euclid_dists_point_cloud_2D(new_points[j,], point_cloud)
-       dist_near = dist_list[dist_list < 2*my_alpha]
+       dist_near = dist_list[dist_list < tau]
        knn = length(dist_near)
-       if (knn >= N){
+       if (knn >= k_min*J){
         keep_pts = rbind(keep_pts, new_points[j,])
-      } else if (knn > k_min) {
-        a_prob = 1-exp(-(knn-k_min)*2/N)
+      } else if (knn >= k_min) {
+        a_prob = 1-exp(-(knn-k_min)*2/(J*k_min))
         if (runif(1)<a_prob){
           keep_pts = rbind(keep_pts, new_points[j,])
         }
@@ -182,6 +182,6 @@ generate_ashape2d <- function(point_cloud, N, tau, delta=0.05,
   if(dim(my_points)[1]<3){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 3.")
   }
-  new_ashape <- alphahull::ashape(my_points, alpha=my_alpha)
+  new_ashape <- alphahull::ashape(my_points, alpha=tau-eps)
   return(new_ashape)
 }
