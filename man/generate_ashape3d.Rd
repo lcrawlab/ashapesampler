@@ -6,7 +6,7 @@
 \usage{
 generate_ashape3d(
   point_cloud,
-  N,
+  J,
   tau,
   delta = 0.05,
   afixed = TRUE,
@@ -21,7 +21,7 @@ generate_ashape3d(
 \item{point_cloud}{3 column matrix of all points from all shapes in initial
 data set}
 
-\item{N}{number of shapes in initial data set}
+\item{J}{number of shapes in initial data set}
 
 \item{tau}{tau bound}
 

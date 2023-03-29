@@ -35,7 +35,7 @@ will be the torus with major radius 0.75 and minor radius 0.25.
 N=10
 tau_vec <- vector("numeric", N)
 my_alpha <- 0.25
-n <- 1000
+n <- 500
 r_maj <- 0.75
 r_min <- 0.25
 ```
@@ -60,11 +60,8 @@ manifold. First we will put together the entire point cloud into one two column
 matrix.
 
 ```{r}
-point_cloud = matrix(NA, nrow=0, ncol = 3)
-nbr_list=c()
-for (k in 1:N) {
-  point_cloud = rbind(point_cloud, torus_list[[k]]$x)
-}
+choose_2 <- sample(N,2)
+point_cloud = rbind(torus_list[[choose_2[1]]]$x, torus_list[[choose_2[[2]]]]$x)
 ```
 
 Then we will have our $\tau$ bound be a summary statistic of the $\tau$ found for 
@@ -74,13 +71,13 @@ execute around the point cloud, but if $\tau$ is too big, then we risk losing
 geometric and topological information in the reconstruction.
 
 ```{r}
-tau = min(tau_vec)
+tau = min(tau_vec[choose_2[1]], tau_vec[choose_2[2]])
 ```
 
 Now we can take the parameters and generate a new shape and plot it. We assume
 our bound to be a cube, though the function allows for "sphere" (three-dimensional ball) and "shell" as well.
 
 ```{r}
-new_torus <- generate_ashape3d(point_cloud, N=N, tau=tau, cores=cores)
+new_torus <- generate_ashape3d(point_cloud, J=2, tau=tau, cores=cores)
 plot(new_torus, indexAlpha="all")
 ```

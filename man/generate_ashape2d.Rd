@@ -6,13 +6,13 @@
 \usage{
 generate_ashape2d(
   point_cloud,
-  N,
+  J,
   tau,
   delta = 0.05,
   afixed = TRUE,
   mu = NULL,
   sig = NULL,
-  k_min = 3,
+  k_min = 2,
   eps = 1e-04,
   cores = 1
 )
@@ -21,7 +21,7 @@ generate_ashape2d(
 \item{point_cloud}{2 column matrix of all points from all shapes in initial
 data set}
 
-\item{N}{number of shapes in initial data set}
+\item{J}{number of shapes in initial (sub) data set}
 
 \item{tau}{tau bound}
 
@@ -34,7 +34,7 @@ data set}
 \item{sig}{standard deviation of truncated distribution from which alpha
 sampled; default tau/12}
 
-\item{k_min}{number of points needed in radius 2 alpha of point cloud to accept a sample}
+\item{k_min}{number of points needed in radius tau of point cloud to accept a sample}
 
 \item{eps}{amount to subtract from tau/2 to give alpha. Defaul 1e-4.}
 
