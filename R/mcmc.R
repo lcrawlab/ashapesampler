@@ -91,7 +91,7 @@ generate_ashape3d <- function(point_cloud, J, tau, delta=0.05,
   }
   rr = dim(my_points)[1]/(m*dim(point_cloud)[1])
   print(paste0("Acceptance Rate is ", rr))
-  new_ashape <- alphashape3d::ashape3d(my_points, alpha=my_alpha)
+  new_ashape <- alphashape3d::ashape3d(my_points, alpha=tau-eps)
   return(new_ashape)
 }
 
@@ -185,6 +185,6 @@ generate_ashape2d <- function(point_cloud, J, tau, delta=0.05,
   }
   rr = dim(my_points)[1]/(m*dim(point_cloud)[1])
   print(paste0("Acceptance Rate is ", rr))
-  new_ashape <- alphahull::ashape(my_points, alpha=my_alpha)
+  new_ashape <- alphahull::ashape(my_points, alpha=tau-eps)
   return(new_ashape)
 }
