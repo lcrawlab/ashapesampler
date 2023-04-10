@@ -5,7 +5,7 @@
 #' @param point_cloud 3 column matrix of all points from all shapes in initial
 #'                    data set
 #' @param J number of shapes in initial data set
-#' @param tau tau bound
+#' @param tau tau bound for the shapes
 #' @param delta probability of not preserving homology; default is 0.05
 #' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
@@ -59,7 +59,6 @@ generate_ashape3d <- function(point_cloud, J, tau, delta=0.05,
   } else {
     my_alpha <- tau/2-eps
   }
-
   #Sample and reject points
   my_points = matrix(NA, nrow=0, ncol=3)
   m = n_bound_homology_3D((4/3)*pi*(tau/8)^3, epsilon = my_alpha, tau=tau)
@@ -73,7 +72,7 @@ generate_ashape3d <- function(point_cloud, J, tau, delta=0.05,
     keep_pts = matrix(NA, nrow=0, ncol=3)
     for (j in 1:m){
       dist_list = euclid_dists_point_cloud_3D(new_points[j,], point_cloud)
-      dist_near = dist_list[dist_list < tau]
+      dist_near = dist_list[dist_list < tau/4]
       knn = length(dist_near)
       if (knn >= k_min*J){
         keep_pts = rbind(keep_pts, new_points[j,])
@@ -90,7 +89,9 @@ generate_ashape3d <- function(point_cloud, J, tau, delta=0.05,
   if(dim(my_points)[1]<5){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 5.")
   }
-  new_ashape <- alphashape3d::ashape3d(my_points, alpha=tau-eps)
+  rr = dim(my_points)[1]/(m*dim(point_cloud)[1])
+  print(paste0("Acceptance Rate is ", rr))
+  new_ashape <- alphashape3d::ashape3d(my_points, alpha=my_alpha)
   return(new_ashape)
 }
 
@@ -99,7 +100,7 @@ generate_ashape3d <- function(point_cloud, J, tau, delta=0.05,
 #' @param point_cloud 2 column matrix of all points from all shapes in initial
 #'                    data set
 #' @param J number of shapes in initial (sub) data set
-#' @param tau tau bound
+#' @param tau tau bound vector for shapes input
 #' @param delta probability of not preserving homology; default is 0.05
 #' @param afixed boolean, whether to sample alpha or leave fixed based on tau. Default FALSE
 #' @param mu mean of truncated distribution from which alpha sampled; default tau/3
@@ -166,7 +167,7 @@ generate_ashape2d <- function(point_cloud, J, tau, delta=0.05,
     keep_pts = matrix(NA, nrow=0, ncol=2)
      for (j in 1:m){
        dist_list = euclid_dists_point_cloud_2D(new_points[j,], point_cloud)
-       dist_near = dist_list[dist_list < tau]
+       dist_near = dist_list[dist_list < tau/4]
        knn = length(dist_near)
        if (knn >= k_min*J){
         keep_pts = rbind(keep_pts, new_points[j,])
@@ -182,6 +183,8 @@ generate_ashape2d <- function(point_cloud, J, tau, delta=0.05,
   if(dim(my_points)[1]<3){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 3.")
   }
-  new_ashape <- alphahull::ashape(my_points, alpha=tau-eps)
+  rr = dim(my_points)[1]/(m*dim(point_cloud)[1])
+  print(paste0("Acceptance Rate is ", rr))
+  new_ashape <- alphahull::ashape(my_points, alpha=my_alpha)
   return(new_ashape)
 }

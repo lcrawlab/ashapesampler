@@ -35,7 +35,7 @@ will be the torus with major radius 0.75 and minor radius 0.25.
 N=10
 tau_vec <- vector("numeric", N)
 my_alpha <- 0.25
-n <- 500
+n <- 5000
 r_maj <- 0.75
 r_min <- 0.25
 ```

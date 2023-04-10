@@ -47,7 +47,8 @@ extract_complex_edges <- function(complex, n_vert=0){
   #First n_vert entries are the vertices, no need to check
   for (k in (n_vert+1):m){
     if(length(as.vector(complex[[k]]))==2){
-      edge_list[(k-n_vert),] <- complex[[k]]
+      temp <- sort(complex[[k]])
+      edge_list[(k-n_vert),] <- temp
     }
   }
   edge_list = as.data.frame(na.omit(edge_list))
@@ -82,7 +83,8 @@ extract_complex_faces <- function(complex, n_vert=0){
   #First n_vert entries are the vertices, no need to check
   for (k in (n_vert+1):m){
     if(length(as.vector(complex[[k]]))==3){
-      face_list[(k-n_vert),] <- complex[[k]]
+      temp <- sort(complex[[k]])
+      face_list[(k-n_vert),] <- temp
     }
   }
   face_list = as.data.frame(na.omit(face_list))
@@ -115,7 +117,8 @@ extract_complex_tet <- function(complex, n_vert=0){
   #First n_vert entries are the vertices, no need to check
   for (k in (n_vert+1):m){
     if(length(as.vector(complex[[k]]))==4){
-      tet_list[(k-n_vert),] <- complex[[k]]
+      temp <- sort(complex[[k]])
+      tet_list[(k-n_vert),] <- temp
     }
   }
   tet_list = as.data.frame(na.omit(tet_list))

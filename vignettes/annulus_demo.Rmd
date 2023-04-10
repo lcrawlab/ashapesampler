@@ -33,9 +33,9 @@ will be the annulus with outer radius 0.75 and inner radius 0.25.
 
 ```{r}
 set.seed(201723)
-my_alpha = 0.25
-n = 100
-N=20
+my_alpha = 0.15
+n = 1000
+N= 10
 r_maj <- 0.75
 r_min <- 0.25
 ```
@@ -69,14 +69,14 @@ execute around the point cloud, but if $\tau$ is too big, then we risk losing
 geometric and topological information in the reconstruction.
 
 ```{r}
-tau = min(tau_vec[choose_2[1]], tau_vec[choose_2[2]])
+tau_vec2 = c(tau_vec[choose_2[1]], tau_vec[choose_2[2]])
 ```
 
 Now we can take the parameters and generate a new shape and plot it. We assume
 our bound to be a square, though the function allows for "circle" (disk) and "annulus" 
 as well.
 ```{r}
-new_annulus <- generate_ashape2d(point_cloud, J=2, tau=tau, cores=cores)
+new_annulus <- generate_ashape2d(point_cloud, J=2, tau=min(tau_vec2), cores=cores)
 
 
 tri_keep = new_annulus$delvor.obj$tri.obj$trlist[which(new_annulus$delvor.obj$tri.obj$cclist[,3]<new_annulus$alpha), 1:3]

@@ -23,7 +23,7 @@ circle_overlap_cc <- function(alpha, r = 1) {
 
 #' Circle Overlap Inner Annulus
 #'
-#' Circle overlap ia (inner annulus) calculates area needed to subtract 
+#' Circle overlap ia (inner annulus) calculates area needed to subtract
 #' when calculating area of overlap of annulus and circle.
 #'
 #' @param alpha radius of circle
@@ -39,7 +39,7 @@ circle_overlap_ia <- function(alpha, R, r){
   theta_2 = 2*acos(((R^2+r^2-alpha^2))/(2*r*R))
   a_1 = alpha^2*0.5*(theta_1 - sin(theta_1))
   a_2 = 0
-  if (alpha^2 < R^2 + r^2){ 
+  if (alpha^2 < R^2 + r^2){
     a_2 = r^2*0.5*(theta_2 - sin(theta_2))
   } else {
     a_2 = r^2*0.5*(theta_2 + sin((2*pi-theta_2)))
@@ -51,7 +51,7 @@ circle_overlap_ia <- function(alpha, R, r){
 #'
 #' This function calculates the minimum coverage percentage of an alpha ball over the bounded
 #' area being considered. 0 is no coverage, 1 means complete coverage.
-#' For the square, r is the length of the side. For circle, r is the radius. For 
+#' For the square, r is the length of the side. For circle, r is the radius. For
 #' the annulus, r and min_r are the two radii.
 #' @param alpha radius of alpha ball
 #' @param r length of square, radius of circle, or outer radius of annulus
@@ -101,7 +101,7 @@ calc_overlap_2D <- function(alpha, r=1, rmin=0.01, bound="square"){
       return(1)
     }
   } else {
-    stop("Not a valid bound for the manifold. Please enter 'square', 'circle', or 
+    stop("Not a valid bound for the manifold. Please enter 'square', 'circle', or
           'annulus'. Default is 'square'.")
   }
 }
@@ -133,13 +133,13 @@ n_bound_connect_2D <- function(alpha, delta=0.05, r=1, rmin=0.01, bound="square"
 
 #from Niyogi et al 2008
 #' n Bound Homology 2D
-#' 
-#' #' Function returns the minimum number of points to preserve the homology with 
+#'
+#' #' Function returns the minimum number of points to preserve the homology with
 #' an open cover of radius alpha.
 #'
 #' @param area area of manifold from which points being sampled
 #' @param epsilon size of balls of cover
-#' @param tau number bound 
+#' @param tau number bound
 #' @param delta probability of not recovering homology
 #'
 #' @return n, number of points needed
@@ -222,7 +222,7 @@ runif_square <- function(n, xmin=0, xmax=1, ymin=0, ymax=1){
 }
 
 #' Uniform sampling from disk
-#' 
+#'
 #' Returns points uniformly sampled from disk of radius r in plane
 #'
 #' @param n number of points to sample
@@ -230,12 +230,12 @@ runif_square <- function(n, xmin=0, xmax=1, ymin=0, ymax=1){
 #'
 #' @return points n by 2 matrix of points sampled
 #'
-#' @examples 
+#' @examples
 #' # Sample 100 points from unit disk
 #' runif_disk(100)
 #' # Sample 100 points from disk of radius 0.7
 #' runif_disk(100, 0.7)
-#' @export 
+#' @export
 runif_disk <- function(n, r=1){
   if(n<=0 || floor(n) !=n || r<=0){
     stop("n must be positive integer, and r must be a positive real number.")
@@ -249,7 +249,7 @@ runif_disk <- function(n, r=1){
 }
 
 #' Uniform Sampling from Annulus
-#' 
+#'
 #' Returns points uniformly sampled from annulus in plane
 #'
 #' @param n number of points to sample

@@ -2,7 +2,7 @@ test_that("mcmc errors", {
   #given
   N=2
   points2 = cbind(stats::runif(20), stats::runif(20))
-  points3 = cbind(points2, stats::runif(20))
+  points3 = cbind(stats::runif(500), stats::runif(500), stats::runif(500))
   tau=1
   #then
   expect_error(generate_ashape2d(points3, N, tau))
@@ -33,8 +33,8 @@ test_that("3D mcmc smooth runs", {
   set.seed(201727)
   tau=1
   J=2
-  points3 = cbind(stats::runif(500,0.5,1), stats::runif(500,0.5,1),
-                  stats::runif(500,0.5,1))
+  points3 = cbind(stats::runif(500,0.8,1), stats::runif(500,0.8,1),
+                  stats::runif(500,0.8,1))
   #then
   expect_no_error(generate_ashape3d(points3, J, tau))
 })

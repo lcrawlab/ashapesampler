@@ -23,7 +23,7 @@ data set}
 
 \item{J}{number of shapes in initial (sub) data set}
 
-\item{tau}{tau bound}
+\item{tau}{tau bound vector for shapes input}
 
 \item{delta}{probability of not preserving homology; default is 0.05}
 
