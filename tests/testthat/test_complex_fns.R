@@ -44,9 +44,9 @@ test_that(
     points <- rbind(c(0,1,0), c(1,0,1), c(1,1,0), c(0,1,1))
     empty_complex = list(1,2,3,4)
     full_complex = TDA::alphaComplexFiltration(points)$cmplx
-    edge_df = data.frame("ed1" = c(3,4,3,4,4,2), "ed2" = c(1,1,2,2,3,1))
-    face_df = data.frame("f1" = c(4,4,3,4), "f2" = c(3,3,2,2), "f3" = c(1,2,1,1))
-    tet_df = data.frame("t1" = 4, "t2"=3, "t3" = 2, "t4" = 1)
+    edge_df = data.frame("ed1" = c(1,1,2,2,3,1), "ed2" = c(3,4,3,4,4,2))
+    face_df = data.frame("f1" = c(1,2,1,1), "f2" = c(3,3,2,2), "f3" = c(4,4,3,4))
+    tet_df = data.frame("t1" = 1, "t2"=2, "t3" = 3, "t4" = 4)
     #when
     emptyedge1 = extract_complex_edges(empty_complex,4)
     emptyedge2 = extract_complex_edges(empty_complex)

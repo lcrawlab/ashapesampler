@@ -23,7 +23,7 @@ still valid) tau bound.}
 \item{cores}{number of cores for parallelizing. Default 1.}
 }
 \value{
-tau, real nonnegative number.
+tau_vec, vector real nonnegative number. Tau values for each point
 }
 \description{
 This function finds the bound of tau for one shape, which is the maximum length of the

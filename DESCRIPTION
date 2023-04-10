@@ -20,11 +20,11 @@ Imports:
     ggplot2,
     doParallel,
     foreach,
-    parallel
+    parallel,
+    dplyr
 Suggests:
     knitr,
     testthat,
-    dplyr,
     rgl,
     rmarkdown
 VignetteBuilder:

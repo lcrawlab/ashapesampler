@@ -1,30 +1,31 @@
 
 #' tau_bound
-#' 
-#' This function finds the bound of tau for one shape, which is the maximum length of the 
+#'
+#' This function finds the bound of tau for one shape, which is the maximum length of the
 #' fiber bundle off of a shape for determining the density of points necessary
 #' to recover the homology from the open cover. See Niyogi et al 2008. Function
 #' checks length of edges and distances to circumcenters from each vertex before
 #' checking against the rest of the point cloud and finds the minimum length.
-#' We then keep the largest tau to account for the possibility of nonuniformity 
-#' among points. 
+#' We then keep the largest tau to account for the possibility of nonuniformity
+#' among points.
 #'
-#' @param v_list matrix or data frame of cartesian coordinates of vertices in 
+#' @param v_list matrix or data frame of cartesian coordinates of vertices in
 #'               in point cloud
-#' @param complex list of each vertex, edge, face, and (in 3D) tetrahedron in 
+#' @param complex list of each vertex, edge, face, and (in 3D) tetrahedron in
 #'                a simplicial complex; same form as complex object in TDA package
 #' @param extremes matrix or data frame of cartesian coordinates of vertices on
 #'                 the boundary of the data frame. If no list given, function will
 #'                 assume all points are extreme and check them all. Inclusion of
 #'                 this parameter speeds up the process both within this function
-#'                 and when calculating alpha because you will get a bigger (but 
+#'                 and when calculating alpha because you will get a bigger (but
 #'                 still valid) tau bound.
 #' @param cores number of cores for parallelizing. Default 1.
-#' @return tau, real nonnegative number. 
+#' @return tau_vec, vector real nonnegative number. Tau values for each point
 #' @export
 #' @importFrom stats na.omit
 #' @import doParallel
 #' @import foreach
+#' @importFrom dplyr setdiff
 tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
   ### Determine the number of Cores for Parallelization ###
   # if(cores > 1){
@@ -32,10 +33,10 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
   #     warning("The number of cores you're setting is larger than available cores!")
   #     cores <- max(1L, detectCores(), na.rm = TRUE)}
   # }
-  # 
+  #
   # ### Register those Cores ###
   # registerDoParallel(cores=cores)
-  
+
   dimension = dim(v_list)[2]
   n = dim(v_list)[1]
   if(sum(is.na(v_list))>0){
@@ -63,8 +64,8 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
   }
   m = length(extremes)
   if (m == 0){
-    extremes = 1:n
-    m=n
+    extremes = extreme_pts(complex=complex, n_vert=n, dimension=dimension)
+    m=length(extremes)
   }
   dist_matrix = as.matrix(stats::dist(v_list))
   e_list = extract_complex_edges(complex,m)
@@ -91,7 +92,7 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
     face_list_zoom = NULL
     tet_list_zoom = NULL
     if(!is.null(f_list)){
-      face_list_zoom = c(which(f_list$f1==i), which(f_list$f2==i), 
+      face_list_zoom = c(which(f_list$f1==i), which(f_list$f2==i),
                          which(f_list$f3==i))
     }
     if(!is.null(t_list)){
@@ -131,8 +132,75 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
     }
     #tau
   }
-  tau_keep = min(tau_vec[tau_vec>0])
-  return(tau_keep)
+    tau_keep = mean(tau_vec[tau_vec>0])
+    return(tau_keep)
+}
+
+#' Extreme points
+#' Finds the boundary points of a simplicial complex
+#'
+#' @param complex complex list object
+#' @param n_vert number of vertices in the complex
+#' @param dimension number, 2 or 3
+#'
+#' @return vector of all vertices on the boundary
+#' @export
+#'
+extreme_pts <- function(complex, n_vert, dimension){
+  edge_list <- extract_complex_edges(complex)
+  edge_vert <- unique(c(edge_list$ed1, edge_list$ed2))
+  iso_vert = NULL
+  #Find isolated points first; these are on boundary.
+  if(length(edge_vert)<n_vert){
+    vert=1:n_vert
+    iso_vert = vert[which(!vert%in%edge_vert)]
+  }
+  if(dimension==2){
+    #Remove non boundary edges, check remaining vertices.
+    face_list <- extract_complex_faces(complex)
+    if(is.null(face_list)){
+      return(1:n_vert)
+    }
+    edge_face <- matrix(nrow=0, ncol=2)
+    for(j in 1:dim(face_list)[1]){
+      face_v = sort(as.matrix(face_list[j,]))
+      edge_face = rbind(edge_face, c(face_v[1], face_v[2]),
+                        c(face_v[2], face_v[3]),
+                        c(face_v[1], face_v[3]))
+    }
+    edge_face = data.frame(edge_face)
+    colnames(edge_face)=c("ed1", "ed2")
+    int_edge = edge_face[which(duplicated(edge_face)),]
+    bd_edge = setdiff(edge_list, int_edge)
+    bd_vert = unique(c(bd_edge$ed1, bd_edge$ed2))
+    return(c(iso_vert, bd_vert))
+  } else if (dimension==3) {
+    #Check for "isolated" edges (not bordering face)
+    face_list <- extract_complex_faces(complex)
+    face_vert <- unique(c(face_list$f1, face_list$f2, face_list$f3))
+    bd_edge_vert <- setdiff(edge_vert, face_vert)
+    #Remove bordering faces
+    tet_list <- extract_complex_tet(complex)
+    if(is.null(tet_list)){
+      return(1:n_vert)
+    }
+    tet_face <- data.frame(matrix(nrow=0, ncol=3))
+    for(j in 1:dim(tet_list)[1]){
+      tet_v = sort(as.matrix(tet_list[j,]))
+      tet_face = rbind(tet_face, c(tet_v[1], tet_v[2], tet_v[3]),
+                            c(tet_v[2], tet_v[3], tet_v[4]),
+                            c(tet_v[1], tet_v[3], tet_v[4]),
+                       c(tet_v[1], tet_v[2], tet_v[4]))
+    }
+    tet_face = data.frame(tet_face)
+    colnames(tet_face)=c("f1", "f2", "f3")
+    int_face = tet_face[which(duplicated(tet_face)),]
+    bd_face = setdiff(face_list, int_face)
+    bd_vert = unique(c(bd_face$f1), c(bd_face$f2), c(bd_face$f3))
+    return(c(iso_vert, bd_edge_vert, bd_vert))
+  } else {
+    stop("Only takes 2 or 3 dimensions")
+  }
 }
 
 #' Neighbors function - finds number of neighbors for each point in point cloud.
@@ -154,7 +222,7 @@ count_neighbors <- function(v_list, complex){
 
 #' circumcenter Face
 #'
-#' This function finds the circumcenters of the faces of a simplicial complex given the 
+#' This function finds the circumcenters of the faces of a simplicial complex given the
 #' list of vertex coordinates and the set of faces.
 #'
 #' @param v_list matrix of vertex coordinates
@@ -177,7 +245,7 @@ circumcenter_face <- function(v_list, f_list){
     for (i in 1:nface){
     points = rbind(v_list[f_list$f1[i],], v_list[f_list$f2[i],], v_list[f_list$f3[i],])
     circ_mat[i,] <- circ_face_3D(points)
-    } 
+    }
   }
   return(circ_mat)
 }
@@ -212,26 +280,28 @@ circ_face_3D <- function(points){
   if(dim(points)[2]!=3 || dim(points)[1]!=3){
     stop("Input must be 3 by 3 matrix")
   }
-  a = points[1,1]
-  b = points[1,2]
-  c = points[1,3]
-  d = points[2,1]
-  f = points[2,2]
-  g = points[2,3]
-  i = points[3,1]
-  j = points[3,2]
-  k = points[3,3]
-  A <- rbind(c(d-a, f-b, g-c), c(i-d, j-f, k-g), c((b*g-b*k-c*f+c*j+f*k-g*j),
-                                                   (a*k-a*g+c*d-c*i-d*k+g*i),
-                                                   (a*f-a*j-b*d+b*i+d*j-i*f)))
-  B <- c(1/2*(d^2-a^2+f^2-b^2+g^2-c^2), 1/2*(i^2-d^2+j^2-f^2+k^2-g^2), 
-         (a*(f*k-g*i)-b*(d*k-g*i)+c*(d*j-f*i)))
-  my_vec <- solve(A,B)
-  return(my_vec)
+  ac <- points[3,]-points[1,]
+  ab <- points[2,]-points[1,]
+  balength <- ab[1]^2+ab[2]^2+ab[3]^2
+  calength <- ac[1]^2+ac[2]^2+ac[3]^2
+
+  xcrossbc <- ab[2]*ac[3] - ac[2]*ab[3]
+  ycrossbc <- ab[3]*ac[1] - ac[3]*ab[1]
+  zcrossbc <- ab[1]*ac[2] - ac[1]*ab[2]
+
+  denom = 0.5 / (xcrossbc * xcrossbc + ycrossbc * ycrossbc +
+                         zcrossbc * zcrossbc)
+  xcirca = ((balength * ac[2] - calength * ab[2]) * zcrossbc -
+              (balength * ac[3] - calength * ab[3]) * ycrossbc) * denom
+  ycirca = ((balength * ac[3] - calength * ab[3]) * xcrossbc -
+              (balength * ac[1] - calength * ab[1]) * zcrossbc) * denom
+  zcirca = ((balength * ac[1] - calength * ab[1]) * ycrossbc -
+              (balength * ac[2] - calength * ab[2]) * xcrossbc) * denom
+  return(points[1,]+c(xcirca, ycirca, zcirca))
 }
 
 #' circumcenter Tetrahedra
-#' 
+#'
 #' This function finds the circumcenters of the tetrahedra/3-simplices of a simplicial
 #' complex given the list of vertex coordinates and the set of tetrahedra.
 #'

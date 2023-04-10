@@ -30,20 +30,20 @@ test_that( 'tau bound', {
   complex_1_iso = append(as.list(1:3), list(c(1,2)))
   complex_edges_2 = append(as.list(1:3), list(c(1,2), c(2,3), c(1,3)))
   complex_face_2 = append(as.list(1:3), list(c(1,2), c(2,3), c(1,3), c(1,2,3)))
-  complex_edges_3 = append(as.list(1:4), list(c(1,2), c(1,3), c(1,4), c(2,3), 
+  complex_edges_3 = append(as.list(1:4), list(c(1,2), c(1,3), c(1,4), c(2,3),
                                               c(2,4), c(3,4)))
-  complex_face_3 = append(as.list(1:4), list(c(1,2), c(1,3), c(1,4), c(2,3), 
+  complex_face_3 = append(as.list(1:4), list(c(1,2), c(1,3), c(1,4), c(2,3),
                                              c(2,4), c(3,4), c(1,2,3), c(1,3,4),
                                              c(1,2,4), c(2,3,4)))
-  complex_tet_3 = append(as.list(1:4), list(c(1,2), c(1,3), c(1,4), c(2,3), 
+  complex_tet_3 = append(as.list(1:4), list(c(1,2), c(1,3), c(1,4), c(2,3),
                                             c(2,4), c(3,4), c(1,2,3), c(1,3,4),
                                             c(1,2,4), c(2,3,4), c(1,2,3,4)))
   #then
   expect_equal(tau_bound(points2, complex_iso_2), 1)
   expect_equal(tau_bound(points3, complex_iso_3), 1)
-  expect_equal(tau_bound(points2, complex_1_iso), 1)
-  expect_equal(tau_bound(points2, complex_edges_2), 1)
-  expect_equal(tau_bound(points3, complex_edges_3), sqrt(2))
+  expect_equal(tau_bound(points2, complex_1_iso), mean(c(1,1,sqrt(2)))) #avg of 1, 1, and sqrt(2) for mean, 1 for min
+  expect_equal(tau_bound(points2, complex_edges_2), mean(c(1,sqrt(2),sqrt(2)))) #1 for min, avg of 1,sqrt(2),sqrt(2) for mean
+  expect_equal(tau_bound(points3, complex_edges_3), mean(c(sqrt(2),sqrt(3),sqrt(3),sqrt(2)))) #sqrt(2) for min
   expect_equal(tau_bound(points2, complex_face_2), sqrt(2))
   expect_equal(tau_bound(points3, complex_face_3), sqrt(3))
   expect_equal(tau_bound(points3, complex_tet_3), sqrt(3))
