@@ -2,7 +2,7 @@ test_that("mcmc errors", {
   #given
   N=2
   points2 = cbind(stats::runif(20), stats::runif(20))
-  points3 = cbind(points2, stats::runif(20))
+  points3 = cbind(points2, stats::runif(500))
   tau=1
   #then
   expect_error(generate_ashape2d(points3, N, tau))
