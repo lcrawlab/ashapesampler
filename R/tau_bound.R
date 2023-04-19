@@ -68,16 +68,16 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
     m=length(extremes)
   }
   dist_matrix = as.matrix(stats::dist(v_list))
-  e_list = extract_complex_edges(complex,m)
+  e_list = extract_complex_edges(complex,n)
   if(is.null(e_list)){
     return(min(dist_matrix[dist_matrix>0]))
   }
-  f_list = extract_complex_faces(complex,m)
+  f_list = extract_complex_faces(complex,n)
   f_circ = circumcenter_face(v_list, f_list)
   t_list = NULL
   t_circ = NULL
   if(dimension>2){
-    t_list = extract_complex_tet(complex,m)
+    t_list = extract_complex_tet(complex,n)
     t_circ = circumcenter_tet(v_list, t_list)
   }
   tau_vec=vector("numeric", m)
@@ -108,16 +108,16 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
       dist_vec = dist_vec_point[edge_list_zoom]
       dist_vec_b = c()
       if (dimension == 2){
-        if(!is.null(face_list_zoom)){
+        if(length(face_list_zoom)>0){
           points = matrix(f_circ[face_list_zoom,], ncol=2)
           dist_vec_b = c(dist_vec_b, 2*euclid_dists_point_cloud_2D(v_list[i,],
                                                               points ))
         }
       } else {
-        if(!is.null(face_list_zoom)){
+        if(length(face_list_zoom)>0){
           points = matrix(f_circ[face_list_zoom,], ncol=3)
           dist_vec_b = 2*euclid_dists_point_cloud_3D(v_list[i,],points)
-          if(!is.null(tet_list_zoom)){
+          if(length(tet_list_zoom)>0){
           points = matrix(t_circ[tet_list_zoom,], ncol=3)
           dist_vec_b = c(dist_vec_b, 2*euclid_dists_point_cloud_3D(v_list[i,], points))
           }

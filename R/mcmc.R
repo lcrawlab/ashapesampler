@@ -68,7 +68,9 @@ generate_ashape3d <- function(point_cloud, J, tau, delta=0.05,
     .export = c("runif_ball_3D", "euclid_dists_point_cloud_3D")
   ) %dopar% {
   #for (i in 1:n_vert){
-    new_points = runif_ball_3D(m, tau/8)+rep(point_cloud[i,], each=m)
+    new_points = runif_ball_3D(m, tau/8)+ cbind(rep(point_cloud[i,1],m),
+                                                rep(point_cloud[i,2],m),
+                                                rep(point_cloud[i,3],m))
     keep_pts = matrix(NA, nrow=0, ncol=3)
     for (j in 1:m){
       dist_list = euclid_dists_point_cloud_3D(new_points[j,], point_cloud)
@@ -163,7 +165,7 @@ generate_ashape2d <- function(point_cloud, J, tau, delta=0.05,
           .export = c("runif_disk", "euclid_dists_point_cloud_2D"))%dopar%{
 
   #for(i in 1:n_vert){
-    new_points = runif_disk(m, tau/8)+rep(point_cloud[i,], each=m)
+    new_points = runif_disk(m, tau/8)+ cbind(rep(point_cloud[i,1],m), rep(point_cloud[i,2],m))
     keep_pts = matrix(NA, nrow=0, ncol=2)
      for (j in 1:m){
        dist_list = euclid_dists_point_cloud_2D(new_points[j,], point_cloud)
