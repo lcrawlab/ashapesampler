@@ -24,7 +24,7 @@ The ashapesampler software requires the installation of the following R librarie
 
 [truncnorm](https://cran.r-project.org/web/packages/truncnorm/index.html)
 
-Note that the latest BAKR and RATE functions are also included in the `Software` directory for this repo. Unless stated otherwise, the easiest method to install many of these packages is with the following example command entered in an R shell:
+Unless stated otherwise, the easiest method to install many of these packages is with the following example command entered in an R shell:
 
     install.packages("alphahull", dependecies = TRUE)
 
@@ -56,13 +56,13 @@ Other common installation procedures may apply.
 
 The `vignettes` folder contains the following demonstrations for running and analyzing results in the ashapesampler: 
 
-Generating new annuli from a simulated set of annuli
+* Generating new annuli from a simulated set of annuli
 
-Generating new tori from a simulated set of tori
+* Generating new tori from a simulated set of tori
 
-Converting binary masks to simplicial complexes for input into the alpha shape sampler
+* Converting binary masks to simplicial complexes for input into the alpha shape sampler
 
-Analyzing landmarks on teeth via procrustes analysis
+* Analyzing landmarks on teeth via procrustes analysis
 
 ## Relevant Citations
 
