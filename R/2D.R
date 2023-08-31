@@ -184,7 +184,7 @@ euclid_dists_point_cloud_2D <- function(point, point_cloud){
   }
   dist_vec = vector("numeric",m)
   for (j in 1:m){
-    sqr_dist = (point[1]-point_cloud[j,1])^2+(point[2]-point_cloud[j,2])^2
+    sqr_dist = as.numeric((point[1]-point_cloud[j,1])^2+(point[2]-point_cloud[j,2])^2)
     dist_vec[j] = sqrt(sqr_dist)
   }
   return(dist_vec)

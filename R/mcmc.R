@@ -68,7 +68,9 @@ generate_ashape3d <- function(point_cloud, J, tau, delta=0.05,
     .export = c("runif_ball_3D", "euclid_dists_point_cloud_3D")
   ) %dopar% {
   #for (i in 1:n_vert){
-    new_points = runif_ball_3D(m, tau/8)+rep(point_cloud[i,], each=m)
+    new_points = runif_ball_3D(m, tau/8)+ cbind(rep(point_cloud[i,1],m),
+                                                rep(point_cloud[i,2],m),
+                                                rep(point_cloud[i,3],m))
     keep_pts = matrix(NA, nrow=0, ncol=3)
     for (j in 1:m){
       dist_list = euclid_dists_point_cloud_3D(new_points[j,], point_cloud)
@@ -85,13 +87,13 @@ generate_ashape3d <- function(point_cloud, J, tau, delta=0.05,
     }
     keep_pts
   }
-
+  my_points = unique(my_points) #keeps error free if necessary.
   if(dim(my_points)[1]<5){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 5.")
   }
   rr = dim(my_points)[1]/(m*dim(point_cloud)[1])
   print(paste0("Acceptance Rate is ", rr))
-  new_ashape <- alphashape3d::ashape3d(my_points, alpha=my_alpha)
+  new_ashape <- alphashape3d::ashape3d(my_points, alpha=tau-eps)
   return(new_ashape)
 }
 
@@ -163,7 +165,7 @@ generate_ashape2d <- function(point_cloud, J, tau, delta=0.05,
           .export = c("runif_disk", "euclid_dists_point_cloud_2D"))%dopar%{
 
   #for(i in 1:n_vert){
-    new_points = runif_disk(m, tau/8)+rep(point_cloud[i,], each=m)
+    new_points = runif_disk(m, tau/8)+ cbind(rep(point_cloud[i,1],m), rep(point_cloud[i,2],m))
     keep_pts = matrix(NA, nrow=0, ncol=2)
      for (j in 1:m){
        dist_list = euclid_dists_point_cloud_2D(new_points[j,], point_cloud)
@@ -180,11 +182,12 @@ generate_ashape2d <- function(point_cloud, J, tau, delta=0.05,
      }
     keep_pts
           }
+  my_points = unique(my_points) #keeps error free if necessary.
   if(dim(my_points)[1]<3){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 3.")
   }
   rr = dim(my_points)[1]/(m*dim(point_cloud)[1])
   print(paste0("Acceptance Rate is ", rr))
-  new_ashape <- alphahull::ashape(my_points, alpha=my_alpha)
+  new_ashape <- alphahull::ashape(my_points, alpha=tau-eps)
   return(new_ashape)
 }
