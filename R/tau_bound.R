@@ -171,6 +171,7 @@ extreme_pts <- function(complex, n_vert, dimension){
     edge_face = data.frame(edge_face)
     colnames(edge_face)=c("ed1", "ed2")
     int_edge = edge_face[which(duplicated(edge_face)),]
+    int_edge = unique(int_edge)
     bd_edge = setdiff(edge_list, int_edge)
     bd_vert = unique(c(bd_edge$ed1, bd_edge$ed2))
     return(c(iso_vert, bd_vert))

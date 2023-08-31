@@ -87,7 +87,7 @@ generate_ashape3d <- function(point_cloud, J, tau, delta=0.05,
     }
     keep_pts
   }
-
+  my_points = unique(my_points) #keeps error free if necessary.
   if(dim(my_points)[1]<5){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 5.")
   }
@@ -182,6 +182,7 @@ generate_ashape2d <- function(point_cloud, J, tau, delta=0.05,
      }
     keep_pts
           }
+  my_points = unique(my_points) #keeps error free if necessary.
   if(dim(my_points)[1]<3){
     stop("Not enough points accepted in MCMC walk to make a shape. Need at least 3.")
   }
