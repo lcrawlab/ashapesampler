@@ -56,6 +56,8 @@ Other common installation procedures may apply.
 
 The `vignettes` folder contains the following demonstrations for running and analyzing results in the ashapesampler: 
 
+* Sampling alpha shapes from a probability distribution in two dimensions
+* Sampling alpha shapes from a probability distribution in three dimensions
 * Generating new annuli from a simulated set of annuli
 
 * Generating new tori from a simulated set of tori
