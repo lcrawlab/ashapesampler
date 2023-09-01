@@ -6,17 +6,16 @@
 \usage{
 sampling3Dashape(
   N,
-  tau = 1,
   n.dependent = TRUE,
   nconnect = TRUE,
   nhomology = FALSE,
   n.noise = FALSE,
   afixed = FALSE,
-  mu = 0.3,
+  mu = 0.24,
   sigma = 0.05,
   delta = 0.05,
   n = 20,
-  alpha = 0.3,
+  alpha = 0.24,
   lambda = 3,
   r = 1,
   rmin = 0.25,
@@ -25,8 +24,6 @@ sampling3Dashape(
 }
 \arguments{
 \item{N}{number of alpha shapes to sample}
-
-\item{tau}{bound on alpha distribution}
 
 \item{n.dependent}{boolean, whether the number of points n are dependent on alpha}
 
