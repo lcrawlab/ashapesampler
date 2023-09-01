@@ -1,0 +1,121 @@
+---
+title: "probability_demo_2D"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{probability_demo_2D}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ashapesampler)
+```
+
+This document illustrates how to sample $\alpha$-shapes from a true probability distribution in two dimensions. The main function within the package to do this is `sampling2Dashape`, which generates $\alpha$-shapes given the parameters. 
+
+There are several ways to adjust the hierarchical distribution of the function which will be discussed throughout the document. The function requires only parameter $N$, the number of shapes to be sampled. All other parameters are set to default, and the function samples an $\alpha$-shape from the following distribution:
+
+\begin{align*}
+    \alpha & \sim \mathcal{N}_T(\mu=0.25,\sigma=0.5, a=\min(0.1, tau/4), b=\tau/2) \\
+    n | \alpha & = n_{c min}(\alpha, \delta=0.05)\\
+    x_1, ..., x_n & \stackrel{i.i.d.}{\sim} \text{Unif}(\mathcal{M} = \[0, 1\] \times \[0,1\]) 
+\end{align*}
+
+where $n$ the number of points sampled is dependent on the number of points needed to produce a connected shape for a randomly selected $\alpha$, $\delta$ is the probability that the generated shape has more than one connected component, and points are selected uniformly from the unit square. We could allow the lower bound of $\alpha$ to be as small as $a=0$, however, we set it to $a= min(0.1, tau/4)$ to prevent computational bottleneck. Bounds of the truncated normal distribution are fixed for the user. Values of $\tau$ for different underlying manifolds are as follows:
+
+* If the underlying manifold is a square with side length $r$, $\tau=r/2$.
+* If the underlying manifold is a circle with radius $r$, $\tau=r$.
+* If the underlying manifold is an annulus with inner radius $r_{min}$ and outer radius $r$, $\tau = r_{min}$.
+
+The condition number is not a user adjusted parameter.
+
+For demonstration purposes, we set $N=1$. The `sampling2Dashape` function returns a list of length $N$ of those objects.
+
+```{r}
+set.seed(100001)
+my_ashape = sampling2Dashape(N=1)
+plot(my_ashape[[1]])
+```
+
+To make the number of points a random variable in and of itself, we can add a discrete distribution $\pi$ to $n | \alpha$. In the code, this discrete distribution is a Poisson distribution with default $\lambda = 3$. Parameter $\lambda$ can be adjusted by the user. The distribution from which the new shape is sampled is then given by:
+
+\begin{align*}
+    \alpha & \sim \mathcal{N}_T(\mu=0.25,\sigma=0.5, a=0, b=0.5) \\
+    n | \alpha & = n_{c min}(\alpha, \delta=0.05) + \text{Poisson}(\lambda=3)\\
+    x_1, ..., x_n & \stackrel{i.i.d.}{\sim} \text{Unif}(\mathcal{M} = \[0, 1\] \times \[0,1\]) 
+\end{align*}
+
+To make the code dynamic, set `n.noise = TRUE`. This code is where $\lambda = 3$. 
+
+```{r}
+my_ashape = sampling2Dashape(N=1, n.noise = TRUE)
+plot(my_ashape[[1]])
+```
+
+Code with the adjustment $\lambda = 10$:
+
+```{r}
+my_ashape = sampling2Dashape(N=1, n.noise = TRUE, lambda = 10)
+plot(my_ashape[[1]])
+```
+
+We can also change the dependence of $n$ relative to $\alpha$. First, we can make $n$ independent of $\alpha$ by setting `n.dependent = FALSE`. Then $n=20$ is the default number of points used. (If `n.noise=TRUE`, then 20 is the minimum number of points used before adding more based on a Poisson random variable.) Making $n$ independent from $\alpha$ allows for more variation in the resulting shapes, including the number of connected components. Example code with independent $n$ and noise:
+
+```{r}
+my_ashape = sampling2Dashape(N=1, n.dependent=FALSE, n.noise=TRUE, lambda = 5)
+plot(my_ashape[[1]])
+```
+
+In the other direction, we can choose to make $n$ dependent on $\alpha$ such that the underlying manifold's topology is preserved. In the case of a square, this means we will have one connected component with no holes with probability $1 - \delta$. Here, it is strict that $\alpha/2 < \tau$, which defaults to 1. Note that the smaller $\tau$ is, the smaller $\alpha$ has to be, the more points which must be sampled, and thus the slower the algorithm. Users will see the variation in the shapes will lie on the boundaries when setting `nhomology=TRUE`:
+
+```{r}
+my_ashape = sampling2Dashape(N=1, nhomology = TRUE)
+plot(my_ashape[[1]])
+```
+
+While the default manifold is the unit square, we can also adjust the size of the square with parameter $r$, which defaults to $r=1$. For example, we can change the size of the square such that the length of one side is $r = 0.5$: 
+
+```{r}
+my_ashape = sampling2Dashape(N=1, r=0.5)
+my_alpha = my_ashape[[1]]$alpha
+
+plot(my_ashape[[1]])
+```
+
+We can also make the square bigger by increasing $r$. Note that the number of points to meet the minimum conditions to meet thresholds for no isolated point or maintaining the underlying homology increases as the area of the underlying manifold increases, and thus may take longer to compute. Other shape options include the circle and the annulus. To sample points from a circle, we set `bound="circle"`. Default radius is $r=1$, but we can adjust that as with the square. To sample $\alpha$-shapes with points from the interior of the unit circle, use the following code:
+
+```{r}
+my_ashape = sampling2Dashape(N=1, bound="circle")
+plot(my_ashape[[1]])
+```
+
+For the annulus, $r$ represents the outer radius while $rmin=0.25$ is the inner radius. Both parameters can be adjusted but it is required that $0 < r_{min} < r$. The following code demonstrates sampling an $\alpha$-shape with points sampled uniformly from the annulus with inner radius `rmin=0.5` and `r=0.75`.
+
+```{r}
+my_ashape = sampling2Dashape(N=1, r=0.75, rmin=0.5, bound="annulus")
+plot(my_ashape[[1]])
+```
+
+
+Finally, we can adjust the distribution for $\alpha$ itself. First, we can fix $\alpha$ to a set number for all $\alpha$-shapes being sampled by setting `afixed=TRUE`. The default value of $\alpha$ for this function is $\alpha = 0.24$ but will automatically adjust to $\tau/2-0.001$ if it is larger than $\tau/2$. Note that when `n.dependent=TRUE` then as $\alpha$ approaches 0 $n$ will approach infinity and cause a computational bottleneck. The following is example code for fixed $\alpha=0.2$ on the unit circle:
+
+```{r}
+my_ashape = sampling2Dashape(N=1, afixed = TRUE, alpha=0.2, bound="circle")
+plot(my_ashape[[1]])
+```
+
+We can also adjust the truncated normal distribution mean $\mu$ and standard deviation $\sigma$. We recommend that $\mu$ is less than $\tau/2$, the upper bound of the truncated normal distribution, and larger than 0. A warning will pop up if this is not the case but otherwise the code will run normally. We require $\sigma$ to be larger than 0. The following code is for a distribution where $\mu = 0.2$ and $\sigma = 0.1$:
+
+```{r}
+my_ashape = sampling2Dashape(N=1, mu=0.2, sigma = 0.1)
+plot(my_ashape[[1]])
+```
+
+If `afixed=TRUE`, even if values of mean `mu` and standard deviation `sigma` are input, they are ignored.

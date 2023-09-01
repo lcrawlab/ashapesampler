@@ -6,9 +6,8 @@
 #' alpha shape objects from the ahull package.
 #'
 #' @param N number of alpha shapes to sample
-#' @param tau bound on alpha distribution
 #' @param n.dependent boolean, whether the number of points n are dependent on alpha
-#' @param nconnect boolean, whether user wants shapes to have one connected component 
+#' @param nconnect boolean, whether user wants shapes to have one connected component
 #'                          with high probability
 #' @param nhomology boolean, whether user wants shapes to preserve homology of
 #'                          underlying manifold with high probability
@@ -16,7 +15,7 @@
 #'                         for more variety in shapes
 #' @param afixed boolean, whether alpha is fixed for all shapes sampled
 #' @param mu mean value of truncated normal from which alpha is sampled
-#' @param sigma standard deviation of truncated normal distribution from which 
+#' @param sigma standard deviation of truncated normal distribution from which
 #'              alpha is sampled
 #' @param delta probability of getting disconnected shape or not preserving homology
 #' @param n minimum number of points to be sampled for each alpha shape
@@ -29,14 +28,23 @@
 #' @return list of alpha shapes of length N
 #' @export
 #'
-sampling2Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE, 
+sampling2Dashape <- function(N, n.dependent=TRUE, nconnect=TRUE,
                              nhomology=FALSE, n.noise =FALSE,
-                             afixed=FALSE, mu=0.3, sigma=0.05, delta=0.05, 
-                             n = 20, alpha=0.3, lambda=3, r=1, rmin=0.25, 
+                             afixed=FALSE, mu=0.24, sigma=0.05, delta=0.05,
+                             n = 20, alpha=0.24, lambda=3, r=1, rmin=0.25,
                              bound="square"){
   shape_list = list()
-  bound = tolower(bound) 
-  
+  bound = tolower(bound)
+  tau = 1
+  if(bound=="annulus"){
+    tau = rmin
+  }
+  if (bound=="circle"){
+    tau = r
+  }
+  if (bound == "square"){
+    tau = r/2
+  }
   #Check for errors, warnings
   if(nconnect == TRUE & nhomology == TRUE){
     warning("Both nhomology and nconnect are true, default to nhomology for choosing n.")
@@ -45,19 +53,20 @@ sampling2Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
     stop("N must be a positive integer.")
   }
   if(afixed==TRUE & alpha > tau/2){
-    stop("Invalid alpha, tau values.")
+    warning("Invalid alpha, tau values. Setting alpha to tau/2-0.001")
+    alpha=tau/2-0.001
   }
   if(afixed==FALSE & (mu>tau/2 || mu<0)){
     warning("Mean of alpha outside of truncated distribution range for alpha")
   }
-  #Initialize variables 
+  #Initialize variables
   alpha_vec = rep(0,N)
   n_vec = rep(n, N)
   #Get alphas
   if (afixed==TRUE){
     alpha_vec = rep(alpha, N)
   } else {
-    alpha_vec = truncnorm::rtruncnorm(n=N, a=0, b=tau/2, mean=mu, sd=sigma)
+    alpha_vec = truncnorm::rtruncnorm(n=N, a=min(0.1, tau/4), b=tau/2, mean=mu, sd=sigma)
   }
   #Get n vector (get minimums first, then add noise if applicable.)
   if(n.dependent==FALSE){
@@ -77,11 +86,11 @@ sampling2Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
            then need either nhomology = TRUE or nconnect = TRUE.")
     }
   }
-  
+
   if(n.noise == TRUE){
     n_vec = n_vec + stats::rpois(N, lambda=lambda)
   }
-  
+
   #Enter loop for alpha shapes
   for (k in 1:N){
     #Get points
@@ -98,7 +107,7 @@ sampling2Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
     shape_list = append(shape_list, list(my_shape))
   }
   return(shape_list)
-} 
+}
 
 #' Sample 3D alpha shapes
 #'
@@ -106,9 +115,8 @@ sampling2Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
 #' alpha shape objects from the ahull package.
 #'
 #' @param N number of alpha shapes to sample
-#' @param tau bound on alpha distribution
 #' @param n.dependent boolean, whether the number of points n are dependent on alpha
-#' @param nconnect boolean, whether user wants shapes to have one connected component 
+#' @param nconnect boolean, whether user wants shapes to have one connected component
 #'                          with high probability
 #' @param nhomology boolean, whether user wants shapes to preserve homology of
 #'                          underlying manifold with high probability
@@ -116,7 +124,7 @@ sampling2Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
 #'                         for more variety in shapes
 #' @param afixed boolean, whether alpha is fixed for all shapes sampled
 #' @param mu mean value of truncated normal from which alpha is sampled
-#' @param sigma standard deviation of truncated normal distribution from which 
+#' @param sigma standard deviation of truncated normal distribution from which
 #'              alpha is sampled
 #' @param delta probability of getting disconnected shape or not preserving homology
 #' @param n minimum number of points to be sampled for each alpha shape
@@ -124,19 +132,28 @@ sampling2Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
 #' @param lambda parameter for adding noise to n; only used if n.noise=TRUE
 #' @param r length of radius of circle, side length of square, or outer radius of annulus
 #' @param rmin inner radius of annulus
-#' @param bound compact manifold to be sampled from; either cube, sphere, or shell 
+#' @param bound compact manifold to be sampled from; either cube, sphere, or shell
 #'
 #' @return list of alpha shapes of length N
 #' @export
 #'
-sampling3Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE, 
+sampling3Dashape <- function(N, n.dependent=TRUE, nconnect=TRUE,
                              nhomology=FALSE, n.noise =FALSE,
-                             afixed=FALSE, mu=0.3, sigma=0.05, delta=0.05, 
-                             n = 20, alpha=0.3, lambda=3, r=1, rmin=0.25, 
+                             afixed=FALSE, mu=0.24, sigma=0.05, delta=0.05,
+                             n = 20, alpha=0.24, lambda=3, r=1, rmin=0.25,
                              bound="cube"){
   shape_list = list()
   bound = tolower(bound)
-  
+  tau = 1
+  if(bound=="shell"){
+    tau = rmin
+  }
+  if (bound=="sphere"){
+    tau = r
+  }
+  if (bound == "cube"){
+    tau = r/2
+  }
   #Check for errors, warnings
   if(nconnect == TRUE & nhomology == TRUE){
     warning("Both nhomology and nconnect are true, default to nhomology for choosing n.")
@@ -145,19 +162,20 @@ sampling3Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
     stop("N must be a positive integer.")
   }
   if(afixed==TRUE & alpha > tau/2){
-    stop("Invalid alpha, tau values.")
+    warning("Invalid alpha, tau values. Setting alpha to tau/2-0.001")
+    alpha=tau/2-0.001
   }
   if(afixed==FALSE & (mu>tau/2 || mu<0)){
     warning("Mean of alpha outside of truncated distribution range for alpha")
   }
-  #Initialize variables 
+  #Initialize variables
   alpha_vec = rep(0,N)
   n_vec = rep(n, N)
   #Get alphas
   if (afixed==TRUE){
     alpha_vec = rep(alpha, N)
   } else {
-    alpha_vec = truncnorm::rtruncnorm(n=N, a=0, b=tau/2, mean=mu, sd=sigma)
+    alpha_vec = truncnorm::rtruncnorm(n=N, a=min(0.1, tau/4), b=tau/2, mean=mu, sd=sigma)
   }
   #Get n vector (get minimums first, then add noise if applicable.)
   if(n.dependent==FALSE){
@@ -177,11 +195,11 @@ sampling3Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
            then need either nhomology = TRUE or nconnect = TRUE.")
     }
   }
-  
+
   if(n.noise == TRUE){
     n_vec = n_vec + stats::rpois(N, lambda=lambda)
   }
-  
+
   #Enter loop for alpha shapes
   for (k in 1:N){
     #Get points
@@ -192,7 +210,7 @@ sampling3Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
       points = runif_ball_3D(n_vec[k],r)
     } else {
       points = runif_shell_3D(n_vec[k], rmax=r, rmin=rmin)
-    } 
+    }
     #Get shape
     my_shape = alphashape3d::ashape3d(points, alpha=alpha_vec[k])
     shape_list = append(shape_list, list(my_shape))
@@ -201,8 +219,8 @@ sampling3Dashape <- function(N, tau=1, n.dependent=TRUE, nconnect=TRUE,
 }
 
 #' Get area
-#' 
-#' Quickly calculate which area needed for a homology bound; here to clean up 
+#'
+#' Quickly calculate which area needed for a homology bound; here to clean up
 #' code above
 #'
 #' @param r side length (square) or radius (circle, annulus)
@@ -223,8 +241,8 @@ get_area <- function(r, rmin, bound){
 }
 
 #' Get volume
-#' 
-#' Quickly calculate which volume needed for a homology bound; here to clean up 
+#'
+#' Quickly calculate which volume needed for a homology bound; here to clean up
 #' code above
 #'
 #' @param r side length (cube) or radius (sphere, shell)
