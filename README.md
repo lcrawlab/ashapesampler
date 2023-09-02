@@ -64,8 +64,9 @@ The `vignettes` folder contains the following demonstrations for running and ana
 
 * Converting binary masks to simplicial complexes for input into the alpha shape sampler
 
-* Analyzing landmarks on teeth via procrustes analysis
+* Generating new teeth from data set of primate manibular molars
 
+  
 The auto3dgm paradigm for assigning landmarks via unsupervised learning can be found [here](https://toothandclaw.github.io/)
 
 ## Data 
