@@ -66,6 +66,12 @@ The `vignettes` folder contains the following demonstrations for running and ana
 
 * Analyzing landmarks on teeth via procrustes analysis
 
+The auto3dgm paradigm for assigning landmarks via unsupervised learning can be found [here](https://toothandclaw.github.io/)
+
+## Data 
+
+Primate manibular molar data can be accessed and downloaded [here](https://www.dropbox.com/sh/rs8pjmhrwcdcuxk/AAC3Fj2_RNZLTVR_XhN4jiGxa?dl=0).
+
 ## Relevant Citations
 
 E.T. Winn-Nuñez, H. Witt, D. Bhaskar, R. Huang, I.Y. Wong, J. Reichner, and L. Crawford. A probabilistic method for sampling alpha-shapes.
