@@ -26,7 +26,9 @@ Suggests:
     knitr,
     testthat,
     rgl,
-    rmarkdown
+    rmarkdown,
+    SparseM,
+    pliman
 VignetteBuilder:
 		  knitr
 Encoding: UTF-8
