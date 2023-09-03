@@ -10,7 +10,9 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=6,
+  fig.height=6
 )
 ```
 
@@ -101,7 +103,7 @@ find_image_vert <- function(new_matrix, dim_square){
 }
 
 my_vert <- find_image_vert(new_matrix=new_matrix, dim_square=dim_square)
-print(my_vert)
+head(my_vert)
 ```
 
 Next, we need to find the edges. We do this in a systemic order such that no edges overlap each other. To make an edge, we use the following step by step logic for each pixel:
@@ -154,7 +156,7 @@ find_image_edge <- function(image_vert) {
 }
 
 my_edge = find_image_edge(my_vert)
-print(my_edge)
+head(my_edge)
 ```
 
 Finally, we find the faces. A face is formed where three vertices share all possible pairwise edges - in other words, where three edges form a triangle, we add a face.
@@ -184,7 +186,7 @@ find_image_face <- function(edge_list) {
 }
 
 my_face = find_image_face(my_edge)
-print(my_face)
+head(my_face)
 ```
 
 We take all of this information and put it together as one simplicial complex object, and plot the result:
