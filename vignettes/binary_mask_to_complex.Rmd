@@ -21,12 +21,7 @@ library(pliman)
 library(ggplot2)
 
 if (!("EBImage" %in% installed.packages())){
-  if( !("BiocManager" %in% installed.packages())){
-    install.packages("BiocManager")
     BiocManager::install("EBImage")
-  } else {
-    BiocManager::install("EBImage")
-  }
 } 
 library(EBImage)
 ```

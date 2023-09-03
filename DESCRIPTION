@@ -28,7 +28,8 @@ Suggests:
     rgl,
     rmarkdown,
     SparseM,
-    pliman
+    pliman,
+    BiocManager
 VignetteBuilder:
 		  knitr
 Encoding: UTF-8
