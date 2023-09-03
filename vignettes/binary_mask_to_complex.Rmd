@@ -30,6 +30,8 @@ In this document, we demonstrate how to take a binary mask and convert it to a s
 
 A binary mask is a matrix-like object where entries of a matrix correspond to pixels of an image. Usually, a pixel is in the region of interest if the matrix entry is equal to 1, and is 0 otherwise. (Note that sometimes depending on the program this may be reversed - check your data and the program you are using for analysis. To use 0 to represent the region of interest, replace all 0's in this file with 1's and 1's with 0's.) The `raster` package can load in a binary mask in the form of a TIF file and store it as a raster object, which we can then convert to a matrix. One can also rasterize an image into a black and white binary mask and go from there. For this exercise, we will have a very basic binary mask created within the document.
 
+## Obtaining complex from binary mask
+
 First, we set up a small binary mask and plot the corresponding image. Note the simplicial complex here will look noticeably different in shape than the binary mask, but that is okay because the more detailed the binary mask, the closer the simplicial complex in appearance, and when we convert the complex back, we should get the same binary mask.
 
 ```{r}
@@ -229,6 +231,8 @@ plot_2D_complex <- function(points, complex, color1="gray", color2="black"){
 
 plot_2D_complex(total_complex$Vertices, total_complex$cmplx)
 ```
+
+## Obtaining binary mask from the complex
 
 To reverse, we plot the simplicial complex with black faces and black edges. We save the image as a png specifying the dimensions in pixels.
 
