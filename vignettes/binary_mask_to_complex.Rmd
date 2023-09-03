@@ -19,10 +19,13 @@ library(ashapesampler)
 library(SparseM)
 library(pliman)
 library(ggplot2)
+```
 
-if (!("EBImage" %in% installed.packages())){
-    BiocManager::install("EBImage")
-} 
+To convert back into binary masks in R code, note that one needs the `EBImage` library, which can be complex in compilation. We have the code to run listed below, but for the sake of smooth compilation, we do not evaluate it in this notebook. If you want to run it in R, run the following code to install the necessary package:
+
+```{r, eval=FALSE}
+install.packages('BiocManager')
+BiocManager::install('EBImage')
 library(EBImage)
 ```
 
@@ -244,9 +247,9 @@ ggsave(file=my_file, plot=bw_plot, width=1, height=1, units="in", dpi = dim_squa
 bw_plot
 ```
 
-We then load this png image using the `image_import` function from the `pliman` library and manually convert it to a binary mask. We correct for the black border that ensures centering of the image when we saved it.
+We then load this png image using the `image_import` function from the `EBImage` library and the `image_to_mat` function from the `pliman` library and manually convert it to a binary mask. We correct for the black border that ensures centering of the image when we saved it. As stated above, we do not evaluate the code here. However, the converted binary mask is displayed below.
 
-```{r}
+```{r, eval=FALSE}
 # load the png
 img <- image_import(my_file)
 # Convert to binmap
@@ -257,4 +260,6 @@ img_bin = matrix(0, nrow=dim_square, ncol=dim_square)
 img_bin[my_ind] = 1
 image(as.matrix.csr(img_bin))
 ```
+![New Binary Mask]("converted_binary_mask.png")
+
 While not a perfect recovery of the original binary mask, the basic tutorial shows the general process for going back and forth. Preservation improves with more detailed pixelation.
