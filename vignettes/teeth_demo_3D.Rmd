@@ -16,4 +16,67 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(ashapesampler)
+library(Rvcg)
+library(rgl)
+library(doParallel)
+cores <- detectCores()
+registerDoParallel(cores=cores)
+```
+
+This document shows how to use the $\alpha$-shape sampler to input primate manibular molars and generate new teeth. Data is linked in the README file. We strongly recommend running this code on a high performance computer. For simplicity, we will focus on the \emph{Microcebus} molars, but all steps can be followed the same way for the \emph{Tarsius} molars.
+
+This code requires packages `rgl`, `Rcvg`, and `doParallel` in addition to `ashapesampler`.
+
+To start, we input the data. Variable `directory` should be changed based on the location of the downloaded data.
+
+```{r}
+directory <- "C:/Users/etwin/Dropbox/" #replace with your directory here.
+setwd(directory)
+
+input_dir <- "microcebus_second_mandibular/"   # To use Tarsius, set to "tarsius_second_manibular"
+file_names=list.files(path=input_dir, full.names=TRUE)
+file_names=file_names[stringr::str_detect(file_names, 'off')] #make sure only off files 
+N = length(file_names)
+```
+
+Next, we need the $\tau$ vector for all teeth. We do this in a loop after we upload each tooth and store it in a list. 
+
+```{r}
+tau_vec = vector("numeric", N)
+teeth_list <- list()
+
+for (k in 1:N){
+  teeth_list[[k]] <- readOFF(file_names[[k]])
+  tau_vec[k] <- tau_bound(teeth_list[[k]]$Vertices, teeth_list[[k]]$cmplx)
+}
+print(tau_vec)
+```
+
+Next, we want to randomly select a $J$ teeth. 
+```{r}
+J = 2
+pair = sample(N,J)
+```
+
+To prevent repeating pairs from the same set, one can run `pairs = combn(N,J); which_sample = sample(dim(pairs)[2], 1)` to get unique combinations (replace 1 with however many new shapes are being generated).
+
+Finally, we run the pipeline to generated the new tooth. We save teeth as we go along. If generating multiple teeth, run this in a for loop.
+
+```{r}
+point_cloud <- rbind(teeth_list[[pair[1]]]$Vertices, teeth_list[[pair[2]]]$Vertices)
+tau = min(tau_vec[pair[1]], tau_vec[pair[2]])
+new_tooth_m <- generate_ashape3d(point_cloud=point_cloud, J=2, tau=tau, k_min=0, cores=cores)
+new_tooth_m <- as.mesh3d(new_tooth_m)
+new_file <- "new_teeth_ply/new_tooth1.ply"   #Change this variable to your file.
+open3d()
+shade3d(new_tooth_m)
+writePLY(new_file)
+close3d()
+print(pair)
+```
+
+Finally, we can plot the new tooth.
+
+```{r}
+plot3d(new_tooth_m, col="gray", xlab="", ylab="", zlab="", axes= NONE)
 ```
