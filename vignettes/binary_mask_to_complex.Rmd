@@ -19,6 +19,16 @@ library(ashapesampler)
 library(SparseM)
 library(pliman)
 library(ggplot2)
+
+if (!("EBImage" %in% installed.packages())){
+  if( !("BiocManager" %in% installed.packages())){
+    install.packages("BiocManager")
+    BiocManager::install("EBImage")
+  } else {
+    BiocManager::install("EBImage")
+  }
+} 
+library(EBImage)
 ```
 
 In this document, we demonstrate how to take a binary mask and convert it to a simplicial complex for input for the $\alpha$-shape sampler. We will then demonstrate how to reverse the process with a simplicial complex transforming to a binary mask. Additional packages needed for this notebook are `SparseM`, `pliman`, and `ggplot2`.

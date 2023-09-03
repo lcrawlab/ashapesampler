@@ -30,8 +30,7 @@ This code requires packages `rgl`, `Rcvg`, and `doParallel` in addition to `asha
 To start, we input the data. Variable `directory` should be changed based on the location of the downloaded data.
 
 ```{r}
-#directory <- "C:/Users/etwin/Dropbox/" #replace with your directory here, commenting out to avoid bugs in the git repo. But uncomment here.
-#setwd(directory)
+directory <- "C:/Users/etwin/Dropbox/" #replace with your directory here, commenting out to avoid bugs in the git repo. But uncomment here.
 
 input_dir <- "microcebus_second_mandibular/"   # To use Tarsius, set to "tarsius_second_manibular"
 file_names=list.files(path=input_dir, full.names=TRUE)
