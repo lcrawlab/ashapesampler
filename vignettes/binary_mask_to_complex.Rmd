@@ -75,7 +75,7 @@ new_matrix[indices] <- 1
 image(as.matrix.csr(new_matrix))
 ```
 
-The pixels themselves will represent the vertices of the complex. To add some noise and randomness to the input shapes, we allow for the points to be plotted anywhere within the pixel as projected onto a $\[0,1\] \times \[0,1\]$ square. We store these vertex locations in a data frame containing the vertex label (labeled numerically if none given), the original matrix row, original matrix column, the x coordinate, and y coordinate.  
+The pixels themselves will represent the vertices of the complex. To add some noise and randomness to the input shapes, we allow for the points to be plotted anywhere within the pixel as projected onto a $[0,1] \times \[0,1\]$ square. We store these vertex locations in a data frame containing the vertex label (labeled numerically if none given), the original matrix row, original matrix column, the x coordinate, and y coordinate.  
 
 ```{r}
 # Adds some randomness to pixel points so that not just straight grid on xy plane (helper function)
@@ -256,12 +256,12 @@ We then load this png image using the `image_import` function from the `EBImage`
 img <- image_import(my_file)
 # Convert to binmap
 img_bin <- image_to_mat(img)
-img_binR <- t(img_bin$R)
-my_ind = which(img_binR[2:(dim_square-1), 2:(dim_square-1)] < 1, arr.ind=TRUE)
+img_binR <- t(matrix(img_bin$B1, nrow=20,ncol=20))
+my_ind = which(img_binR[2:(dim_square-1), 2:(dim_square-1)] < 0.7, arr.ind=TRUE)
 img_bin = matrix(0, nrow=dim_square, ncol=dim_square)
 img_bin[my_ind] = 1
 image(as.matrix.csr(img_bin))
 ```
-![New Binary Mask]("converted_binary_mask.png")
+![New Binary Mask](converted_binary_mask.png)
 
-While not a perfect recovery of the original binary mask, the basic tutorial shows the general process for going back and forth. Preservation improves with more detailed pixelation.
+While not a perfect rendition, the major characteristics are preserved and most importantly, the shape bears resemblence to the simplicial complex. Note that for the neutrophils, we used a threshold of 1 instead of 0.7; the change in threshold has to do with the detailed pixelation and may require trial and error on the part of the user. Generally speaking, the more detailed the pixelation (e.g., the larger `dim_square`), then the higher the threshold for accepting a pixel in the binary mask. The basic tutorial shows the general process for going back and forth. Performance improves with more detailed binary masks.
