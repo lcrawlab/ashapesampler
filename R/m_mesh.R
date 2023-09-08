@@ -1,12 +1,12 @@
 #' Microcebus Teeth as mesh3d objects
-#' 
+#'
 #' This data set is of 8 mesh3d representations of Microcebus mandibular molars
 #' use in Winn-Nunez, et. al. (2023). These were imported from off files.
-#' See <https://cran.r-project.org/web/packages/Rvcg/Rvcg.pdf>
+#' See <https://cran.r-project.org/package=Rvcg>
 #' for more information about the mesh3d object and the vcgImport function.
 #'
 #' @format
-#' A named list containing Microcebus molars as mesh3d objects of the Rvcg package 
+#' A named list containing Microcebus molars as mesh3d objects of the Rvcg package
 #' \describe{
 #'   \item{vb}{4 x n matrix containing n vertices as homolougous coordinates}
 #'   \item{it}{3 x m matrix containing vertex indices forming triangular faces}

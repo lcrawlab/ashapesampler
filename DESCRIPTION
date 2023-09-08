@@ -17,7 +17,6 @@ Imports:
     stats,
     Rvcg,
     TDA,
-    ggplot2,
     doParallel,
     foreach,
     parallel,
@@ -26,6 +25,7 @@ Suggests:
     knitr,
     testthat,
     rgl,
+    ggplot2,
     rmarkdown,
     SparseM,
     pliman

@@ -1,4 +1,5 @@
 #mcmc sampling
+globalVariables(c("i"))
 
 #' Generate 3D alpha shape
 #'
