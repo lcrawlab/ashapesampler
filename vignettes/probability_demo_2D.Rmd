@@ -10,7 +10,9 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=6,
+  fig.height=6
 )
 ```
 
@@ -22,13 +24,11 @@ This document illustrates how to sample $\alpha$-shapes from a true probability 
 
 There are several ways to adjust the hierarchical distribution of the function which will be discussed throughout the document. The function requires only parameter $N$, the number of shapes to be sampled. All other parameters are set to default, and the function samples an $\alpha$-shape from the following distribution:
 
-\begin{align*}
-    \alpha & \sim \mathcal{N}_T(\mu=0.25,\sigma=0.5, a=\min(0.1, tau/4), b=\tau/2) \\
-    n | \alpha & = n_{c min}(\alpha, \delta=0.05)\\
-    x_1, ..., x_n & \stackrel{i.i.d.}{\sim} \text{Unif}(\mathcal{M} = \[0, 1\] \times \[0,1\]) 
-\end{align*}
+$$\alpha  \sim \mathcal{N}_T(\mu=0.25,\sigma=0.5, a=\min(0.1, \tau/4), b=\tau/2)$$
+$$n | \alpha = n_{c min}(\alpha, \delta=0.05)$$
+$$x_1, ..., x_n \sim \text{Unif}(\mathcal{M}) $$
 
-where $n$ the number of points sampled is dependent on the number of points needed to produce a connected shape for a randomly selected $\alpha$, $\delta$ is the probability that the generated shape has more than one connected component, and points are selected uniformly from the unit square. We could allow the lower bound of $\alpha$ to be as small as $a=0$, however, we set it to $a= min(0.1, tau/4)$ to prevent computational bottleneck. Bounds of the truncated normal distribution are fixed for the user. Values of $\tau$ for different underlying manifolds are as follows:
+where $n$ the number of points sampled is dependent on the number of points needed to produce a connected shape for a randomly selected $\alpha$, $\delta$ is the probability that the generated shape has more than one connected component, and points are selected uniformly from some manifold $\mathcal{M}$. We could allow the lower bound of the truncated normal distribution of $\alpha$ to be as small as $a=0$, however, we set it to $a= min(0.1, tau/4)$ to prevent computational bottleneck. Bounds of the truncated normal distribution are fixed for the user. Values of $\tau$ for different underlying manifolds are as follows:
 
 * If the underlying manifold is a square with side length $r$, $\tau=r/2$.
 * If the underlying manifold is a circle with radius $r$, $\tau=r$.

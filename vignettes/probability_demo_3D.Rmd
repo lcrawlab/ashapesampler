@@ -10,26 +10,27 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=6,
+  fig.height=6
 )
 ```
 
 ```{r setup}
 library(ashapesampler)
 library(rgl)
+options(rgl.useNULL = TRUE)
 ```
 
 This document illustrates how to sample $\alpha$-shapes from a true probability distribution in three dimensions. The main function within the package to do this is `sampling3Dashape`, which generates $\alpha$-shapes given the parameters. Package `rgl` is needed for plotting, and plots will show in a pop out window.
 
 There are several ways to adjust the hierarchical distribution of the function which will be discussed throughout the document. The function requires only parameter $N$, the number of shapes to be sampled. All other parameters are set to default, and the function samples an $\alpha$-shape from the following distribution:
 
-\begin{align*}
-    \alpha & \sim \mathcal{N}_T(\mu=0.25,\sigma=0.5, a=\min(0.1, tau/4), b=\tau/2) \\
-    n | \alpha & = n_{c min}(\alpha, \delta=0.05)\\
-    x_1, ..., x_n & \stackrel{i.i.d.}{\sim} \text{Unif}(\mathcal{M} = \[0, 1\] \times \[0,1\] \times \[0,1\]) 
-\end{align*}
+$$\alpha  \sim \mathcal{N}_T(\mu=0.25,\sigma=0.5, a=\min(0.1, \tau/4), b=\tau/2)$$
+$$n | \alpha = n_{c min}(\alpha, \delta=0.05)$$
+$$x_1, ..., x_n \sim \text{Unif}(\mathcal{M}) $$
 
-where $n$ the number of points sampled is dependent on the number of points needed to produce a connected shape for a randomly selected $\alpha$, $\delta$ is the probability that the generated shape has more than one connected component, and points are selected uniformly from the unit square. We could allow the lower bound of $\alpha$ to be as small as $a=0$, however, we set it to $a= min(0.1, tau/4)$ to prevent computational bottleneck. Bounds of the truncated normal distribution are fixed for the user. Values of $\tau$ for different underlying manifolds are as follows:
+where $n$ the number of points sampled is dependent on the number of points needed to produce a connected shape for a randomly selected $\alpha$, $\delta$ is the probability that the generated shape has more than one connected component, and points are selected uniformly from some manifold $\mathcal{M}$. We could allow the lower bound of the truncated normal distribution of $\alpha$ to be as small as $a=0$, however, we set it to $a= min(0.1, tau/4)$ to prevent computational bottleneck. Bounds of the truncated normal distribution are fixed for the user. Values of $\tau$ for different underlying manifolds are as follows:
 
 * If the underlying manifold is a square with side length $r$, $\tau=r/2$.
 * If the underlying manifold is a circle with radius $r$, $\tau=r$.
@@ -42,21 +43,22 @@ For demonstration purposes, we set $N=1$. The `sampling3Dashape` function return
 ```{r}
 set.seed(100001)
 my_ashape = sampling3Dashape(N=1)
-plot3d(my_ashape[[1]])
+plot(my_ashape[[1]])
+rglwidget()
 ```
+
 To make the number of points a random variable in and of itself, we can add a discrete distribution $\pi$ to $n | \alpha$. In the code, this discrete distribution is a Poisson distribution with default $\lambda = 3$. Parameter $\lambda$ can be adjusted by the user. The distribution from which the new shape is sampled is then given by:
 
-\begin{align*}
-    \alpha & \sim \mathcal{N}_T(\mu=0.25,\sigma=0.5, a=0, b=0.5) \\
-    n | \alpha & = n_{c min}(\alpha, \delta=0.05) + \text{Poisson}(\lambda=3)\\
-    x_1, ..., x_n & \stackrel{i.i.d.}{\sim} \text{Unif}(\mathcal{M} = \[0, 1\] \times \[0,1\] \time \[0,1\]) 
-\end{align*}
+$$\alpha  \sim \mathcal{N}_T(\mu=0.25,\sigma=0.5, a=\min(0.1, \tau/4), b=\tau/2)$$
+$$n | \alpha = n_{c min}(\alpha, \delta=0.05) + \text{Poisson}(\lambda)$$
+$$x_1, ..., x_n \sim \text{Unif}(\mathcal{M}) $$
 
 To make the code dynamic, set `n.noise = TRUE`. This code is where $\lambda = 3$. 
 
 ```{r}
 my_ashape = sampling3Dashape(N=1, n.noise = TRUE)
 plot(my_ashape[[1]])
+rglwidget()
 ```
 
 Code with the adjustment $\lambda = 10$:
@@ -64,6 +66,7 @@ Code with the adjustment $\lambda = 10$:
 ```{r}
 my_ashape = sampling3Dashape(N=1, n.noise = TRUE, lambda = 10)
 plot(my_ashape[[1]])
+rglwidget()
 ```
 
 
@@ -72,6 +75,7 @@ We can also change the dependence of $n$ relative to $\alpha$. First, we can mak
 ```{r}
 my_ashape = sampling3Dashape(N=1, n.dependent=FALSE, n.noise=TRUE, lambda = 5)
 plot(my_ashape[[1]])
+rglwidget()
 ```
 
 In the other direction, we can choose to make $n$ dependent on $\alpha$ such that the underlying manifold's topology is preserved. In the case of a square, this means we will have one connected component with no holes with probability $1 - \delta$. Here, it is strict that $\alpha/2 < \tau$, which defaults to 1. Note that the smaller $\tau$ is, the smaller $\alpha$ has to be, the more points which must be sampled, and thus the slower the algorithm. Users will see the variation in the shapes will lie on the boundaries when setting `nhomology=TRUE`:
@@ -79,15 +83,15 @@ In the other direction, we can choose to make $n$ dependent on $\alpha$ such tha
 ```{r}
 my_ashape = sampling3Dashape(N=1, nhomology = TRUE)
 plot(my_ashape[[1]])
+rglwidget()
 ```
 
 While the default manifold is the unit square, we can also adjust the size of the square with parameter $r$, which defaults to $r=1$. For example, we can change the size of the square such that the length of one side is $r = 0.5$: 
 
 ```{r}
 my_ashape = sampling3Dashape(N=1, r=0.5)
-my_alpha = my_ashape[[1]]$alpha
-
 plot(my_ashape[[1]])
+rglwidget()
 ```
 
 We can also make the square bigger by increasing $r$. Note that the number of points to meet the minimum conditions to meet thresholds for no isolated point or maintaining the underlying homology increases as the area of the underlying manifold increases, and thus may take longer to compute. Other shape options include the sphere and the shell. To sample points from a sphere, we set `bound="sphere"`. Default radius is $r=1$, but we can adjust that as with the cube. To sample $\alpha$-shapes with points from the interior of the unit sphere, use the following code:
@@ -95,6 +99,7 @@ We can also make the square bigger by increasing $r$. Note that the number of po
 ```{r}
 my_ashape = sampling3Dashape(N=1, bound="sphere")
 plot(my_ashape[[1]])
+rglwidget()
 ```
 
 
@@ -103,6 +108,7 @@ For the shell, $r$ represents the outer radius while $rmin=0.25$ is the inner ra
 ```{r}
 my_ashape = sampling3Dashape(N=1, r=0.75, rmin=0.5, bound="shell")
 plot(my_ashape[[1]])
+rglwidget()
 ```
 
 Finally, we can adjust the distribution for $\alpha$ itself. First, we can fix $\alpha$ to a set number for all $\alpha$-shapes being sampled by setting `afixed=TRUE`. The default value of $\alpha$ for this function is $\alpha = 0.24$ but will automatically adjust to $\tau/2-0.001$ if it is larger than $\tau/2$. Note that when `n.dependent=TRUE` then as $\alpha$ approaches 0 $n$ will approach infinity and cause a computational bottleneck. The following is example code for fixed $\alpha=0.2$ on the unit sphere:
@@ -110,6 +116,7 @@ Finally, we can adjust the distribution for $\alpha$ itself. First, we can fix $
 ```{r}
 my_ashape = sampling3Dashape(N=1, afixed = TRUE, alpha=0.2, bound="sphere")
 plot(my_ashape[[1]])
+rglwidget()
 ```
 
 We can also adjust the truncated normal distribution mean $\mu$ and standard deviation $\sigma$. We recommend that $\mu$ is less than $\tau/2$, the upper bound of the truncated normal distribution, and larger than 0. A warning will pop up if this is not the case but otherwise the code will run normally. We require $\sigma$ to be larger than 0. The following code is for a distribution where $\mu = 0.2$ and $\sigma = 0.1$:
@@ -117,6 +124,7 @@ We can also adjust the truncated normal distribution mean $\mu$ and standard dev
 ```{r}
 my_ashape = sampling3Dashape(N=1, mu=0.2, sigma = 0.1)
 plot(my_ashape[[1]])
+rglwidget()
 ```
 
 If `afixed=TRUE`, even if values of mean `mu` and standard deviation `sigma` are input, they are ignored.

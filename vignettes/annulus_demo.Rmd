@@ -10,7 +10,9 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=6,
+  fig.height=6
 )
 ```
 
@@ -19,13 +21,15 @@ library(ashapesampler)
 library(alphahull)
 library(ggplot2)
 library(doParallel)
-cores = detectCores()
+library(parallel)
+cores <- min(2L, detectCores())
 registerDoParallel(cores=cores)
 ```
 
 In this document, we demonstrate the $\alpha$-shape sampler pipeline by simulating
 the process of learning a set of two-dimensional shapes (in this case, annuli) and
-simulating a new shape from that. This vignette requires the packages \emph{alphahull}, \emph{ggplot2}, and \emph{doParallel} in addition to \emph{ashapesampler}.
+simulating a new shape from that. This vignette requires the packages `alphahull`, 
+`ggplot2`, `parallel`, and `doParallel` in addition to `ashapesampler`.
 
 We begin by setting the parameters for our simulation. We will fix $\alpha=0.25$ 
 and $n=100$, and draw 20 shapes for our data set. Our true underlying manifold
@@ -72,17 +76,18 @@ geometric and topological information in the reconstruction.
 tau_vec2 = c(tau_vec[choose_2[1]], tau_vec[choose_2[2]])
 ```
 
-Now we can take the parameters and generate a new shape and plot it. We assume
-our bound to be a square, though the function allows for "circle" (disk) and "annulus" 
-as well.
+Now we can take the parameters and generate a new shape and plot it. Here, we assume `k_min=2` as we are in two dimensions.
 ```{r}
-new_annulus <- generate_ashape2d(point_cloud, J=2, tau=min(tau_vec2), cores=cores)
+new_annulus <- generate_ashape2d(point_cloud, J=2, tau=min(tau_vec2), 
+                                 cores=cores)
 
 
 tri_keep = new_annulus$delvor.obj$tri.obj$trlist[which(new_annulus$delvor.obj$tri.obj$cclist[,3]<new_annulus$alpha), 1:3]
 dim_tri = dim(tri_keep)[1]
 tri_keep = as.vector(t(tri_keep))
-triangles = data.frame("id"=sort(rep(1:dim_tri, 3)), "x"=new_annulus$x[tri_keep, 1], "y"=new_annulus$x[tri_keep,2])
+triangles = data.frame("id"=sort(rep(1:dim_tri, 3)), 
+                       "x"=new_annulus$x[tri_keep, 1], 
+                       "y"=new_annulus$x[tri_keep,2])
 extremes = as.data.frame(new_annulus$x[new_annulus$alpha.extremes,])
 
 edges = as.data.frame(new_annulus$edges[,3:6])

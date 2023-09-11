@@ -19,13 +19,17 @@ library(ashapesampler)
 library(alphashape3d)
 library(alphahull)
 library(doParallel)
-cores = detectCores()
+library(parallel)
+cores <- min(2L, detectCores())
 registerDoParallel(cores=cores)
+library(rgl)
+options(rgl.useNULL = TRUE)
 ```
 
 In this document, we demonstrate the $\alpha$-shape sampler pipeline by simulating
 the process of learning a set of three-dimensional shapes (in this case, tori) and
-simulating a new shape from that. This vignette requires the packages \emph{alphashape3d}, \emph{alphahull}, and \emph{rgl} in addition to \emph{ashapesampler}.
+simulating a new shape from that. This vignette requires the packages `alphashape3d`,
+`alphahull`, `rgl`, `parallel`, and `doParallel` in addition to `ashapesampler`.
 
 We begin by setting the parameters for our simulation. We will fix $\alpha=0.25$ 
 and $n=500$, and draw 20 shapes for our data set. Our true underlying manifold
@@ -74,10 +78,10 @@ geometric and topological information in the reconstruction.
 tau = min(tau_vec[choose_2[1]], tau_vec[choose_2[2]])
 ```
 
-Now we can take the parameters and generate a new shape and plot it. We assume
-our bound to be a cube, though the function allows for "sphere" (three-dimensional ball) and "shell" as well.
+Now we can take the parameters and generate a new shape and plot it. Note we assume `k_min=3` as we are in three dimensions.
 
 ```{r}
 new_torus <- generate_ashape3d(point_cloud, J=2, tau=tau, cores=cores)
 plot(new_torus, indexAlpha="all")
+rglwidget()
 ```
