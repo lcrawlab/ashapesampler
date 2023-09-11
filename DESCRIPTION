@@ -4,7 +4,8 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Emily", "Winn-Nunez", , "emily_winn@brown.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6759-5406"))
-Description: This package allows users to generate alpha shapes from a distribution
+Description: Shape statistics is a growing field. This package allows users to 
+              generate alpha shapes from a distribution
               in two and three dimensions. It also allows users to take a data
               set of shapes and generate new alpha shapes from the distribution
               using non-black box methods.
@@ -37,3 +38,4 @@ RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)
 LazyData: true
+LazyDataCompression:xz

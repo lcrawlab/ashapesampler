@@ -19,7 +19,14 @@ library(ashapesampler)
 library(alphashape3d)
 library(alphahull)
 library(doParallel)
-cores = detectCores()
+cores <- 1L
+if (nzchar(chk) && chk == "TRUE") {
+    # use 2 cores in CRAN/Travis/AppVeyor
+    cores <- 2L
+} else {
+    # use all cores in devtools::test()
+    cores <- parallel::detectCores()
+}
 registerDoParallel(cores=cores)
 library(rgl)
 options(rgl.useNULL = TRUE)

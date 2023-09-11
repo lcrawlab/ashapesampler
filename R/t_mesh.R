@@ -3,7 +3,7 @@
 #' This data set is of 7 mesh3d representations of Tarsius mandibular molars
 #' use in Winn-Nunez, et. al. (2023). These were imported from off files using
 #' the vcgImport function from package Rvcg.
-#' See <https://cran.r-project.org/package=Rvcg>
+#' See <https://CRAN.R-project.org/package=Rvcg>
 #' for more information about the mesh3d object and the vcgImport function.
 #'
 #' @format

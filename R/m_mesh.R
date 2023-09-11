@@ -2,7 +2,7 @@
 #'
 #' This data set is of 8 mesh3d representations of Microcebus mandibular molars
 #' use in Winn-Nunez, et. al. (2023). These were imported from off files.
-#' See <https://cran.r-project.org/package=Rvcg>
+#' See <https://CRAN.R-project.org/package=Rvcg>
 #' for more information about the mesh3d object and the vcgImport function.
 #'
 #' @format

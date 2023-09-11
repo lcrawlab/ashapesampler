@@ -13,7 +13,7 @@ A named list containing Microcebus molars as mesh3d objects of the Rvcg package
 }
 }
 \source{
-vignette/teeth_demo_3D.Rmd
+\url{https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/K9A0EG&faces-redirect=true}
 }
 \usage{
 m_mesh
@@ -21,7 +21,7 @@ m_mesh
 \description{
 This data set is of 8 mesh3d representations of Microcebus mandibular molars
 use in Winn-Nunez, et. al. (2023). These were imported from off files.
-See \url{https://cran.r-project.org/web/packages/Rvcg/Rvcg.pdf}
+See \url{https://CRAN.R-project.org/package=Rvcg}
 for more information about the mesh3d object and the vcgImport function.
 }
 \keyword{datasets}

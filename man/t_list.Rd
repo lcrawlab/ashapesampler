@@ -12,7 +12,7 @@ A named list containing Microcebus molars as mesh3d objects of the Rvcg package
 }
 }
 \source{
-vignette/teeth_demo_3D.Rmd
+\url{https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/K9A0EG&faces-redirect=true}
 }
 \usage{
 t_list
