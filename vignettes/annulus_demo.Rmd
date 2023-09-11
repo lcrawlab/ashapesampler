@@ -21,15 +21,7 @@ library(ashapesampler)
 library(alphahull)
 library(ggplot2)
 library(doParallel)
-chk <- Sys.getenv("_R_CHECK_LIMIT_CORES_", "")
-cores <- 1L
-if (nzchar(chk) && chk == "TRUE") {
-    # use 2 cores in CRAN/Travis/AppVeyor
-    cores <- 2L
-} else {
-    # use all cores in devtools::test()
-    cores <- parallel::detectCores()
-}
+cores <- min(2L, parellel::detectCores())
 registerDoParallel(cores=cores)
 ```
 
