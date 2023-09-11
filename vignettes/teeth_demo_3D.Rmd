@@ -19,14 +19,15 @@ library(ashapesampler)
 library(Rvcg)
 library(rgl)
 library(doParallel)
-cores <- min(2L, parellel::detectCores())
+library(parallel)
+cores <- min(2L, detectCores())
 registerDoParallel(cores=cores)
 options(rgl.useNULL = TRUE)
 ```
 
 This document shows how to use the $\alpha$-shape sampler to input primate manibular molars and generate new teeth. Data is linked in the README file. We strongly recommend running this code on a high performance computer. For simplicity, we will focus on the *Microcebus* molars, but all steps can be followed the same way for the *Tarsius* molars.
 
-This code requires packages `rgl`, `Rcvg`, and `doParallel` in addition to `ashapesampler`.
+This code requires packages `rgl`, `Rcvg`, `parallel`, and `doParallel` in addition to `ashapesampler`.
 
 To start, we input the data. These data are part of the package, but for demonstration purposes, below is the code that one would run to input a series of off files.  Variable `directory` should be changed based on the location of the desired data.
 

@@ -19,7 +19,8 @@ library(ashapesampler)
 library(alphashape3d)
 library(alphahull)
 library(doParallel)
-cores <- min(2L, parellel::detectCores())
+library(parallel)
+cores <- min(2L, detectCores())
 registerDoParallel(cores=cores)
 library(rgl)
 options(rgl.useNULL = TRUE)
@@ -27,7 +28,8 @@ options(rgl.useNULL = TRUE)
 
 In this document, we demonstrate the $\alpha$-shape sampler pipeline by simulating
 the process of learning a set of three-dimensional shapes (in this case, tori) and
-simulating a new shape from that. This vignette requires the packages \emph{alphashape3d}, \emph{alphahull}, and \emph{rgl} in addition to \emph{ashapesampler}.
+simulating a new shape from that. This vignette requires the packages `alphashape3d`,
+`alphahull`, `rgl`, `parallel`, and `doParallel` in addition to `ashapesampler`.
 
 We begin by setting the parameters for our simulation. We will fix $\alpha=0.25$ 
 and $n=500$, and draw 20 shapes for our data set. Our true underlying manifold

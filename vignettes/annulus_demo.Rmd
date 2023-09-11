@@ -21,13 +21,15 @@ library(ashapesampler)
 library(alphahull)
 library(ggplot2)
 library(doParallel)
-cores <- min(2L, parellel::detectCores())
+library(parallel)
+cores <- min(2L, detectCores())
 registerDoParallel(cores=cores)
 ```
 
 In this document, we demonstrate the $\alpha$-shape sampler pipeline by simulating
 the process of learning a set of two-dimensional shapes (in this case, annuli) and
-simulating a new shape from that. This vignette requires the packages \emph{alphahull}, \emph{ggplot2}, and \emph{doParallel} in addition to \emph{ashapesampler}.
+simulating a new shape from that. This vignette requires the packages `alphahull`, 
+`ggplot2`, `parallel`, and `doParallel` in addition to `ashapesampler`.
 
 We begin by setting the parameters for our simulation. We will fix $\alpha=0.25$ 
 and $n=100$, and draw 20 shapes for our data set. Our true underlying manifold
