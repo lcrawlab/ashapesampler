@@ -45,13 +45,14 @@ for (k in 1:N){
 }
 ```
 
-To load the teeth data specifically, we need only load the data from the `ashapesampler` package. 
+To load the teeth data used in the paper, use the above code on the downloaded files from INSERT LINK HERE for the off files of all teeth. In the `ashapesampler` package, we include two real *Microcebus* teeth for demonstrative purposes only.
 
 Next, we need the $\tau$ vector for all teeth. We do this in a loop after we upload each tooth and store it in a list. 
 
 ```{r}
-data(m_list) # use t_list to get Tarsius teeth
-N = length(m_list)       # replace all m_list variables with t_list for tarsius
+data(teeth_demo) 
+m_list = teeth_demo[[1]]
+N = 2       
 tau_vec = vector("numeric", N)
 
 for (k in 1:N){
@@ -60,8 +61,10 @@ for (k in 1:N){
 print(tau_vec)
 ```
 
-Next, we want to randomly select a $J$ teeth. We use $J=2$.
-```{r}
+One indication that there may be an outlier shape is if the $\tau$ value of one shape is several standard deviations from the mean of the rest of the data. For example, in the set of *Microcebus* teeth, the $\tau$ values are all around 0.02. If a tooth in this data set had a $\tau$ value of 1, this may indicate that there will be issues using that particular tooth for shape generation via the $\alpha$-shape sampler.
+
+Next, we want to randomly select a $J$ teeth. Since the teeth here are fixed, this code block below shows how to sample a pair without replacement from $N$ objects.
+```{r, eval=FALSE}
 J = 2
 pair = sample(N,J)
 ```
@@ -71,6 +74,7 @@ To prevent repeating pairs from the same set, one can run `pairs = combn(N,J); w
 Finally, we run the pipeline to generated the new tooth. Note that we set `k_min=0`, as these are meshes and therefore have 0 volume in space, thereby causing a massive rejection rate if `k_min` is set any higher, as the probability of acceptance goes to 0. We save teeth as we go along. If generating multiple teeth, run this in a for loop.
 
 ```{r}
+pair = c(1,2)
 point_cloud <- rbind(m_list[[pair[1]]]$Vertices, m_list[[pair[2]]]$Vertices)
 tau = min(tau_vec[pair[1]], tau_vec[pair[2]])
 new_tooth_m <- generate_ashape3d(point_cloud=point_cloud, J=2, tau=tau, 
@@ -100,7 +104,7 @@ rglwidget()
 We can compare this tooth to the two teeth from which it was generated.
 
 ```{r}
-data(m_mesh)    # use t_mesh for Tarsius teeth
+m_mesh = teeth_demo[[2]]  
 plot3d(m_mesh[[pair[1]]], col="lightblue", xlab="", ylab="", zlab="", axes=FALSE)
 rglwidget()
 ```

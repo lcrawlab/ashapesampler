@@ -2,6 +2,7 @@ test_that( 'tau bound error', {
   #given
   points2 <- rbind(c(0,0), c(0,1), c(1,0))
   points3 <- rbind(c(0,1,0), c(1,0,1), c(1,1,0), c(0,1,1))
+  points4 <- cbind(points3, c(1,0,1,0))
   empty_complex = list()
   complex_edges_2 = append(as.list(1:3), list(c(1,2), c(2,3), c(1,3)))
   #when
@@ -18,6 +19,11 @@ test_that( 'tau bound error', {
   expect_error(tau_bound(points2, complex_edges_2, extremes = 1:10))
   expect_error(tau_bound(points2, empty_complex))
   expect_error(tau_bound(points3, complex_edges_2))
+  expect_error(tau_bound(points4, complex_edges_2))
+  expect_error(circ_face_2D(points4))
+  expect_error(circ_face_3D(points4))
+  expect_error(circ_tet_3D(points2))
+  expect_error(extreme_pts(complex_edges2, n_vert=3, dimension=6))
 }
 )
 

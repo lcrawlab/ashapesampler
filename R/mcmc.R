@@ -107,7 +107,8 @@ generate_ashape3d <- function(point_cloud,
   }
   my_points = unique(my_points) #keeps error free if necessary.
   if (dim(my_points)[1] < 5) {
-    stop("Not enough points accepted in MCMC walk to make a shape. Need at least 5.")
+    stop("Not enough points accepted to make a shape. Need at least 5. Check tau and k_min parameters to 
+         increase probability of acceptance.")
   }
   rr = dim(my_points)[1] / (m * dim(point_cloud)[1])
   print(paste0("Acceptance Rate is ", rr))
@@ -220,7 +221,8 @@ generate_ashape2d <- function(point_cloud,
   }
   my_points = unique(my_points) #keeps error free if necessary.
   if (dim(my_points)[1] < 3) {
-    stop("Not enough points accepted in MCMC walk to make a shape. Need at least 3.")
+    stop("Not enough points accepted to make a shape. Need at least 3. Check tau and k_min parameters to 
+         increase probability of acceptance.")
   }
   rr = dim(my_points)[1] / (m * dim(point_cloud)[1])
   print(paste0("Acceptance Rate is ", rr))
