@@ -266,7 +266,7 @@ image(as.matrix.csr(img_bin))
 
 While not a perfect rendition, the major characteristics are preserved and most importantly, the shape bears resemblence to the simplicial complex. Note that for the neutrophils, we used a threshold of 1 instead of 0.7; the change in threshold has to do with the detailed pixelation and may require trial and error on the part of the user. Additionally, if the centroid or center of the shape matters, then one should use the following python code to convert their complex back to a binary mask, as we did for the neutrophils (lines 277-284 remove any potential border that is accidentally placed during the conversion process):
 
-```{python, eval=FALSE}
+```{python, python.reticulate=FALSE, eval=FALSE}
 import numpy as np
 import pandas as pd
 import cv2
