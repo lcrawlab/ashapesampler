@@ -4,7 +4,7 @@
 \alias{tau_bound}
 \title{tau_bound}
 \usage{
-tau_bound(v_list, complex, extremes = NULL, cores = 1)
+tau_bound(v_list, complex, extremes = NULL, cores = 1, sumstat = "mean")
 }
 \arguments{
 \item{v_list}{matrix or data frame of cartesian coordinates of vertices in
@@ -21,6 +21,9 @@ and when calculating alpha because you will get a bigger (but
 still valid) tau bound.}
 
 \item{cores}{number of cores for parallelizing. Default 1.}
+
+\item{sumstat}{string for summary statistic to be used to get final tau for
+shape. Default is 'mean'. Options are 'median', 'min', and 'max'.}
 }
 \value{
 tau_vec, vector real nonnegative number. Tau values for each point

@@ -20,6 +20,7 @@ test_that( 'tau bound error', {
   expect_error(tau_bound(points2, empty_complex))
   expect_error(tau_bound(points3, complex_edges_2))
   expect_error(tau_bound(points4, complex_edges_2))
+  expect_error(tau_bound(points2, complex_edges_2, sumstat="bloop"))
   expect_error(circ_face_2D(points4))
   expect_error(circ_face_3D(points4))
   expect_error(circ_tet_3D(points2))
@@ -48,6 +49,9 @@ test_that( 'tau bound', {
   expect_equal(tau_bound(points2, complex_iso_2), 1)
   expect_equal(tau_bound(points3, complex_iso_3), 1)
   expect_equal(tau_bound(points2, complex_1_iso), mean(c(1,1,sqrt(2)))) #avg of 1, 1, and sqrt(2) for mean, 1 for min
+  expect_equal(tau_bound(points2, complex_1_iso, sumstat="min"), min(c(1,1,sqrt(2))))
+  expect_equal(tau_bound(points2, complex_1_iso, sumstat="max"), max(c(1,1,sqrt(2))))
+  expect_equal(tau_bound(points2, complex_1_iso, sumstat="median"), median(c(1,1,sqrt(2))))
   expect_equal(tau_bound(points2, complex_edges_2), mean(c(1,sqrt(2),sqrt(2)))) #1 for min, avg of 1,sqrt(2),sqrt(2) for mean
   expect_equal(tau_bound(points3, complex_edges_3), mean(c(sqrt(2),sqrt(3),sqrt(3),sqrt(2)))) #sqrt(2) for min
   expect_equal(tau_bound(points2, complex_face_2), sqrt(2))

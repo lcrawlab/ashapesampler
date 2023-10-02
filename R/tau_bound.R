@@ -20,13 +20,15 @@
 #'                 and when calculating alpha because you will get a bigger (but
 #'                 still valid) tau bound.
 #' @param cores number of cores for parallelizing. Default 1.
+#' @param sumstat string for summary statistic to be used to get final tau for
+#'                shape. Default is 'mean'. Options are 'median', 'min', and 'max'.
 #' @return tau_vec, vector real nonnegative number. Tau values for each point
 #' @export
 #' @importFrom stats na.omit
 #' @import doParallel
 #' @import foreach
 #' @importFrom dplyr setdiff
-tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
+tau_bound <- function(v_list, complex, extremes=NULL, cores = 1, sumstat="mean"){
   ### Determine the number of Cores for Parallelization ###
   # if(cores > 1){
   #   if(cores>detectCores()){
@@ -61,6 +63,12 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
   if(length(unlist(complex[1:n]))!=n){
     stop("Vertices must be listed at start of complex list and number of vertices
          in complex must match number of vertices in vertex matrix.")
+  }
+  # Check sumstat
+  sumstat = tolower(sumstat)
+  if( !(sumstat %in% c("mean", "median", "min", "max"))){
+    stop("Not a valid sumstat value. Check spelling. Options are 'mean', 'median',
+         'min', or 'max'. Default is 'mean'.")
   }
   m = length(extremes)
   if (m == 0){
@@ -132,7 +140,16 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1){
     }
     #tau
   }
-    tau_keep = mean(tau_vec[tau_vec>0])
+    tau_keep = -1
+    if(sumstat=="max"){
+      tau_keep = max(tau_vec[tau_vec>0])
+    } else if (sumstat == "median"){
+      tau_keep = median(tau_vec[tau_vec>0])
+    } else if (sumstat == "min") {
+      tau_keep = min(tau_vec[tau_vec>0])
+    } else {
+      tau_keep = mean(tau_vec[tau_vec>0])
+    }
     return(tau_keep)
 }
 
