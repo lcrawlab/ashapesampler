@@ -29,7 +29,8 @@ Suggests:
     ggplot2,
     rmarkdown,
     SparseM,
-    pliman
+    pliman,
+    sf
 VignetteBuilder:
 		  knitr
 Encoding: UTF-8

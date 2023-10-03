@@ -264,4 +264,26 @@ image(as.matrix.csr(img_bin))
 ```
 ![New Binary Mask](converted_binary_mask.png)
 
-While not a perfect rendition, the major characteristics are preserved and most importantly, the shape bears resemblence to the simplicial complex. Note that for the neutrophils, we used a threshold of 1 instead of 0.7; the change in threshold has to do with the detailed pixelation and may require trial and error on the part of the user. Generally speaking, the more detailed the pixelation (e.g., the larger `dim_square`), then the higher the threshold for accepting a pixel in the binary mask. The basic tutorial shows the general process for going back and forth. Performance improves with more detailed binary masks.
+While not a perfect rendition, the major characteristics are preserved and most importantly, the shape bears resemblence to the simplicial complex. Note that for the neutrophils, we used a threshold of 1 instead of 0.7; the change in threshold has to do with the detailed pixelation and may require trial and error on the part of the user. Additionally, if the centroid or center of the shape matters, then one should use the following python code to convert their complex back to a binary mask, as we did for the neutrophils (lines 277-284 remove any potential border that is accidentally placed during the conversion process):
+
+```{python, python.reticulate=FALSE, eval=FALSE}
+import numpy as np
+import pandas as pd
+import cv2
+
+my_img = cv2.imread(my_file, 0)
+my_img_invert = cv2.bitwise_not(my_img)
+my_img_invert = np.ceil(my_img_invert/255.0)
+my_img_invert[:,0]=0
+my_img_invert[:,1]=0
+my_img_invert[:,-1]=0
+my_img_invert[:, -2]=0
+my_img_invert[0,:]=0
+my_img_invert[1,:]=0
+my_img_invert[-1,:] = 0
+my_img_invert[-2,:]=0
+bin_path = 'test_bin.csv'
+img_df = pd.DataFrame(my_img_invert)
+img_df.to_csv(bin_path, sep=",", header=False, index=False)
+```
+Generally speaking, the more detailed the pixelation (e.g., the larger `dim_square`), then the higher the threshold for accepting a pixel in the binary mask. The basic tutorial shows the general process for going back and forth. Performance improves with more detailed binary masks.
