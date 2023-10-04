@@ -12,6 +12,8 @@ generate_ashape2d(
   afixed = TRUE,
   mu = NULL,
   sig = NULL,
+  sample_rad = NULL,
+  acc_rad = NULL,
   k_min = 2,
   eps = 1e-04,
   cores = 1
@@ -33,6 +35,12 @@ data set}
 
 \item{sig}{standard deviation of truncated distribution from which alpha
 sampled; default tau/12}
+
+\item{sample_rad}{radius of ball around each point in point cloud from which to
+sample; default tau/8}
+
+\item{acc_rad}{radius of ball to check around potential sampled points for whether
+to accept or reject new point; default tau/4}
 
 \item{k_min}{number of points needed in radius tau of point cloud to accept a sample}
 

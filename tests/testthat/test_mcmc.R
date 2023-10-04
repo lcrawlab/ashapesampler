@@ -21,6 +21,10 @@ test_that("mcmc errors", {
   #expect_warning(generate_ashape3d(points3, J=2, tau=5, cores=120))
   expect_error(generate_ashape2d(points2, J=2, tau=5, k_min=100))
   expect_error(generate_ashape3d(points3, J=2, tau=6, k_min=1000))
+  expect_error(generate_ashape2d(points2, N, tau, sample_rad=-1))
+  expect_error(generate_ashape2d(points2, N, tau, acc_rad=-1))
+  expect_error(generate_ashape3d(points3, N, tau, sample_rad=-1))
+  expect_error(generate_ashape3d(points3, N, tau, acc_rad=-1))
 })
 
 test_that("2D mcmc smooth runs", {
