@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>annulus_demo</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">annulus_demo</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(ashapesampler)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(alphahull)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#&gt; The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; which was just loaded, will retire in October 2023.</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; Please refer to R-spatial evolution reports for details, especially</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; https://r-spatial.org/r/2023/05/15/evolution4.html.</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt; It may be desirable to make the sf package available;</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; package maintainers should consider adding sf to Suggests:.</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; The sp package is now running under evolution status 2</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt;      (status 2 uses the sf package in place of rgdal)</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;ggplot2&#39; was built under R version 4.2.3</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="fu">library</span>(doParallel)</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt; Loading required package: foreach</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt; Loading required package: iterators</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt; Loading required package: parallel</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>cores <span class="ot">=</span> <span class="fu">detectCores</span>()</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="fu">registerDoParallel</span>(<span class="at">cores=</span>cores)</span></code></pre></div>
+<p>In this document, we demonstrate the <span class="math inline">\(\alpha\)</span>-shape sampler pipeline by
+simulating the process of learning a set of two-dimensional shapes (in
+this case, annuli) and simulating a new shape from that. This vignette
+requires the packages , , and in addition to .</p>
+<p>We begin by setting the parameters for our simulation. We will fix
+<span class="math inline">\(\alpha=0.25\)</span> and <span class="math inline">\(n=100\)</span>, and draw 20 shapes for our data
+set. Our true underlying manifold will be the annulus with outer radius
+0.75 and inner radius 0.25.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">201723</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>my_alpha <span class="ot">=</span> <span class="fl">0.15</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">1000</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>N<span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>r_maj <span class="ot">&lt;-</span> <span class="fl">0.75</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>r_min <span class="ot">&lt;-</span> <span class="fl">0.25</span></span></code></pre></div>
+<p>Next we will draw the shapes themselves.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>ann_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>complex_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>tau_vec <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;numeric&quot;</span>, N)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N){</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  ann_pts <span class="ot">&lt;-</span> <span class="fu">runif_annulus</span>(n, r_maj, r_min)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  ann_list[[k]] <span class="ot">&lt;-</span> <span class="fu">ashape</span>(ann_pts, <span class="at">alpha =</span> my_alpha)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  complex_list[[k]] <span class="ot">&lt;-</span> <span class="fu">get_alpha_complex</span>(ann_pts, my_alpha)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  tau_vec[k] <span class="ot">&lt;-</span> <span class="fu">tau_bound</span>(ann_list[[k]]<span class="sc">$</span>x, complex_list[[k]])</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>}</span></code></pre></div>
+<p>Now that we have the shapes generated and imported, we want to sample
+point clouds to combine. We’ll choose 2.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>choose_2 <span class="ot">&lt;-</span> <span class="fu">sample</span>(N,<span class="dv">2</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>point_cloud <span class="ot">=</span> <span class="fu">rbind</span>(ann_list[[choose_2[<span class="dv">1</span>]]]<span class="sc">$</span>x, ann_list[[choose_2[[<span class="dv">2</span>]]]]<span class="sc">$</span>x)</span></code></pre></div>
+<p>Then we will have our <span class="math inline">\(\tau\)</span> bound
+be a summary statistic of the <span class="math inline">\(\tau\)</span>
+found for each input shape. Here, we will use mean, but one can tweak
+this to see different results. Note that if <span class="math inline">\(\tau\)</span> is too small, then the random walk
+won’t be able to execute around the point cloud, but if <span class="math inline">\(\tau\)</span> is too big, then we risk losing
+geometric and topological information in the reconstruction.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>tau_vec2 <span class="ot">=</span> <span class="fu">c</span>(tau_vec[choose_2[<span class="dv">1</span>]], tau_vec[choose_2[<span class="dv">2</span>]])</span></code></pre></div>
+<p>Now we can take the parameters and generate a new shape and plot it.
+Here, we assume <code>k_min=2</code> as we are in two dimensions.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>new_annulus <span class="ot">&lt;-</span> <span class="fu">generate_ashape2d</span>(point_cloud, <span class="at">J=</span><span class="dv">2</span>, <span class="at">tau=</span><span class="fu">min</span>(tau_vec2), </span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>                                 <span class="at">cores=</span>cores)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Acceptance Rate is 0.9375&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>tri_keep <span class="ot">=</span> new_annulus<span class="sc">$</span>delvor.obj<span class="sc">$</span>tri.obj<span class="sc">$</span>trlist[<span class="fu">which</span>(new_annulus<span class="sc">$</span>delvor.obj<span class="sc">$</span>tri.obj<span class="sc">$</span>cclist[,<span class="dv">3</span>]<span class="sc">&lt;</span>new_annulus<span class="sc">$</span>alpha), <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>dim_tri <span class="ot">=</span> <span class="fu">dim</span>(tri_keep)[<span class="dv">1</span>]</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>tri_keep <span class="ot">=</span> <span class="fu">as.vector</span>(<span class="fu">t</span>(tri_keep))</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>triangles <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="st">&quot;id&quot;</span><span class="ot">=</span><span class="fu">sort</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>dim_tri, <span class="dv">3</span>)), </span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>                       <span class="st">&quot;x&quot;</span><span class="ot">=</span>new_annulus<span class="sc">$</span>x[tri_keep, <span class="dv">1</span>], </span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>                       <span class="st">&quot;y&quot;</span><span class="ot">=</span>new_annulus<span class="sc">$</span>x[tri_keep,<span class="dv">2</span>])</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>extremes <span class="ot">=</span> <span class="fu">as.data.frame</span>(new_annulus<span class="sc">$</span>x[new_annulus<span class="sc">$</span>alpha.extremes,])</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>edges <span class="ot">=</span> <span class="fu">as.data.frame</span>(new_annulus<span class="sc">$</span>edges[,<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>])</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(new_annulus<span class="sc">$</span>x), <span class="fu">aes</span>(<span class="at">x=</span>X1, <span class="at">y=</span>X2)) <span class="sc">+</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">data=</span>triangles, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">group=</span>id), <span class="at">fill=</span><span class="st">&quot;gray&quot;</span>) <span class="sc">+</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="at">data=</span>edges, <span class="fu">aes</span>(<span class="at">x=</span>x1, <span class="at">y=</span>y1, <span class="at">xend=</span>x2, <span class="at">yend=</span>y2), <span class="at">color=</span><span class="st">&quot;blue&quot;</span>)<span class="sc">+</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data=</span>extremes, <span class="fu">aes</span>(<span class="at">x=</span>V1, <span class="at">y=</span>V2), <span class="at">size=</span><span class="fl">1.5</span>)<span class="sc">+</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
