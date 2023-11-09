@@ -1,6 +1,6 @@
 # ashapesampler
 
-R package for generating alpha shapes via either sampling from a known distribution or sampling based on an existing data set.
+This repository contains an R package for generating synthetic alpha shapes from either (i) probabilistic sampling from a known distribution function on shapes or (ii) empirically sampling based on an existing data set.
 
 ## R Packages for ashapesampler and Tutorials
 
@@ -24,7 +24,7 @@ The ashapesampler software requires the installation of the following R librarie
 
 [truncnorm](https://cran.r-project.org/web/packages/truncnorm/index.html)
 
-Unless stated otherwise, the easiest method to install many of these packages is with the following example command entered in an R shell:
+Unless stated otherwise, the easiest way to install many of these packages is with the following example command entered in an R shell:
 
     install.packages("alphahull", dependecies = TRUE)
 
@@ -32,7 +32,7 @@ Alternatively, one can also [install R packages from the command line](http://cr
 
 ## C++ Packages for ashapesampler and Tutorials
 
-The code in this repository assumes that basic C++ functions and applications are already set up on the running personal computer or cluster. If not, the functions and necessary TDA and alphashape3d packages to build alpha complexes and alpha shapes in three dimensions will not work properly. A simple option is to use [gcc](https://gcc.gnu.org/). macOS users may use this collection by installing the [Homebrew package manager](http://brew.sh/index.html) and then typing the following into the terminal:
+The code in this repository assumes that basic C++ functions and applications are already set up on the running personal computer or cluster. If not, some of the packages (e.g., TDA and alphashape3d) needed to build alpha complexes and alpha shapes in three dimensions will not work properly. A simple option is to use [gcc](https://gcc.gnu.org/). macOS users may use this collection by installing the [Homebrew package manager](http://brew.sh/index.html) and then typing the following into the terminal:
 
     brew install gcc
 
@@ -40,11 +40,11 @@ For macOS users, the Xcode Command Line Tools include a GCC compiler. Instructio
 
 ## R Package Installation
 
-To install the package, we will use the remotes package and run the command:
+To install the package, we recommend using the remotes package by running the command:
 
 	remotes::install_github('lcrawlab/ashapesampler')
 
-To load the package, use the command
+To then load the package in R, use the command
 
 	library(ashapesampler)
 
@@ -56,15 +56,15 @@ Other common installation procedures may apply.
 
 The `vignettes` folder contains the following demonstrations for running and analyzing results in the ashapesampler: 
 
-* Sampling alpha shapes from a probability distribution in two dimensions
-* Sampling alpha shapes from a probability distribution in three dimensions
-* Generating new annuli from a simulated set of annuli
+* Sampling alpha shapes from a probability distribution in two dimensions.
+* Sampling alpha shapes from a probability distribution in three dimensions.
+* Generating new 2D annuli from a simulated set of annuli.
 
-* Generating new tori from a simulated set of tori
+* Generating new 3D tori from a simulated set of tori.
 
-* Converting binary masks to simplicial complexes for input into the alpha shape sampler
+* Converting binary masks to simplicial complexes for input into the alpha shape sampler.
 
-* Generating new teeth from data set of primate manibular molars
+* Generating new 3D teeth from data set of primate manibular molars.
 
   
 The auto3dgm paradigm for assigning landmarks via unsupervised learning can be found [here](https://toothandclaw.github.io/)
