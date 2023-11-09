@@ -18,6 +18,8 @@ The ashapesampler software requires the installation of the following R librarie
 
 [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html)
 
+[pracma](https://cran.r-project.org/web/packages/pracma/index.html)
+
 [Rvcg](https://cran.r-project.org/web/packages/Rvcg/index.html)
 
 [TDA](https://cran.r-project.org/web/packages/TDA/index.html)
