@@ -73,7 +73,7 @@ The auto3dgm paradigm for assigning landmarks via unsupervised learning can be f
 
 ## Data 
 
-Primate manibular molar data can be accessed and downloaded [here](https://www.dropbox.com/sh/rs8pjmhrwcdcuxk/AAC3Fj2_RNZLTVR_XhN4jiGxa?dl=0).
+Primate manibular molar data can be accessed and downloaded [here](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/K9A0EG&faces-redirect=true).
 
 ## Relevant Citations
 
