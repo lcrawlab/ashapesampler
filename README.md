@@ -1,6 +1,26 @@
 # ashapesampler
 
-This repository contains an R package for generating synthetic alpha shapes from either (i) probabilistic sampling from a known distribution function on shapes or (ii) empirically sampling based on an existing data set.
+This repository contains an R package for generating synthetic alpha shapes from either (i) empirically sampling based on an existing data set, or (ii) probabilistic sampling from a known distribution function on shapes.
+
+## Introduction
+
+## The Method
+
+The **ashapesampler** package supports two mechanisms for sampling shapes in two and three dimensions, which we outline below. The first, empirically sampling based on an existing data set, was highlighted in the original main text of the paper. The second, probabalistic sampling from a known distrubtion, is the computational implementation of the theory derived in that paper.  
+
+### Generating New Shapes to Fit Existing Data Set
+
+The pipeline consists of four key steps:
+1. Input the aligned shapes as simplicial complexes. A simplicial complex object in this case is a list containing (a) the Euclidean coordinates of the vertices and (b) a list of all vertices, edges, faces, and tetrahedra.
+2. Calculate the reach for each shape in the data set - this reach is estimated based on boundary points of the simplicial complex. Users can tune the summary statistic used for the estimated reach to be mean, median, or minimum. Default is mean.
+3. Sample new points.
+4. Output new shape as an alpha shape object.
+
+Users should note that it is critical to align shapes to maximize the pipeline's success, and that there may be some manual parameter tuning for the best results. 
+
+### Sampling New Shapes from Probability Distribution
+
+Users an also use our package to generate shapes in two and three dimensions from a probability distribution. The tool can prove particularly useful for simulating shapes and comparing analyises of multiple methods.
 
 ## R Packages for ashapesampler and Tutorials
 
