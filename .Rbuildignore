@@ -3,3 +3,4 @@
 ^\.github$
 ^LICENSE\.md$
 ^coverage_check\.R$
+^ML\$
