@@ -25,6 +25,7 @@
 #' @return tau_vec, vector real nonnegative number. Tau values for each point
 #' @export
 #' @importFrom stats na.omit
+#' @importFrom stats median
 #' @import doParallel
 #' @import foreach
 #' @importFrom dplyr setdiff
