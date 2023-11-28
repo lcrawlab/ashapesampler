@@ -6,14 +6,16 @@ This repository contains an R package for generating synthetic alpha shapes from
 
 Understanding morphological variation is an important task in many applications. Recent studies in computational biology have focused on developing computational tools for the task of sub-image selection which aims at identifying structural features that best describe the variation between classes of shapes. A major part in assessing the utility of these approaches is to demonstrate their performance on both simulated and real datasets. However, when creating a model for shape statistics, real data can be difficult to access and the sample sizes for these data are often small due to them being expensive to collect. Meanwhile, the landscape of current shape simulation methods has been mostly limited to approaches that use black-box inference---making it difficult to systematically assess the power and calibration of sub-image models.
 
+In this R package, we introduce the $\alpha$-shape sampler: a probabilistic framework for simulating realistic 2D and 3D shapes based on probability distributions which can be learned from real data or explicitly stated by the user.
+
 ## The Method
 
-The **ashapesampler** package supports two mechanisms for sampling shapes in two and three dimensions, which we outline below. The first, empirically sampling based on an existing data set, was highlighted in the original main text of the paper. The second, probabalistic sampling from a known distrubtion, is the computational implementation of the theory derived in that paper.  
+The **ashapesampler** package supports two mechanisms for sampling shapes in two and three dimensions, which we outline below. The first, empirically sampling based on an existing data set, was highlighted in the original main text of the paper. The second, probabalistic sampling from a known distrubtion, is the computational implementation of the theory derived in that paper. 
 
-### Generating New Shapes to Fit Existing Data Set
+### Generating New Shapes from Existing Data Set
 
 The pipeline consists of four key steps:
-1. Input the aligned shapes as simplicial complexes. A simplicial complex object in this case is a list containing (a) the Euclidean coordinates of the vertices and (b) a list of all vertices, edges, faces, and tetrahedra.
+1. Input the aligned shapes as simplicial complexes. A simplicial complex object in this case is a list containing (a) the Euclidean coordinates of the vertices and (b) a list of all vertices, edges, faces, and tetrahedra. Functions are available to read OFF files into R in the correct format and to extract the simplical complex information from a generated alpha complex. A method to convert a binary mask to a 2D simplicial complex for use in the algorithm can be found in the vignettes. 
 2. Calculate the reach for each shape in the data set - this reach is estimated based on boundary points of the simplicial complex. Users can tune the summary statistic used for the estimated reach to be mean, median, or minimum. Default is mean. Once we have the reach for each shape, users can take some summary statistic - usually mean - of the `J` shapes randomly chosen to produce the new shape.
 3. Sample new points, using the combined point cloud of the randomly selected `J` shapes and the estimated reach `tau` derived from the `J` shapes. Parameters for rejection sampling can be adjusted by the users and are discussed further in the vignettes. Note that this step is generally the longest computationally - if the user reaches a bottleneck, check to the value of `tau` relative to the area/volume of the combined point cloud. Parallelizing also speeds up the algorithm.
 4. Output new shape as an alpha shape object.
