@@ -2,7 +2,7 @@ Package: ashapesampler
 Title: Statistical Package for Generating Alpha Shapes
 Version: 0.0.0.9000
 Authors@R: 
-    person("Emily", "Winn-Nunez", , "emily_winn@brown.edu", role = c("aut", "cre"),
+    person("Emily", "Winn-Nunez", , "emily_winn-nunez@brown.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6759-5406"))
 Description: Shape statistics is a growing field. This package allows users to 
               generate alpha shapes from a distribution
