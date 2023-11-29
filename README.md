@@ -94,16 +94,14 @@ The `vignettes` folder contains the following demonstrations for running and ana
 
 * Generating new 3D tori from a simulated set of tori.
 
-* Converting binary masks to simplicial complexes for input into the alpha shape sampler.
-
-* Generating new 3D teeth from data set of primate manibular molars.
+Additional vignettes and source code can be found in the corresponding [results repository](https://github.com/lcrawlab/ashapesampler_results).
 
   
 The auto3dgm paradigm for assigning landmarks via unsupervised learning can be found [here](https://toothandclaw.github.io/)
 
 ## Data 
 
-Primate manibular molar data can be accessed and downloaded [here](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/K9A0EG&faces-redirect=true).
+Primate manibular molar data and neutrophil binary masks can be accessed and downloaded [here](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/K9A0EG&faces-redirect=true).
 
 ## Relevant Citations
 
