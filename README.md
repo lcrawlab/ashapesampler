@@ -72,7 +72,9 @@ For macOS users, the Xcode Command Line Tools include a GCC compiler. Instructio
 
 ## R Package Installation
 
-To install the package, we recommend using the remotes package by running the command:
+Package will appear eventually on CRAN, at which time one can download the package there.
+
+To install the package from github, we recommend using the remotes package by running the command:
 
 	remotes::install_github('lcrawlab/ashapesampler')
 
@@ -105,7 +107,7 @@ Primate manibular molar data and neutrophil binary masks can be accessed and dow
 
 ## Relevant Citations
 
-E.T. Winn-Nuñez, H. Witt, D. Bhaskar, R. Huang, I.Y. Wong, J. Reichner, and L. Crawford. A probabilistic method for sampling alpha-shapes.
+E.T. Winn-Nuñez, H. Witt, D. Bhaskar, R. Huang, I.Y. Wong, J. Reichner, and L. Crawford. Generative modeling of biological shapes and images using a probabilistic α-shape sample. bioArxiv.
 
 ## Questions and Feedback
 
