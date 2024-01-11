@@ -26,6 +26,10 @@ Suggests:
     rgl,
     ggplot2,
     rmarkdown
+LinkingTo:
+    TDA,
+    rgl,
+    testthat
 VignetteBuilder:
 		  knitr
 Encoding: UTF-8
