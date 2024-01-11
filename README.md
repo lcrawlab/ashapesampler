@@ -60,15 +60,15 @@ Unless stated otherwise, the easiest way to install many of these packages is wi
 
     install.packages("alphahull", dependecies = TRUE)
 
-Alternatively, one can also [install R packages from the command line](http://cran.r-project.org/doc/manuals/r-release/R-admin.html#Installing-packages).
+Alternatively, one can also [install R packages from the command line](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#Installing-packages).
 
 ## C++ Packages for ashapesampler and Tutorials
 
-The code in this repository assumes that basic C++ functions and applications are already set up on the running personal computer or cluster. If not, some of the packages (e.g., TDA and alphashape3d) needed to build alpha complexes and alpha shapes in three dimensions will not work properly. A simple option is to use [gcc](https://gcc.gnu.org/). macOS users may use this collection by installing the [Homebrew package manager](http://brew.sh/index.html) and then typing the following into the terminal:
+The code in this repository assumes that basic C++ functions and applications are already set up on the running personal computer or cluster. If not, some of the packages (e.g., TDA and alphashape3d) needed to build alpha complexes and alpha shapes in three dimensions will not work properly. A simple option is to use [gcc](https://gcc.gnu.org/). macOS users may use this collection by installing the [Homebrew package manager](https://brew.sh/index.html) and then typing the following into the terminal:
 
     brew install gcc
 
-For macOS users, the Xcode Command Line Tools include a GCC compiler. Instructions on how to install Xcode may be found [here](http://railsapps.github.io/xcode-command-line-tools.html). Additional installs for macOS users are automake, curl, glfw3, glew, xquartz, and qpdf. For extra tips on how to run C++ on macOS, please visit [here](http://seananderson.ca/2013/11/18/rcpp-mavericks.html). For tips on how to avoid errors dealing with "-lgfortran" or "-lquadmath", please visit [here](http://thecoatlessprofessor.com/programming/rcpp-rcpparmadillo-and-os-x-mavericks-lgfortran-and-lquadmath-error/).
+For macOS users, the Xcode Command Line Tools include a GCC compiler. Instructions on how to install Xcode may be found [here](http://railsapps.github.io/xcode-command-line-tools.html). Additional installs for macOS users are automake, curl, glfw3, glew, xquartz, and qpdf. For extra tips on how to run C++ on macOS, please visit [here](http://seananderson.ca/2013/11/18/rcpp-mavericks.html). For tips on how to avoid errors dealing with "-lgfortran" or "-lquadmath", please visit [here](https://thecoatlessprofessor.com/programming/rcpp-rcpparmadillo-and-os-x-mavericks-lgfortran-and-lquadmath-error/).
 
 ## R Package Installation
 
@@ -96,7 +96,7 @@ The `vignettes` folder contains the following demonstrations for running and ana
 
 * Generating new 3D tori from a simulated set of tori.
 
-Additional vignettes and source code can be found in the corresponding [results repository](https://github.com/lcrawlab/ashapesampler_results).
+Additional vignettes and source code can be found in the corresponding [results repository](https://github.com/lcrawlab/ashapesampler_paper_results).
 
   
 The auto3dgm paradigm for assigning landmarks via unsupervised learning can be found [here](https://toothandclaw.github.io/)
@@ -107,7 +107,7 @@ Primate manibular molar data and neutrophil binary masks can be accessed and dow
 
 ## Relevant Citations
 
-E.T. Winn-Nuñez, H. Witt, D. Bhaskar, R. Huang, I.Y. Wong, J. Reichner, and L. Crawford. Generative modeling of biological shapes and images using a probabilistic α-shape sample. bioArxiv.
+E.T. Winn-Nuñez, H. Witt, D. Bhaskar, R.Y. Huang, I.Y. Wong, J.S. Reichner, and L. Crawford. Generative modeling of biological shapes and images using a probabilistic α-shape sampler. bioRxiv.
 
 ## Questions and Feedback
 
