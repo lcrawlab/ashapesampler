@@ -31,17 +31,21 @@ the process of learning a set of three-dimensional shapes (in this case, tori) a
 simulating a new shape from that. This vignette requires the packages `alphashape3d`,
 `alphahull`, `rgl`, `parallel`, and `doParallel` in addition to `ashapesampler`.
 
-We begin by setting the parameters for our simulation. We will fix $\alpha=0.25$ 
-and $n=500$, and draw 20 shapes for our data set. Our true underlying manifold
-will be the torus with major radius 0.75 and minor radius 0.25.
+Within vignettes, we are unable to set the number of cores above 2L. However, we highly 
+recommend using as many cores on the machine as possible to parallelize the code and 
+expedite computation, especially with 3D calculations.
+
+We begin by setting the parameters for our simulation. We will fix $\alpha=0.15$ 
+and $n=1000$, and draw 20 shapes for our data set. Our true underlying manifold
+will be the torus with major radius 0.5 and minor radius 0.15.
 
 ```{r}
 N=10
 tau_vec <- vector("numeric", N)
-my_alpha <- 0.25
-n <- 5000
-r_maj <- 0.75
-r_min <- 0.25
+my_alpha <- 0.15
+n <- 1000
+r_maj <- 0.5
+r_min <- 0.15
 ```
 
 Next we will draw the shapes themselves.
