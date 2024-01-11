@@ -36,25 +36,25 @@ Users an also use the ashapesampler package to generate shapes in two and three 
 
 The ashapesampler software requires the installation of the following R libraries:
 
-[alphahull](https://cran.r-project.org/web/packages/alphahull/index.html)
+[alphahull](https://cran.r-project.org/package=alphahull)
 
-[alphashape3d](https://cran.r-project.org/web/packages/alphashape3d/index.html)
+[alphashape3d](https://cran.r-project.org/package=alphashape3d)
 
-[doParallel](https://cran.r-project.org/web/packages/doParallel/index.html)
+[doParallel](https://cran.r-project.org/package=doParallel)
 
-[dplyr](https://cran.r-project.org/web/packages/dplyr/index.html)
+[dplyr](https://cran.r-project.org/package=dplyr)
 
-[foreach](https://cran.r-project.org/web/packages/foreach/index.html)
+[foreach](https://cran.r-project.org/package=foreach)
 
-[ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html)
+[ggplot2](https://cran.r-project.org/package=ggplot2)
 
-[pracma](https://cran.r-project.org/web/packages/pracma/index.html)
+[pracma](https://cran.r-project.org/package=pracma)
 
-[Rvcg](https://cran.r-project.org/web/packages/Rvcg/index.html)
+[Rvcg](https://cran.r-project.org/package=Rvcg)
 
-[TDA](https://cran.r-project.org/web/packages/TDA/index.html)
+[TDA](https://cran.r-project.org/package=TDA)
 
-[truncnorm](https://cran.r-project.org/web/packages/truncnorm/index.html)
+[truncnorm](https://cran.r-project.org/package=truncnorm)
 
 Unless stated otherwise, the easiest way to install many of these packages is with the following example command entered in an R shell:
 

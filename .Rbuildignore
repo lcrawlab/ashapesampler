@@ -3,3 +3,6 @@
 ^\.github$
 ^LICENSE\.md$
 ^coverage_check\.R$
+^cran-comments\.md$
+^revdep$
+^CRAN-SUBMISSION$

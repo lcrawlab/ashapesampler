@@ -49,9 +49,9 @@ rglwidget()
 
 To make the number of points a random variable in and of itself, we can add a discrete distribution $\pi$ to $n | \alpha$. In the code, this discrete distribution is a Poisson distribution with default $\lambda = 3$. Parameter $\lambda$ can be adjusted by the user. The distribution from which the new shape is sampled is then given by:
 
-$$\alpha  \sim \mathcal{N}_T(\mu=0.25,\sigma=0.5, a=\min(0.1, \tau/4), b=\tau/2)$$
-$$n | \alpha = n_{c min}(\alpha, \delta=0.05) + \text{Poisson}(\lambda)$$
-$$x_1, ..., x_n \sim \text{Unif}(\mathcal{M}) $$
+$$\alpha  \sim NT(\mu=0.25,\sigma=0.5, a=\min(0.1, \tau/4), b=\tau/2)$$
+$$n | \alpha = n_{min}(\alpha, \delta=0.05) + \text{Poisson}(\lambda)$$
+$$x_1, ..., x_n \stackrel{i.i.d.}{\sim} \text{Unif}(\mathcal{M}) $$
 
 To make the code dynamic, set `n.noise = TRUE`. This code is where $\lambda = 3$. 
 
