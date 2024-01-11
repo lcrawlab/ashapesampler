@@ -1,35 +1,35 @@
 # ashapesampler
 
-This repository contains an R package for generating synthetic alpha shapes from either (i) empirically sampling based on an existing data set, or (ii) probabilistic sampling from a known distribution function on shapes.
+This repository contains an R package for generating synthetic alpha shapes by either (i) empirical sampling based on an existing dataset with reference shapes, or (ii) probabilistic sampling from a known distribution function on shapes.
 
 ## Introduction
 
 Understanding morphological variation is an important task in many applications. Recent studies in computational biology have focused on developing computational tools for the task of sub-image selection which aims at identifying structural features that best describe the variation between classes of shapes. A major part in assessing the utility of these approaches is to demonstrate their performance on both simulated and real datasets. However, when creating a model for shape statistics, real data can be difficult to access and the sample sizes for these data are often small due to them being expensive to collect. Meanwhile, the landscape of current shape simulation methods has been mostly limited to approaches that use black-box inference---making it difficult to systematically assess the power and calibration of sub-image models.
 
-In this R package, we introduce the $\alpha$-shape sampler: a probabilistic framework for simulating realistic 2D and 3D shapes based on probability distributions which can be learned from real data or explicitly stated by the user.
+In this R package, we introduce the $\alpha$-shape sampler: a probabilistic framework for simulating realistic 2D and 3D biological shapes and images based on probability distributions which can be learned from real data or explicitly stated by the user.
 
 ## The Method
 
-The **ashapesampler** package supports two mechanisms for sampling shapes in two and three dimensions, which we outline below. The first, empirically sampling based on an existing data set, was highlighted in the original main text of the paper. The second, probabalistic sampling from a known distrubtion, is the computational implementation of the theory derived in that paper. 
+The **ashapesampler** package supports two mechanisms for sampling shapes in two and three-dimensions, which we outline below. The first strategy empirically samples new shapes based on an existing dataset --- this was highlighted in the main text of Winn-Nuñez et al. The second strategy probabalistically samples new shapes from a known distrubtion --- this approach is also implementated in this software package with the corresponding theory being derived in the Supporting Information of Winn-Nuñez et al. 
 
-### Generating New Shapes from Existing Data Set
+### Generating New Shapes from an Existing Dataset
 
-The pipeline consists of four key steps:
-1. Input the aligned shapes as simplicial complexes. A simplicial complex object in this case is a list containing (a) the Euclidean coordinates of the vertices and (b) a list of all vertices, edges, faces, and tetrahedra. Functions are available to read OFF files into R in the correct format and to extract the simplical complex information from a generated alpha complex. A method to convert a binary mask to a 2D simplicial complex for use in the algorithm can be found in the vignettes. 
-2. Calculate the reach for each shape in the data set - this reach is estimated based on boundary points of the simplicial complex. Users can tune the summary statistic used for the estimated reach to be mean, median, or minimum. Default is mean. Once we have the reach for each shape, users can take some summary statistic - usually mean - of the `J` shapes randomly chosen to produce the new shape.
-3. Sample new points, using the combined point cloud of the randomly selected `J` shapes and the estimated reach `tau` derived from the `J` shapes. Parameters for rejection sampling can be adjusted by the users and are discussed further in the vignettes. Note that this step is generally the longest computationally - if the user reaches a bottleneck, check to the value of `tau` relative to the area/volume of the combined point cloud. Parallelizing also speeds up the algorithm.
-4. Output new shape as an alpha shape object.
+The $\alpha$-shape sampler consists of four key steps:
+1. Input aligned reference shapes as simplicial complexes. A simplicial complex object in this case is a list containing (a) the Euclidean coordinates of the vertices and (b) a list of all vertices, edges, faces, and tetrahedra. Functions are available to read OFF files into R in the correct format and to extract the simplical complex information from a generated alpha complex. A method to convert a binary mask to a 2D simplicial complex for use in the algorithm can be found in the vignettes. 
+2. Calculate the _reach_ for each shape in the dataset. The reach is estimated based on boundary points of the simplicial complex. Users can choose the summary statistic used for the estimated reach for a reference shape to be either the mean, median, or minimum across points. Default is mean. Once we have the reach for each shape, users can take some summary statistic (usually the minimum) over a `J` subset of randomly selected reference shapes to produce new shapes.
+3. Sample new points, using the combined point cloud of the randomly selected `J` shapes and the estimated reach `tau` derived from the `J` reference shapes. Parameters for rejection sampling can be adjusted by the users and are discussed further in the vignettes. Note that this step is generally the longest computationally---if the user reaches a computational bottleneck, check to the value of `tau` relative to the area/volume of the combined point cloud. Parallelizing also speeds up the algorithm.
+4. Output newly generated shape as an alpha shape object.
 
-Users should note that it is critical to align shapes to maximize the pipeline's success, and that there may be some manual parameter tuning for the best results. 
+Users should note that it is critical to align shapes to maximize the pipeline's success and that there may be some manual parameter tuning for the best results. 
 
 Demonstrations for pipeline implementation are in the vignettes. Functions are broken into parts instead of integrated altogether so that users can troubleshoot the pipeline at different stages. 
 
-### Sampling New Shapes from Probability Distribution
+### Generating New Shapes from Probability Distributions
 
-Users an also use our package to generate shapes in two and three dimensions from a probability distribution. The tool can prove particularly useful for simulating shapes and comparing analyises of multiple methods. Here, we list the parameters for simulating new shapes in two and three dimensions. Options for user-adjusted parameters and defaults can be found in the vignettes. Users should keep in mind a few key points:
-* The ``bound`` parameter is the manifold from which points are sampled. At this time, the package only supports a square, a circle (disk - function assumes it is filled in), and an annulus in two dimensions and a cube, sphere (ball - function assumes it is filled in), and torus in three dimensions. The size of these manifolds can be specified using the ``rmax`` parameter and the ``rmin`` parameter, where applicable. Adjusting the size may affect computational time if ``tau`` is not adjusted with it.
-* The reach ``tau`` needs to be specified as a finite value in advance, as this hyperparameter affects the choice of ``alpha``. Default of ``tau`` is 1, but it can be any finite value. Keep in mind that the smaller that ``tau`` is relative to the area or volume of the manifold, the more detail in the shapes produced, but the more time it will take to produce a shape.
-* By default, ``alpha`` will be as large as theoretically allowed. The smaller ``alpha`` is relative to ``tau``, the more points will need to be sampled, and the more time it will take to produce a shape. This is particularly true when the bounds of the number of points are tied to desire for connectivity/no isolated points as well as preserving the homology.
+Users an also use the ashapesampler package to generate shapes in two and three dimensions from probability distributions. This approach can prove particularly useful for simulating shapes and benchmarking the performance of different statistical methods. Here, we list the parameters for generating new shapes in two and three dimensions. Options for user-adjusted parameters and defaults can be found in the vignettes. Users should keep a few key points in mind when generating shapes this way:
+* The ``bound`` parameter is the manifold from which points are sampled. At this time, the package only supports a square, a circle (i.e., a disk where the function assumes it is filled in), and an annulus in two dimensions. In three-dimensions, it supports a cube, sphere (i.e., a ball where the function assumes it is filled in), and torus. The size of these manifolds can be specified using the ``rmax`` and ``rmin`` parameters, where applicable. Adjusting the size may affect computational time if the reach ``tau`` is not adjusted with it.
+* The reach ``tau`` needs to be specified as a finite value in advance, as this hyperparameter affects the choice of ``alpha``. Default of ``tau`` is 1, but it can be any finite value. Keep in mind that the smaller that ``tau`` is relative to the area or volume of the manifold, the more detail in the shapes produced and the more time it will take to produce a new generate opbject shape.
+* By default, ``alpha`` will be as large as theoretically allowed. The smaller ``alpha`` is relative to ``tau``, the more points will need to be sampled and the more time it will take to produce a new generate shape. This is particularly true when the goal is to have shapes to have both full connectivity/no isolated points as well as preserve the homology.
 * At this time, the package only supports the truncated normal distribution for randomly selecting ``alpha``. Bounds of this truncated normal can be adjusted by the user up to what is theoretically allowed. Keep in mind that the general bounds of this distribution should keep ``alpha`` as large as possible for best computational performance.
 
 ## R Packages for ashapesampler and Tutorials
@@ -72,9 +72,9 @@ For macOS users, the Xcode Command Line Tools include a GCC compiler. Instructio
 
 ## R Package Installation
 
-Package will appear eventually on CRAN, at which time one can download the package there.
+Package will eventually appear on CRAN, at which time one can download the package there.
 
-To install the package from github, we recommend using the remotes package by running the command:
+To install the package from GitHub, we recommend using the remotes package by running the command:
 
 	remotes::install_github('lcrawlab/ashapesampler')
 
@@ -90,16 +90,15 @@ Other common installation procedures may apply.
 
 The `vignettes` folder contains the following demonstrations for running and analyzing results in the ashapesampler: 
 
-* Sampling alpha shapes from a probability distribution in two dimensions.
-* Sampling alpha shapes from a probability distribution in three dimensions.
+* Sampling alpha shapes from a probability distribution in two-dimensions.
+* Sampling alpha shapes from a probability distribution in three-dimensions.
 * Generating new 2D annuli from a simulated set of annuli.
-
 * Generating new 3D tori from a simulated set of tori.
 
 Additional vignettes and source code can be found in the corresponding [results repository](https://github.com/lcrawlab/ashapesampler_paper_results).
 
   
-The auto3dgm paradigm for assigning landmarks via unsupervised learning can be found [here](https://toothandclaw.github.io/)
+The auto3dgm paradigm for assigning landmarks via unsupervised learning can be found [here](https://toothandclaw.github.io/).
 
 ## Data 
 
@@ -107,7 +106,7 @@ Primate manibular molar data and neutrophil binary masks can be accessed and dow
 
 ## Relevant Citations
 
-E.T. Winn-Nuñez, H. Witt, D. Bhaskar, R.Y. Huang, I.Y. Wong, J.S. Reichner, and L. Crawford. Generative modeling of biological shapes and images using a probabilistic α-shape sampler. bioRxiv.
+E.T. Winn-Nuñez, H. Witt, D. Bhaskar, R.Y. Huang, I.Y. Wong, J.S. Reichner, and L. Crawford. Generative modeling of biological shapes and images using a probabilistic $\alpha$-shape sampler. _bioRxiv_.
 
 ## Questions and Feedback
 
