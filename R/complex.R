@@ -10,6 +10,7 @@
 #' @return complex list of vertices, edges, faces, and tetrahedra.
 #'
 #' @export
+#' @importFrom TDA alphaComplexFiltration
 get_alpha_complex <- function(points, alpha){
   if (alpha < 0){
     stop("alpha must be nonnegative.")
