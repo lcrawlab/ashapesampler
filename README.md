@@ -106,7 +106,7 @@ Primate manibular molar data and neutrophil binary masks can be accessed and dow
 
 ## Relevant Citations
 
-E.T. Winn-Nuñez, H. Witt, D. Bhaskar, R.Y. Huang, I.Y. Wong, J.S. Reichner, and L. Crawford. Generative modeling of biological shapes and images using a probabilistic $\alpha$-shape sample. _bioRxiv_.
+E.T. Winn-Nuñez, H. Witt, D. Bhaskar, R.Y. Huang, I.Y. Wong, J.S. Reichner, and L. Crawford. Generative modeling of biological shapes and images using a probabilistic $\alpha$-shape sampler. _bioRxiv_.
 
 ## Questions and Feedback
 
