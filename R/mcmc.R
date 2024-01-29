@@ -25,6 +25,7 @@ globalVariables(c("i"))
 #' @importFrom stats runif
 #' @import doParallel
 #' @import foreach
+#' @import parallel
 generate_ashape3d <- function(point_cloud,
                               J,
                               tau,
@@ -44,7 +45,8 @@ generate_ashape3d <- function(point_cloud,
       cores <- max(1L, parallel::detectCores(), na.rm = TRUE)
     }
   }
-  registerDoParallel(cores = cores)
+  cl <- makeCluster(cores)
+  registerDoParallel(cl)
   #Check: 3 columns on vertex list
   if (dim(point_cloud)[2] != 3) {
     stop("Point cloud does not have correct number of columns.")
@@ -103,7 +105,6 @@ generate_ashape3d <- function(point_cloud,
     .combine = rbind,
     .export = c("runif_ball_3D", "euclid_dists_point_cloud_3D")
   ) %dopar% {
-    #for (i in 1:n_vert){
     new_points = runif_ball_3D(m, sample_rad) + cbind(rep(point_cloud[i, 1], m),
                                                    rep(point_cloud[i, 2], m),
                                                    rep(point_cloud[i, 3], m))
@@ -123,6 +124,7 @@ generate_ashape3d <- function(point_cloud,
     }
     keep_pts
   }
+  stopCluster(cl)
   my_points = unique(my_points) #keeps error free if necessary.
   if (dim(my_points)[1] < 5) {
     stop("Not enough points accepted to make a shape. Need at least 5. Check tau and k_min parameters to
@@ -158,6 +160,7 @@ generate_ashape3d <- function(point_cloud,
 #' @importFrom stats runif
 #' @import doParallel
 #' @import foreach
+#' @import parallel
 generate_ashape2d <- function(point_cloud,
                               J,
                               tau,
@@ -177,7 +180,8 @@ generate_ashape2d <- function(point_cloud,
       cores <- max(1L, parallel::detectCores(), na.rm = TRUE)
     }
   }
-  registerDoParallel(cores = cores)
+  cl = makeCluster(cores)
+  registerDoParallel(cl)
   #Check: 2 columns on vertex list
   if (dim(point_cloud)[2] != 2) {
     stop("Point cloud does not have correct number of columns.")
@@ -237,7 +241,6 @@ generate_ashape2d <- function(point_cloud,
     .combine = rbind,
     .export = c("runif_disk", "euclid_dists_point_cloud_2D")
   ) %dopar% {
-    #for(i in 1:n_vert){
     new_points = runif_disk(m, sample_rad) + cbind(rep(point_cloud[i, 1], m), rep(point_cloud[i, 2], m))
     keep_pts = matrix(NA, nrow = 0, ncol = 2)
     for (j in 1:m) {
@@ -255,6 +258,7 @@ generate_ashape2d <- function(point_cloud,
     }
     keep_pts
   }
+  stopCluster(cl)
   my_points = unique(my_points) #keeps error free if necessary.
   if (dim(my_points)[1] < 3) {
     stop("Not enough points accepted to make a shape. Need at least 3. Check tau and k_min parameters to

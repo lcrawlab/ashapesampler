@@ -21,7 +21,6 @@ library(alphahull)
 library(doParallel)
 library(parallel)
 cores <- min(2L, detectCores())
-registerDoParallel(cores=cores)
 library(rgl)
 options(rgl.useNULL = TRUE)
 ```
