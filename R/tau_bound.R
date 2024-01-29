@@ -28,17 +28,19 @@
 #' @importFrom stats median
 #' @import doParallel
 #' @import foreach
+#' @import parallel
 #' @importFrom dplyr setdiff
 tau_bound <- function(v_list, complex, extremes=NULL, cores = 1, sumstat="mean"){
-  ### Determine the number of Cores for Parallelization ###
-  # if(cores > 1){
-  #   if(cores>detectCores()){
-  #     warning("The number of cores you're setting is larger than available cores!")
-  #     cores <- max(1L, detectCores(), na.rm = TRUE)}
-  # }
-  #
-  # ### Register those Cores ###
-  # registerDoParallel(cores=cores)
+  # ### Determine the number of Cores for Parallelization ###
+  if(cores > 1){
+    if(cores>parallel::detectCores()){
+      warning("The number of cores you're setting is larger than available cores!")
+      cores <- max(1L, parallel::detectCores(), na.rm = TRUE)}
+  }
+
+  ### Register those Cores ###
+  cl <- makeCluster(cores)
+  registerDoParallel(cl)
 
   dimension = dim(v_list)[2]
   n = dim(v_list)[1]
@@ -90,10 +92,10 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1, sumstat="mean")
     t_circ = circumcenter_tet(v_list, t_list)
   }
   tau_vec=vector("numeric", m)
-  #tau_vec = foreach(k=1:m, .combine=cbind,
-                     #.export = c("euclid_dists_point_cloud_2D",
-                     #            "euclid_dists_point_cloud_3D"))%dopar%{
-  for(k in 1:m){
+  k=NULL
+  tau_vec = foreach(k=1:m, .combine=cbind,
+                     .export = c("euclid_dists_point_cloud_2D",
+                                 "euclid_dists_point_cloud_3D"))%dopar%{
     i = extremes[k]
     edge_list_zoom = c(which(e_list$ed1==i), which(e_list$ed2==i))
     edge_list_zoom = c(e_list[edge_list_zoom,1], e_list[edge_list_zoom,2])
@@ -112,7 +114,7 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1, sumstat="mean")
     dist_vec_point = as.matrix(dist_matrix[,i])
     #Find smallest distance from point that is longer than edges, face bc, or tet bc
     if (length(edge_list_zoom)==0){
-      tau_vec[k] = min(dist_vec_point[dist_vec_point>0])  #case where isolated point
+      tau = min(dist_vec_point[dist_vec_point>0])  #case where isolated point
     } else {
       dist_vec = dist_vec_point[edge_list_zoom]
       dist_vec_b = c()
@@ -134,13 +136,14 @@ tau_bound <- function(v_list, complex, extremes=NULL, cores = 1, sumstat="mean")
       }
       dist_vec = max(c(dist_vec, dist_vec_b))
       if(length(dist_vec_point[dist_vec_point>dist_vec])==0){
-        tau_vec[k] = dist_vec
+        tau = dist_vec
       } else {
-        tau_vec[k] = min(dist_vec_point[dist_vec_point>dist_vec])
+        tau = min(dist_vec_point[dist_vec_point>dist_vec])
       }
     }
-    #tau
+    tau
   }
+  stopCluster(cl)
     tau_keep = -1
     if(sumstat=="max"){
       tau_keep = max(tau_vec[tau_vec>0])

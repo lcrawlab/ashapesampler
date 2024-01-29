@@ -23,7 +23,6 @@ library(ggplot2)
 library(doParallel)
 library(parallel)
 cores <- min(2L, detectCores())
-registerDoParallel(cores=cores)
 ```
 
 In this document, we demonstrate the $\alpha$-shape sampler pipeline by simulating
