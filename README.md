@@ -1,5 +1,9 @@
 # ashapesampler
 
+[![R CMD check](https://github.com/lcrawlab/ashapesampler/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/lcrawlab/ashapesampler/actions/workflows/check-standard.yaml)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/ashapesampler)](https://cranlogs.r-pkg.org/badges/grand-total/ashapesampler)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ashapesampler)](https://cran.r-project.org/package=ashapesampler)
+
 This repository contains an R package for generating synthetic alpha shapes by either (i) empirical sampling based on an existing dataset with reference shapes, or (ii) probabilistic sampling from a known distribution function on shapes.
 
 ## Introduction
