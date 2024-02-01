@@ -4,6 +4,8 @@
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/ashapesampler)](https://cranlogs.r-pkg.org/badges/grand-total/ashapesampler)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ashapesampler)](https://cran.r-project.org/package=ashapesampler)
 
+Now available to download from [CRAN](https://cran.r-project.org/package=ashapesampler).
+
 This repository contains an R package for generating synthetic alpha shapes by either (i) empirical sampling based on an existing dataset with reference shapes, or (ii) probabilistic sampling from a known distribution function on shapes.
 
 ## Introduction
@@ -76,7 +78,9 @@ For macOS users, the Xcode Command Line Tools include a GCC compiler. Instructio
 
 ## R Package Installation
 
-Package will eventually appear on CRAN, at which time one can download the package there.
+To install the package from CRAN, run the following command:
+
+	install.packages("ashapesampler", dependencies = TRUE)
 
 To install the package from GitHub, we recommend using the remotes package by running the command:
 
